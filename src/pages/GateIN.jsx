@@ -24,10 +24,10 @@ export default function GateIN() {
   const [lane_no, setLineNo] = useState(null);
 
   useEffect(() => {
-    // setShowScreen(searchParams.get("showScreen") ?? "Gate");
+    setShowScreen(searchParams.get("showScreen") ?? "Gate");
     setType(searchParams.get("type") ?? "IN");
-    // setGateNo(searchParams.get("gate_no") ?? null);
-    // setLineNo(searchParams.get("lane_no") ?? null);
+    setGateNo(searchParams.get("gate_no") ?? null);
+    setLineNo(searchParams.get("lane_no") ?? null);
   }, [searchParams]);
 
   useEffect(() => {
@@ -895,9 +895,9 @@ export default function GateIN() {
                                     setShowScreen("Vehicles");
 
                                     searchParams.set("type", type);
-                                    // searchParams.set("gate_no", gate_no);
-                                    // searchParams.set("lane_no", lane_no);
-                                    // searchParams.set("showScreen", "Vehicles");
+                                    searchParams.set("gate_no", gate_no);
+                                    searchParams.set("lane_no", lane_no);
+                                    searchParams.set("showScreen", "Vehicles");
 
                                     setSearchParams(searchParams);
 
