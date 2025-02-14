@@ -86,6 +86,13 @@ export default function GateIN() {
   };
   const startQrScanner = () => {
     // alert('start');
+    // modal-backdrop fade show
+    const backdrop = document.querySelector(".modal-backdrop");
+    if (backdrop) {
+      backdrop.style.display = "none";
+    }
+
+
     setIsScanning(true);
     if (!html5QrCode) {
       html5QrCode = new Html5Qrcode("reader");
@@ -367,7 +374,7 @@ export default function GateIN() {
         });
         console.log(response.data);
         if (response.data.data) {
-          setPermitData(response.data.data);
+          setPermitData(response.data);
         } else {
           Swal.fire({
             icon: "info",
@@ -919,6 +926,7 @@ export default function GateIN() {
                               <h4 className="m-0">Vehicles</h4>
                             </div>
                             <div className="col-md-6 text-end">
+                              <button className="btn btn-warning me-3" onClick={GetLIveData}> <i class="fa fa-refresh" aria-hidden="true" ></i>Fetch New</button>
                               <button
                                 className="btn btn-info btn-sm"
                                 onClick={() => setNewVehicle(true)}
@@ -931,7 +939,7 @@ export default function GateIN() {
                         <div className="card-body border-bottom">
                           <div className="d-flex align-items-center gap-3 flex-row overflow-scroll pb-3 no-scrollbar">
                             {NewVehicle ? (
-                              <div className="form col-md-6">
+                              <div className="form col-6">
                                 <label htmlFor="">Enter Vehicle Number</label>
                                 <input
                                   type="text"
@@ -962,12 +970,14 @@ export default function GateIN() {
                                     setShowScreen("Permit");
                                     setSelectedData({
                                       id: 0,
-                                      vehicle_no: ocr_vehicle_number,
+                                      vehicle_no: ocr_vehicle_number,  
                                     });
                                   }}
                                 >
                                   Start Survey
                                 </button>
+                                  <button 
+                                  onClick={() =>{ setNewVehicle(false);  setSelectedData(""); }} className="btn btn-danger mt-3">Cancle</button>
                               </div>
                             ) : (
                               <></>
@@ -1231,11 +1241,12 @@ export default function GateIN() {
                                     }
                                   />
                                   <span className="mt-2 text-primary fw-bold">
-                                    {PermitData?.PermitDateTime
+                                    {PermitData.data?.PermitDateTime
                                       ? formatToDateTime(
-                                          PermitData?.PermitDateTime
+                                          PermitData.data?.PermitDateTime
                                         )
                                       : ""}
+                                      
                                   </span>
                                 </div>
                                 <button
@@ -1414,11 +1425,14 @@ export default function GateIN() {
                                             name={`container_no_${index + 1}`}
                                             defaultValue={
                                               index === 0
-                                                ? PermitData?.ContainerNumber
+                                                ? PermitData.data?.ContainerNumber
                                                 : ""
                                             }
                                             placeholder="Container Number"
                                           />
+
+                                          {PermitData.container?.container_image}
+
                                         </div>
                                       )
                                     )}
