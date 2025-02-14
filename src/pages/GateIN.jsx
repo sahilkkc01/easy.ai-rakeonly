@@ -1241,9 +1241,9 @@ export default function GateIN() {
                                     }
                                   />
                                   <span className="mt-2 text-primary fw-bold">
-                                    {PermitData.data?.PermitDateTime
+                                    {PermitData?.data?.PermitDateTime
                                       ? formatToDateTime(
-                                          PermitData.data?.PermitDateTime
+                                          PermitData?.data?.PermitDateTime
                                         )
                                       : ""}
                                       
@@ -1425,13 +1425,13 @@ export default function GateIN() {
                                             name={`container_no_${index + 1}`}
                                             defaultValue={
                                               index === 0
-                                                ? PermitData.data?.ContainerNumber
+                                                ? PermitData?.data?.ContainerNumber
                                                 : ""
                                             }
                                             placeholder="Container Number"
                                           />
 
-                                          {PermitData.container?.container_image}
+                                          {PermitData?.container?.container_image}
 
                                         </div>
                                       )
