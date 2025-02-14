@@ -121,6 +121,8 @@ export default function GateIN() {
                 setScannedData(decodedText);
                 setIsScanning(false);
                 html5QrCode.stop();
+                // QrScanBox
+                document.querySelector('#QrScanBox [aria-label="Close"]').click();
               },
               (errorMessage) => {
                 console.error("ScanningError:", errorMessage);
