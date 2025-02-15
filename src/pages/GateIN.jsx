@@ -1435,7 +1435,7 @@ export default function GateIN() {
                                           />
                                         </div>
                                         
-                                        <input type="hidden" name="ocr_container_id" value={PermitData?.container?.id} />
+                                        <input type="hidden" name="ocr_container_id"  defaultValue={PermitData?.container?.id} />
 
                                         <div className="col-md-4">
                                            <img src={'https://ctas.live/ocr_backend/uploads/'+PermitData?.container?.container_image} alt="" style={{"max-height": "110px"}} /> 

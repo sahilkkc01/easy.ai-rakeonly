@@ -80,7 +80,10 @@ export default function App() {
           <Route path="/Logout" element={<Logout />} />
 
           {/* GATE */}
-          <Route path="/Gate" element={<PrivateRoute ><Index /></PrivateRoute>} />
+          <Route path="/Gate" element={<PrivateRoute ><GateIN /></PrivateRoute>} />
+
+          <Route path="/GateOld" element={<Index />} />
+
           <Route path="/CISF" element={<PrivateRoute ><Cisf /></PrivateRoute>} />
           <Route path="/CISFIn" element={<PrivateRoute ><CisfIn /></PrivateRoute>} />
           <Route path="/CISFOut" element={<PrivateRoute ><CisfOut /></PrivateRoute>} />
@@ -119,7 +122,7 @@ export default function App() {
 
           <Route path="/GateTools" element={<Gate />} />
           <Route path="/rake_survey_tool" element={<Rake_survey_tool />} />
-          <Route path="/GateIN" element={<GateIN />} />
+         
           <Route path="/GateOUT" element={<GateOUT />} />
          
           <Route path="/Rst" element={<Rst />} />
