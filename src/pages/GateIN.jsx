@@ -1244,12 +1244,11 @@ export default function GateIN() {
                                     }
                                   />
                                   <span className="mt-2 text-primary fw-bold">
-                                    {PermitData?.data?.PermitDateTime
+                                    {PermitData?.data?.IsPermitValid
                                       ? formatToDateTime(
-                                          PermitData?.data?.PermitDateTime
+                                          PermitData?.data?.IsPermitValid
                                         )
                                       : ""}
-                                      
                                   </span>
                                 </div>
                                 <button
@@ -1417,6 +1416,7 @@ export default function GateIN() {
                                   <div className="row">
                                     {Array.from({ length: container }).map(
                                       (_, index) => (
+                                        <>
                                         <div className="col-md-8 my-1">
                                           <label htmlFor="">
                                             Container Number
@@ -1433,10 +1433,15 @@ export default function GateIN() {
                                             }
                                             placeholder="Container Number"
                                           />
-
-                                          {PermitData?.container?.container_image}
-
                                         </div>
+                                        
+                                        <input type="hidden" name="ocr_container_id" value={PermitData?.container?.id} />
+
+                                        <div className="col-md-4">
+                                           <img src={'https://ctas.live/ocr_backend/uploads/'+PermitData?.container?.container_image} alt="" style={{"max-height": "110px"}} /> 
+                                        </div>
+
+                                        </>
                                       )
                                     )}
                                   </div>
@@ -2166,7 +2171,28 @@ export default function GateIN() {
                           <div className="col-6 border-end pe-0 ">
                             <div
                               className="card-body p-0 py-1 text-center bg-label-secondary"
-                              onClick={() => setShowScreen("Vehicles")}
+                              // onClick={() => setShowScreen("Vehicles")}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                Swal.fire({
+                                  title: "Are you sure?",
+                                  text: "Do you really want to cancel the survey?",
+                                  icon: "warning",
+                                  showCancelButton: true,
+                                  confirmButtonColor: "#d33",
+                                  cancelButtonColor: "#3085d6",
+                                  confirmButtonText: "Yes, Cancel it!",
+                                  cancelButtonText: "No, Keep it",
+                                }).then((result) => {
+                                  if (result.isConfirmed) {
+                                    formRef?.current?.reset();
+                                    window.location.reload();
+                                    setShowScreen("Vehicles");
+                                    GetLIveData();
+                                  }
+                                });
+                              }}
+
                             >
                               <button className="btn m-0  w-100" type="button">
                                 Back
