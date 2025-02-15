@@ -545,8 +545,9 @@ export default function GateIN() {
             opacity: 0.9,
           }}
         >
-          <Nav />
-
+        
+        {/* <Nav /> */}  
+          
           <div
             className="layout-page"
             style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
