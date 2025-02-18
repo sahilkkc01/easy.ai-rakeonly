@@ -60,7 +60,7 @@ export default function CisfIn() {
     let payload = {
       id: id,
       type: type,
-      gate_name:"EXIM",
+      gate_name: "EXIM",
     };
     try {
       const response = await axios.post(url, payload, {
@@ -158,8 +158,22 @@ export default function CisfIn() {
                                   <p className="mb-0">Vehicle Number :</p>
                                   <p className="mb-0 fw-bold text-uppercase">
                                     {row.vehicle_no}
-                                    <img src={'https://ctas.live/ocr_backend/uploads/'+row.ocr_vehicle_data?.vehicle_no_img} alt="" style={{width:'50px'}} data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>setImageView('https://ctas.live/ocr_backend/uploads/'+row.ocr_vehicle_data?.vehicle_no_img)} />
-
+                                    <img
+                                      src={
+                                        "https://ctas.live/ocr_backend/uploads/" +
+                                        row.ocr_vehicle_data?.vehicle_no_img
+                                      }
+                                      alt=""
+                                      style={{ width: "50px" }}
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#exampleModal"
+                                      onClick={() =>
+                                        setImageView(
+                                          "https://ctas.live/ocr_backend/uploads/" +
+                                            row.ocr_vehicle_data?.vehicle_no_img
+                                        )
+                                      }
+                                    />
                                   </p>
                                 </div>
                                 <div className="mb-2">
@@ -168,53 +182,188 @@ export default function CisfIn() {
                                     {row.permit_no}
                                   </p>
                                 </div>
-                                <div className="mb-2">
-                                  <p className="mb-0"> Liner Seal :</p>
-                                  <p className="mb-0 fw-bold text-uppercase">
-                                    {row.seal_1_no}
-                                    <img src={'https://ctas.live/backend/Seal/'+row.seal_1_image} alt="" style={{width:'50px'}} data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>setImageView('https://ctas.live/backend/Seal/'+row.seal_1_image)} />
-                                  </p>
-                                </div>
-                                <div className="mb-2">
-                                  <p className="mb-0">Custom Seal :</p>
-                                  <p className="mb-0 fw-bold text-uppercase">
-                                    {row.seal_2_no}
-                                    <img src={'https://ctas.live/backend/Seal/'+row.seal_2_image} alt="" style={{width:'50px'}} data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>setImageView('https://ctas.live/backend/Seal/'+row.seal_2_image)} />
-                                  </p>
-                                </div>
+                                {row.is_container == "Y" && row.empty_container_image_1 == null ? (
+                                  <>
+                                    <div className="mb-2">
+                                      <p className="mb-0"> Liner Seal :</p>
+                                      <p className="mb-0 fw-bold text-uppercase">
+                                        {row.seal_1_no}
+                                        <img
+                                          src={
+                                            "https://ctas.live/backend/Seal/" +
+                                            row.seal_1_image
+                                          }
+                                          alt=""
+                                          style={{ width: "50px" }}
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#exampleModal"
+                                          onClick={() =>
+                                            setImageView(
+                                              "https://ctas.live/backend/Seal/" +
+                                                row.seal_1_image
+                                            )
+                                          }
+                                        />
+                                      </p>
+                                    </div>
+                                    <div className="mb-2">
+                                      <p className="mb-0">Custom Seal :</p>
+                                      <p className="mb-0 fw-bold text-uppercase">
+                                        {row.seal_2_no}
+                                        <img
+                                          src={
+                                            "https://ctas.live/backend/Seal/" +
+                                            row.seal_2_image
+                                          }
+                                          alt=""
+                                          style={{ width: "50px" }}
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#exampleModal"
+                                          onClick={() =>
+                                            setImageView(
+                                              "https://ctas.live/backend/Seal/" +
+                                                row.seal_2_image
+                                            )
+                                          }
+                                        />
+                                      </p>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <>
+                                    {row.empty_container_image_1 != null ? (
+                                      <div className="mb-2">
+                                        <p className="mb-0">
+                                          Empty Container Image :
+                                        </p>
+                                        <p className="mb-0 fw-bold text-uppercase">
+                                          {row.seal_2_no}
+                                          <img
+                                            src={
+                                              "https://ctas.live/backend/uploads/" +
+                                              row.empty_container_image_1
+                                            }
+                                            alt=""
+                                            style={{ width: "50px" }}
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#exampleModal"
+                                            onClick={() =>
+                                              setImageView(
+                                                "https://ctas.live/backend/uploads/" +
+                                                  row.empty_container_image_1
+                                              )
+                                            }
+                                          />
+                                        </p>
+                                      </div>
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </>
+                                )}
+
                                 <div className="mb-2">
                                   <p className="mb-0">Surveyor Name :</p>
-                                  <p className="mb-0 fw-bold text-uppercase"> -- </p>
+                                  <p className="mb-0 fw-bold text-uppercase">
+                                    {" "}
+                                    {row.user_data?.name}{" "}
+                                  </p>
                                 </div>
                               </div>
                               <div className="col">
-                                <div className="mb-2">
-                                  <p className="mb-0"> Container No :</p>
-                                  <p className="mb-0 fw-bold text-uppercase">
-                                    {row.container_no}
-                                    <img src={'https://ctas.live/ocr_backend/uploads/'+row.ocr_container_data?.container_image} alt="" style={{width:'50px'}} data-bs-toggle="modal" data-bs-target="#exampleModal" 
-                                    onClick={()=>setImageView('https://ctas.live/ocr_backend/uploads/'+row.ocr_container_data?.container_image)} />
-                                    <img src={'https://ctas.live/ocr_backend/uploads/'+row.container_image} alt="" style={{width:'50px'}} data-bs-toggle="modal" data-bs-target="#exampleModal" 
-                                    onClick={()=>setImageView('https://ctas.live/ocr_backend/uploads/'+row.container_image)} />
-                                  </p>
-                                </div>
-                                <div className="mb-2">
-                                  <p className="mb-0"> Container Size(ft) :</p>
-                                  <p className="mb-0 fw-bold text-uppercase">
-                                    {row.container_size}
-                                  </p>
-                                </div>
-                                <div className="mb-2">
-                                  <p className="mb-0"> Container Type :</p>
-                                  <p className="mb-0 fw-bold text-uppercase">
-                                    {row.container_type}
-                                  </p>
-                                </div>
-                                <div className="mb-2">
-                                  <img src={'https://ctas.live/backend/Seal/'+row?.driver_photo} alt="" style={{width:'50px'}} data-bs-toggle="modal" data-bs-target="#exampleModal" 
-                                    onClick={()=>setImageView('https://ctas.live/backend/Seal/'+row?.driver_photo)} />
-                                </div>
-                                
+                                {["PMA"].some((prefix) =>
+                                  row?.permit_no?.startsWith(prefix)
+                                ) && row?.type == "IN" ? (
+                                  <>
+                                    <div className="mb-2">
+                                      <p className="mb-0"> Container No :</p>
+                                      <p className="mb-0 fw-bold text-uppercase">
+                                        {row.container_no}
+                                        <img
+                                          src={
+                                            "https://ctas.live/ocr_backend/uploads/" +
+                                            row.ocr_container_data
+                                              ?.container_image
+                                          }
+                                          alt=""
+                                          style={{ width: "50px" }}
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#exampleModal"
+                                          onClick={() =>
+                                            setImageView(
+                                              "https://ctas.live/ocr_backend/uploads/" +
+                                                row.ocr_container_data
+                                                  ?.container_image
+                                            )
+                                          }
+                                        />
+                                        <img
+                                          src={
+                                            "https://ctas.live/ocr_backend/uploads/" +
+                                            row.container_image
+                                          }
+                                          alt=""
+                                          style={{ width: "50px" }}
+                                          data-bs-toggle="modal"
+                                          data-bs-target="#exampleModal"
+                                          onClick={() =>
+                                            setImageView(
+                                              "https://ctas.live/ocr_backend/uploads/" +
+                                                row.container_image
+                                            )
+                                          }
+                                        />
+                                      </p>
+                                    </div>
+                                    <div className="mb-2">
+                                      <p className="mb-0">
+                                        {" "}
+                                        Container Size(ft) :
+                                      </p>
+                                      <p className="mb-0 fw-bold text-uppercase">
+                                        {row.container_size}
+                                      </p>
+                                    </div>
+                                    <div className="mb-2">
+                                      <p className="mb-0"> Container Type :</p>
+                                      <p className="mb-0 fw-bold text-uppercase">
+                                        {row.container_type}
+                                      </p>
+                                    </div>
+                                    <div className="mb-2">
+                                      <img
+                                        src={
+                                          "https://ctas.live/backend/Seal/" +
+                                          row?.driver_photo
+                                        }
+                                        alt=""
+                                        style={{ width: "50px" }}
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal"
+                                        onClick={() =>
+                                          setImageView(
+                                            "https://ctas.live/backend/Seal/" +
+                                              row?.driver_photo
+                                          )
+                                        }
+                                      />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <>
+                                    <div className="mb-2">
+                                      <p className="mb-0"> CRN No :</p>
+                                      <p className="mb-0 fw-bold text-uppercase">
+                                        {row.container_no}
+                                        {/* {row.id} */}
+                                        {/* <img src={'https://ctas.live/ocr_backend/uploads/'+row.ocr_container_data?.container_image} alt="" style={{width:'50px'}} data-bs-toggle="modal" data-bs-target="#exampleModal" 
+                                      onClick={()=>setImageView('https://ctas.live/ocr_backend/uploads/'+row.ocr_container_data?.container_image)} />
+                                      <img src={'https://ctas.live/ocr_backend/uploads/'+row.container_image} alt="" style={{width:'50px'}} data-bs-toggle="modal" data-bs-target="#exampleModal" 
+                                      onClick={()=>setImageView('https://ctas.live/ocr_backend/uploads/'+row.container_image)} /> */}
+                                      </p>
+                                    </div>
+                                  </>
+                                )}
                                 {/* <div className="mb-2">
                                   <p className="mb-0">Package Type :</p>
                                   <p className="mb-0 fw-bold text-uppercase">N/A</p>
@@ -261,31 +410,50 @@ export default function CisfIn() {
                     ))}
                 </div>
 
-
                 {/* <!-- Button trigger modal --> */}
                 {/* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                   Launch demo modal
                 </button> */}
 
                 {/* <!-- Modal --> */}
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div
+                  class="modal fade"
+                  id="exampleModal"
+                  tabindex="-1"
+                  aria-labelledby="exampleModalLabel"
+                  aria-hidden="true"
+                >
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title" id="exampleModalLabel">
+                          Modal title
+                        </h5>
+                        <button
+                          type="button"
+                          class="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button>
                       </div>
                       <div class="modal-body text-center">
-                        <img src={ImageView} alt="" style={{width:'50%'}}  />
+                        <img src={ImageView} alt="" style={{ width: "50%" }} />
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          data-bs-dismiss="modal"
+                        >
+                          Close
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                          Save changes
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
-
               </div>
               <Footer />
             </div>
