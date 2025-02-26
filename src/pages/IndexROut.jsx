@@ -22,7 +22,8 @@ export default function IndexROut() {
   const [wagon, setWagon] = useState(null);
   const [train, setTrain] = useState(null);
   const [container, setContainer] = useState(null);
-
+  const [Seal_1_no, setSeal_1_no] = useState("");
+  const [Seal_2_no, setSeal_2_no] = useState("");
 
   const fetchData = async () => {
     setLoading(true);
@@ -173,6 +174,63 @@ export default function IndexROut() {
         reader.readAsDataURL(file);
       }
     };
+
+    const handleImageToText = async (e, seal) => {
+      e.preventDefault();
+      setLoading(true);
+      const file = e.target.files[0];
+      if (!file) return;
+  
+  
+      const formData = new FormData();
+      const targetSize = 20 * 1024; // 50KB
+  
+          if (file && file.name) {
+            const compressedFile = await compressImage(file, targetSize);
+            if (compressedFile) {
+              formData.set("image", compressedFile);
+              // formData.set(element, compressedFile);
+              // formEntries = Object.fromEntries(formData.entries());
+            } else {
+              alert("Could not compress this file.");
+              return;
+            }
+          }
+      const url = `https://ctas.live/backend/api/text/extract/vision`;
+  
+      try {
+        const response = await axios.post(url, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        console.log(response.data);
+        if (response.data.status && response.data.status == "success") {
+          if (seal == 1) {
+            setSeal_1_no(response.data.data[0]);
+          }
+          if (seal == 2) {
+            setSeal_2_no(response.data.data[0]);
+          }
+          // alert(Seal_1_no);
+        } else {
+          Swal.fire({
+            icon: "info",
+            text: `Please Try ...`,
+            timer: 3000,
+            showConfirmButton: false,
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          text: `Error in Data Fetch: ${error.message}`,
+          timer: 3000,
+          showConfirmButton: false,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+  
     
   return (
     <>
@@ -494,7 +552,7 @@ export default function IndexROut() {
                                     name="seal_1_no"
                                     id="seal_1_no"
                                     placeholder="Linear Seal"
-                                    defaultValue={ModelData?.seal_1_no ??ModelData?.sealno}
+                                    defaultValue={Seal_1_no ?? (ModelData?.seal_1_no ??ModelData?.sealno)}
                                   />
                                   <label htmlFor="seal_1_no">Linear Seal</label>
                                 </div>
@@ -507,7 +565,7 @@ export default function IndexROut() {
                                     name="seal_2_no"
                                     id="seal_2_no"
                                     placeholder="Custom Seal"
-                                    defaultValue={ModelData?.seal_2_no}
+                                    defaultValue={Seal_2_no ?? ModelData?.seal_2_no}
                                   />
                                   <label htmlFor="seal_2_no">Custom Seal</label>
                                 </div>
@@ -569,9 +627,13 @@ export default function IndexROut() {
                                           className="d-none"
                                           accept="image/*"
                                           capture="environment"
+                                          // onChange={(e) =>
+                                          //   handleImageChange(e, "seal1")
+                                          // }
                                           onChange={(e) =>
-                                            handleImageChange(e, "seal1")
+                                            {handleImageChange(e, "seal1");  handleImageToText(e, 1)}
                                           }
+                                          // handleImageToText
                                         />
                                       </label>
                                       {Photos?.seal1 && (
@@ -603,9 +665,13 @@ export default function IndexROut() {
                                           className="d-none"
                                           accept="image/*"
                                           capture="environment"
+                                          // onChange={(e) =>
+                                          //   handleImageChange(e, "seal2")
+                                          // }
                                           onChange={(e) =>
-                                            handleImageChange(e, "seal2")
+                                            {handleImageChange(e, "seal2");  handleImageToText(e, 2)}
                                           }
+                                          // handleImageToText
                                         />
                                       </label>
                                       {Photos?.seal2 && (
