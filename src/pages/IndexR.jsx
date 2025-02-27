@@ -89,10 +89,10 @@ export default function IndexR() {
       });
 
       console.log(response.data);
-      if (response.data && response.data.status) {
+      if (response.data && response.data.status && response.data.status == 'success') {
         Swal.fire({
           icon: "success",
-          text: response.data.status,
+          text: response.data.message ?? response.data.status,
           timer: 1500,
           showConfirmButton: false,
         }).then(() => {
@@ -101,7 +101,7 @@ export default function IndexR() {
       } else {
         Swal.fire({
           icon: "warning",
-          text: "Something want wrong..!",
+          text: response.data.message ?? "Something want wrong..!",
           timer: 1500,
           showConfirmButton: false,
         });
