@@ -93,7 +93,7 @@ export default function IndexR() {
         Swal.fire({
           icon: "success",
           text: response.data.message ?? response.data.status,
-          timer: 1500,
+          timer: 1900,
           showConfirmButton: false,
         }).then(() => {
           fetchData();
@@ -102,8 +102,8 @@ export default function IndexR() {
         Swal.fire({
           icon: "warning",
           text: response.data.message ?? "Something want wrong..!",
-          timer: 1500,
-          showConfirmButton: false,
+          timer: 3000,
+          showConfirmButton: true,
         });
       }
     } catch (error) {
@@ -399,7 +399,7 @@ export default function IndexR() {
               >
                 <div className="modal-dialog modal-dialog-centered modal-lg">
                   <div className="modal-content">
-                    <form action="" onSubmit={handleFormSubmit}>
+                    <form action="#" onSubmit={handleFormSubmit}>
                       <div className="modal-header bg-label-primary py-3">
                         <h1 className="modal-title fs-5" id="exampleModalLabel">
                           Container No : {ModelData?.container_no}
