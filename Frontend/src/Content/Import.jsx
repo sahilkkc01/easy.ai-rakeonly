@@ -166,7 +166,7 @@ console.log(responseData)
               <table className="table table-dark table-hover">
                 <thead>
                   <tr>
-                    <th>De-Stuffing ID</th>
+                    <th>Shipping Bill</th>
                     <th>No. of Packages Declared</th>
                     <th>Area</th>
                   </tr>
@@ -174,9 +174,9 @@ console.log(responseData)
                 <tbody>
                   {responseData.deStuffingData.bill_details.map((item, index) => (
                     <tr key={index}>
-                      <td>{item.DE_STUFFING_ID || "N/A"}</td>
-                      <td>{item.NO_OF_PACKAGES_DECLARED || "N/A"}</td>
-                      <td>{item.AREA || "N/A"}</td>
+                      <td>{item.bol_number || "N/A"}</td>
+                      <td>{item.no_of_packages_declared || "N/A"}</td>
+                      <td>{item.area || "N/A"}</td>
                     </tr>
                   ))}
                 </tbody>

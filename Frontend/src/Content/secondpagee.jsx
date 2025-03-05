@@ -11,7 +11,7 @@ const Secondpagee = () => {
   // useEffect(() => {
   //   setTimeout(() => setIsLoaded(true), 500); // Add fade-in effect delay
   // }, []);
-
+  // console.log(responseData)
   return (
     <div className={`export-page ${isLoaded ? "fade-in" : ""}`}>
 
@@ -48,7 +48,7 @@ const Secondpagee = () => {
           <table className="table table-dark table-hover">
             <thead>
               <tr>
-              <th>Container No</th>
+                <th>Container No</th>
                 <th>Size</th>
                 <th>Vehicle No</th>
                 {/* <th>Gate IN Time</th> */}
@@ -57,7 +57,7 @@ const Secondpagee = () => {
               </tr>
             </thead>
             <tbody>
-            {responseData.gate_data.map((item, index) => (
+              {responseData.gate_data.map((item, index) => (
                 <tr key={index}>
                   <td>{item.container_no || "N/A"}</td>
                   <td>{item.container_size || "N/A"}</td>
@@ -123,35 +123,35 @@ const Secondpagee = () => {
 
         {/* Table: TAS_STUFFING */}
         <h3 style={{ color: "#aa00ff", marginTop: "20px" }}>Stuffing Transactions</h3>
-        {responseData.stuffing_data?.length > 0 ? (
-          <table className="table table-dark table-hover">
-            <thead>
-              <tr>
-                <th>CRN Number</th>
-                <th>Created At</th>
-                <th>No Of Packages</th>
-                <th>Start Time</th>
-                <th>End Time</th>
-                <th>Area Used</th>
-              </tr>
-            </thead>
-            <tbody>
-              {responseData.stuffing_data.map((item, index) => (
+        {responseData.stuffing_data ? (
+          <>
+            <p style={{ color: "#bdbdbd" }}><strong>Container No:</strong> {responseData.stuffing_data.container_no || "N/A"}</p>
 
-                <tr key={index}>
-                  <td>{item.crn_number || "N/A"}</td>
-                  <td>{item.stuffing_created_at ? new Date(item.stuffing_created_at).toISOString().replace("T", " ").split(".")[0] : "N/A"}</td>
-                  <td>{item.no_of_packages}</td>
-                  <td>{item.start_time ? new Date(item.start_time).toISOString().replace("T", " ").split(".")[0] : "N/A"}</td>
-                  <td>{item.end_time ? new Date(item.end_time).toISOString().replace("T", " ").split(".")[0] : "N/A"}</td>
+            <p style={{ color: "#bdbdbd" }}><strong>Start Time:</strong> {responseData.stuffing_data.start_time ? new Date(responseData.stuffing_data.start_time).toISOString().replace("T", " ").split(".")[0] : "N/A"}</p>
+            <p style={{ color: "#bdbdbd" }}><strong>End Time:</strong> {responseData.stuffing_data.end_time ? new Date(responseData.stuffing_data.end_time).toISOString().replace("T", " ").split(".")[0] : "N/A"}</p>
 
-                  <td>{item.area_used}</td>
-
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : <p style={{ color: "#bdbdbd" }}>No data found.</p>}
+            {responseData.stuffing_data.bill_details?.length > 0 ? (
+              <table className="table table-dark table-hover">
+                <thead>
+                  <tr>
+                    <th>Shipping Bill</th>
+                    <th>No. of Packages Declared</th>
+                    <th>Area</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {responseData.stuffing_data.bill_details.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.shipping_bill_number || "N/A"}</td>
+                      <td>{item.no_of_packages_declared || "N/A"}</td>
+                      <td>{item.area || "N/A"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : <p style={{ color: "#bdbdbd" }}>No bill details found.</p>}
+          </>
+        ) : <p style={{ color: "#bdbdbd" }}>No de-stuffing data found.</p>}
         {/* Table: Rake Inward Transactions */}
         {/* <h3 style={{ color: "#aa00ff", marginTop: "20px" }}>Rake Inward Transactions</h3>
         {responseData.rake_in_data?.length > 0 ? (
