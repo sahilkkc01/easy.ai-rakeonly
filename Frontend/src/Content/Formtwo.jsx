@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 const Form = () => {
+  const [loading,setLoading]=useState(false);
   const [formData, setFormData] = useState({
     transactionType: "",
     crnNumber: "",
@@ -17,7 +18,9 @@ const Form = () => {
   };
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
+    setLoading(true);
     const { transactionType, crnNumber } = formData;
 
     if (!transactionType || !crnNumber) return;
@@ -39,11 +42,28 @@ const Form = () => {
       }
     } catch (error) {
       console.error("Error fetching container data:", error);
+    }finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
+     {loading && (
+        <div
+          className="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100"
+          style={{ zIndex: 9999 }}
+        >
+          <div className="sk-chase sk-primary display-1">
+            <div className="sk-chase-dot" />
+            <div className="sk-chase-dot" />
+            <div className="sk-chase-dot" />
+            <div className="sk-chase-dot" />
+            <div className="sk-chase-dot" />
+            <div className="sk-chase-dot" />
+          </div>
+        </div>
+      )}
       <div className="animated-bg">
         <div className="glowing-circle"></div>
         <div className="glowing-circle circle2"></div>
