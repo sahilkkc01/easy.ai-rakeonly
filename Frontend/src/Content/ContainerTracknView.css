@@ -1,0 +1,137 @@
+/* src/ContainerTracknView.css */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap'); /* Custom font */
+
+html {
+  scroll-behavior: smooth; /* Smooth scroll */
+}
+
+body {
+  font-family: 'Roboto', sans-serif; /* Apply custom font */
+}
+
+.custom-background {
+  background: linear-gradient(135deg, #e0f7fa, #c8e6c9); /* Light gradient from teal to green */
+  min-height: 100vh;
+  overflow-y: auto; /* Enable smooth scrolling */
+}
+
+.text-title {
+  color: #82ba31; /* Title color */
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.card {
+  border-radius: 20px; /* Rounded corners */
+}
+
+.card-body {
+  padding: 30px; /* Padding around card body */
+}
+
+/* Styled inputs and buttons */
+input.form-control {
+  border-radius: 10px; /* Rounded inputs */
+}
+
+.btn-primary {
+  border-radius: 10px; /* Rounded button */
+}
+
+/* Adjustments for the form and labels */
+.form-label {
+  font-weight: 500; /* Adjust label weight */
+}
+
+.fa-icon {
+  margin-right: 8px; /* Space between icon and label text */
+}
+
+@media (min-width: 992px) {
+  .col-lg-6 {
+    max-width: 600px; /* Max width for large screens */
+  }
+}
+
+/* Custom background with light linear gradient */
+.custom-background {
+  background: linear-gradient(to bottom right, #e7f3fe, #f3f4f6);
+}
+
+/* Card shadow effect */
+.card {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Scale the card on hover */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Input fields styling */
+.form-control {
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Input field focus effect */
+.form-control:focus {
+  border-color: #007bff; /* Bootstrap primary color */
+  box-shadow: 0 0 5px rgba(38, 143, 255, 0.5);
+}
+
+/* Button hover effect */
+.btn {
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.btn:hover {
+  background-color: #0056b3; 
+  transform: scale(1.05);
+}
+
+/* Custom background with light linear gradient */
+.custom-background {
+  background: linear-gradient(to bottom right, #add8e6, #e3f2fd);
+}
+
+/* Card shadow effect */
+.card {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Scale the card on hover */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Input fields styling */
+.form-control {
+  transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+/* Input field focus effect */
+.form-control:focus {
+  border-color: #007bff; /* Bootstrap primary color */
+  box-shadow: 0 0 5px rgba(38, 143, 255, 0.5);
+}
+
+/* Button hover effect */
+.btn {
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.btn:hover {
+  background-color: #0056b3; /* Slightly darker primary color */
+  transform: scale(1.05);
+}
+
+/* Footer styling */
+.footer {
+  background-color: rgba(255, 255, 255, 0.8);
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  padding: 10px 0;
+}

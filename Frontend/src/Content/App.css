@@ -1,0 +1,153 @@
+/* 🌌 Animated Background */
+.animated-bg {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(180deg, #15062a, #0a0a0a);
+  overflow: hidden;
+  z-index: -1;
+}
+
+.glowing-circle {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(170, 0, 255, 0.6), transparent);
+  border-radius: 50%;
+  top: 20%;
+  left: 10%;
+  animation: float 6s infinite ease-in-out;
+}
+
+.circle2 {
+  top: 60%;
+  left: 70%;
+  animation-delay: 2s;
+}
+
+/* ✨ Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* 🚀 Hero Section */
+.hero-section {
+  text-align: center;
+  padding: 120px 20px;
+  color: white;
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  color: #bdbdbd;
+}
+
+.highlight {
+  color: #aa00ff;
+}
+
+.cta-button {
+  background: #aa00ff;
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+  padding: 14px 40px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.cta-button:hover {
+  background: #ff00ff;
+  transform: scale(1.05);
+}
+
+/* 📌 Form Section */
+.form-container {
+  background: #1a1a1a;
+  padding: 50px;
+  margin: 50px auto;
+  max-width: 600px;
+  box-shadow: 0px 4px 10px rgba(255, 0, 255, 0.3);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.form-title {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* Form Fields */
+.form-group {
+  text-align: left;
+  margin-bottom: 25px;  /* ✅ Added extra spacing between fields */
+}
+
+.form-group label {
+  color: #bdbdbd;
+  font-size: 16px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.dark-input {
+  background: #262626;
+  color: white;
+  border: 1px solid #444;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.dark-input:focus {
+  border-color: #aa00ff;
+  box-shadow: 0 0 5px #aa00ff;
+}
+
+/* 🚀 Submit Button */
+.submit-button {
+  background: #aa00ff;
+  color: white;
+  padding: 12px 40px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+  margin-top: 15px; /* ✅ Added spacing above submit button */
+}
+
+.submit-button:hover {
+  background: #ff00ff;
+  transform: scale(1.05);
+}
+
+/* 🎨 Footer */
+.footer {
+  background: #0a0a0a;
+  color: #bdbdbd;
+  padding: 30px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.footer-highlight {
+  color: #aa00ff;
+}

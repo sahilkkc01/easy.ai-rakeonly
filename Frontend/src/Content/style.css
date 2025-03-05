@@ -1,0 +1,39 @@
+.toggle-header {
+    cursor: pointer;
+    background-color: #f8f9fa;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #007bff;
+    transition: background-color 0.2s;
+  }
+  
+  .toggle-header:hover {
+    background-color: #e9ecef;
+  }
+  
+  .toggle-content {
+    padding: 15px;
+  }
+
+.hover-section:hover {
+    background-color: #e9ecef;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+body {
+  background-color: purple;
+}
+
+.bg-purple {
+  background-color: purple !important;
+}
+
+.text-white {
+  color: white !important;
+}
+
+.input-white {
+  background-color: white;
+  color: black;
+}
