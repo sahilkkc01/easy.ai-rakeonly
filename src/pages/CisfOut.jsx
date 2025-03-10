@@ -148,6 +148,12 @@ export default function CisfOut() {
                           <div className="card-body">
                             <div className="row align-item-center">
                               <div className="col">
+                              <div className="mb-2">
+                                  <p className="mb-0">Gate Number :</p>
+                                  <p className="mb-0 fw-bold text-uppercase">
+                                    {row.gate_no}
+                                  </p>
+                                </div>
                                 <div className="mb-2">
                                   <p className="mb-0">Vehicle Number :</p>
                                   <p className="mb-0 fw-bold text-uppercase">
