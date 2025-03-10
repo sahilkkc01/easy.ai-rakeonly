@@ -91,12 +91,12 @@ export default function App() {
           {/* RAKE */}
           <Route path="/RakeINWord" element={<PrivateRoute><IndexR /></PrivateRoute>} />
           <Route path="/RakeOUTWord" element={<PrivateRoute><IndexROut /></PrivateRoute>} />
-          <Route path="/RakeOutWordWTR" element={<PrivateRoute><RakeOutWordWTR /></PrivateRoute>}/>
+          <Route path="/RakeOutWordWTR" element={<PrivateRoute><RakeOutWordWTR /></PrivateRoute>} />
 
           {/* YARD */}
-          <Route path="/YardTransactions" element={<PrivateRoute><YardTransactions /></PrivateRoute>}/>
+          <Route path="/YardTransactions" element={<PrivateRoute><YardTransactions /></PrivateRoute>} />
 
-           {/* WAREHOUSE */}
+          {/* WAREHOUSE */}
           <Route path="/CartingReadFCL" element={<PrivateRoute><CWHCartingRead /></PrivateRoute>} />
           <Route path="/StuffingReadFCL" element={<PrivateRoute><CWHStuffingReadFCL /></PrivateRoute>} />
           <Route path="/Delivery" element={<PrivateRoute><CWHDelivery /></PrivateRoute>} />
@@ -114,17 +114,17 @@ export default function App() {
 
           <Route path="/DTMSGate" element={<PrivateRoute ><DTMSGate /></PrivateRoute>} />
           <Route path="/DTMSYardTransactions" element={<PrivateRoute><DTMSRst /></PrivateRoute>} />
-          <Route path="/RakeOutWords" element={<PrivateRoute><RakeOutWord /></PrivateRoute>}/>
-          <Route path="/RakeOutWordData/:type" element={<RakeOutWordData />}/>
+          <Route path="/RakeOutWords" element={<PrivateRoute><RakeOutWord /></PrivateRoute>} />
+          <Route path="/RakeOutWordData/:type" element={<RakeOutWordData />} />
           <Route path="/EIRMain/:Permit" element={<PrivateRoute><EIRMain /></PrivateRoute>} />
-          <Route path="/EIR/:Permit" element={<PrivateRoute><EIR /></PrivateRoute>}/>
+          <Route path="/EIR/:Permit" element={<PrivateRoute><EIR /></PrivateRoute>} />
 
 
           <Route path="/GateTools" element={<Gate />} />
           <Route path="/rake_survey_tool" element={<Rake_survey_tool />} />
-         
+
           <Route path="/GateOUT" element={<GateOUT />} />
-         
+
           <Route path="/Rst" element={<Rst />} />
           <Route path="/WTR" element={<WTR />} />
 
