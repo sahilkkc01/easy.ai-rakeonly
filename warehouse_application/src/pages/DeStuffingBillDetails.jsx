@@ -93,18 +93,21 @@ export default function DeStuffingBillDetails() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    // for (const [key, value] of formData.entries()) {
-    //   console.log(`${key}: ${value}`);
-    // }
-    // console.log(formData);
-
     const url = `https://ctas.live/backend/api/de_stuffing/update`;
     try {
       const response = await axios.post(url, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       console.log(response.data);
-      if (response?.data?.status) {
+      if (response?.data?.status === "success") {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        }).then(()=>{
+          navigate(`/de-stuffing/tally-sheet?container_no=${ContainerNo}`);
+        });
+      } else {
         Swal.fire({
           icon: response?.data?.status,
           text: response?.data?.message,
