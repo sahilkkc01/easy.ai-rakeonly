@@ -37,11 +37,11 @@ export default function Index() {
                           </div>
                           <h4 className="fw-semibold">Import</h4>
                           <div className="d-flex justify-content-evenly">
-                            <Link to="/DeliveryLCL" className="btn btn-label-primary">
+                            <Link to="/DestuffingFCL" className="btn btn-label-primary">
                               DeStuffing
                             </Link>
                             <Link to="/DeliveryLCL" className="btn btn-label-primary">
-                            Delivery
+                              Delivery
                             </Link>
                             {/* <Link to="/DeliveryLCL" className="btn btn-label-primary">
                               Delivery LCL
@@ -78,10 +78,10 @@ export default function Index() {
                           <h4 className="fw-semibold">Export</h4>
                           <div className="d-flex justify-content-evenly">
                             <Link to="/CartingLCL" className="btn btn-label-success">
-                              Carting 
+                              Carting
                             </Link>
                             <Link to="/CartingFCL" className="btn btn-label-success">
-                            Stuffing
+                              Stuffing
                             </Link>
                           </div>
                           {/* <div className="d-flex mt-3 justify-content-evenly">

@@ -38,7 +38,7 @@ function Rst() {
     const removeRow = (id) => {
         setRows(rows.filter(row => row.id !== id));
     };
-    
+
 
     return (
         <>
