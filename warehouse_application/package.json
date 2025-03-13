@@ -20,7 +20,11 @@
     "react-multi-date-picker": "^4.5.2",
     "react-router-dom": "^6.23.1",
     "react-scripts": "^5.0.1",
+<<<<<<< HEAD
     "sweetalert2": "^11.17.2",
+=======
+    "react-select": "^5.10.1",
+>>>>>>> 5ac0d64abf563fc3b9183c1defef3b439b3092aa
     "web-vitals": "^2.1.4",
     "xlsx": "^0.18.5"
   },
