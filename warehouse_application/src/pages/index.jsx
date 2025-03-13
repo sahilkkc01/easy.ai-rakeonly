@@ -37,7 +37,7 @@ export default function Index() {
                           </div>
                           <h4 className="fw-semibold">Import</h4>
                           <div className="d-flex justify-content-evenly">
-                            <Link to="/DestuffingFCL" className="btn btn-label-primary">
+                            <Link to="/de-stuffing" className="btn btn-label-primary">
                               DeStuffing
                             </Link>
                             <Link to="/DeliveryLCL" className="btn btn-label-primary">
