@@ -6,7 +6,6 @@ import Footer from '../main/footer'
 import { Modal } from 'bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Select from "react-select";
-import CreatableSelect from "react-select/creatable";
 
 export default function DestuffingBill() {
     const [gridInputs, setGridInputs] = useState([{ id: 1, location: "", area: "" }]);
@@ -36,7 +35,7 @@ export default function DestuffingBill() {
     ]);
 
     // State to store selected option
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption, setSelectedOption] = useState('');
 
     // Function to handle new value creation
     const handleCreate = (inputValue) => {
@@ -121,11 +120,10 @@ export default function DestuffingBill() {
                                 {/* Submit Button */}
                             </div>
                             <div style={{ width: "300px" }}>
-                                <CreatableSelect
+                                <Select
                                     options={options}
                                     value={selectedOption}
                                     onChange={setSelectedOption}
-                                    onCreateOption={handleCreate} // Allow user input as an option
                                     placeholder="Select or Type..."
                                     isSearchable // Enables search
                                 />

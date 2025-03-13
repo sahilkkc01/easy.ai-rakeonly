@@ -74,7 +74,7 @@ export default function DeStuffingBillDetails() {
     setSearchParams({ container_no });
     fetchData(container_no);
   };
-
+  
   useEffect(() => {
     const container_no = searchParams.get("container_no");
     if (container_no) {
@@ -82,28 +82,67 @@ export default function DeStuffingBillDetails() {
       fetchData(container_no);
     }
   }, [searchParams]);
-
+  
   useEffect(() => {
     if (Data) {
       fetchLocations();
     }
   }, [Data]);
 
+  const handleSubmitForm = async(e) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData(e.target);
+    // for (const [key, value] of formData.entries()) {
+    //   console.log(`${key}: ${value}`);
+    // }
+    // console.log(formData);
+
+    const url = `https://ctas.live/backend/api/de_stuffing/update`;
+    try {
+      const response = await axios.post(url, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      console.log(response.data);
+      if (response?.data?.status) {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+
+  };
+
+  
   const GridComponent = ({ details, index }) => {
     const [gridInputs, setGridInputs] = useState([{ id: 1 }]);
-
+    
     const addGridInput = () => {
       setGridInputs([...gridInputs, { id: gridInputs.length + 1 }]);
     };
-
+    
     return (
       <div className="col-3">
         <label className="form-label">Grid Location & Area (SQM)</label>
         {gridInputs.map((input, i) => (
           <div key={input.id} className="d-flex align-items-center gap-3 mb-2">
-            <select className="form-select p-2">
+            <select
+              className="form-select p-2"
+              name={`grid_locations[${details.id}][${i}]`}
+            >
               <option selected disabled>
-                Select Location
+                Select Grid
               </option>
               {Locations?.map((location, j) => (
                 <option key={j} value={location.camera_locations}>
@@ -115,8 +154,10 @@ export default function DeStuffingBillDetails() {
               type="text"
               className="form-control p-2"
               placeholder="Area (SQM)"
+              name={`area[${details.id}][${i}]`}
             />
             <button
+            type="button"
               className="btn btn-success btn-sm px-2 py-1"
               onClick={addGridInput}
             >
@@ -154,7 +195,72 @@ export default function DeStuffingBillDetails() {
               <div className="container-xxl flex-grow-1 container-p-y">
                 {Data && ContainerNo ? (
                   <>
+                  <form action="" onSubmit={handleSubmitForm} >
                     <div className="row">
+                      <h4 className="text-primary mb-3">Container Details</h4>
+                      <div className="card">
+                        <div className="card-body">
+                          <div className="row">
+                            <input
+                              type="hidden"
+                              name="id"
+                              defaultValue={Data?.id}
+                            />
+                            <div className="col-4">
+                              <label className="form-label">Container No</label>
+                              <input
+                                type="text"
+                                className="form-control p-2"
+                                defaultValue={Data?.container_number}
+                                readOnly
+                              />
+                            </div>
+                            <div className="col-4">
+                              <label className="form-label">
+                                Container Size
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control p-2"
+                                defaultValue={Data?.container_size}
+                                readOnly
+                              />
+                            </div>
+                            <div className="col-4">
+                              <label className="form-label">
+                                Container Type
+                              </label>
+                              <input
+                                type="text"
+                                className="form-control p-2"
+                                defaultValue={Data?.container_type}
+                                readOnly
+                              />
+                            </div>
+                            <div className="col-4">
+                              <label className="form-label">
+                                Start Date Time
+                              </label>
+                              <input
+                                type="datetime-local"
+                                className="form-control p-2"
+                                name="start_time"
+                              />
+                            </div>
+                            <div className="col-4">
+                              <label className="form-label">
+                                End Date Time
+                              </label>
+                              <input
+                                type="datetime-local"
+                                className="form-control p-2"
+                                name="end_time"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
                       <h4 className="text-primary mb-3">Bill Details</h4>
                       {Data?.de_stuffing_bill_details?.map((details, i) => (
                         <div key={i} className="card card-body px-3 py-4 my-2">
@@ -167,6 +273,7 @@ export default function DeStuffingBillDetails() {
                                 type="text"
                                 className="form-control p-2"
                                 defaultValue={details?.bol_number}
+                                readOnly
                               />
                             </div>
                             <div className="col-3">
@@ -177,6 +284,7 @@ export default function DeStuffingBillDetails() {
                                 type="text"
                                 className="form-control p-2"
                                 defaultValue={details?.commodity_description}
+                                readOnly
                               />
                             </div>
                             <div className="col-2">
@@ -185,6 +293,7 @@ export default function DeStuffingBillDetails() {
                                 type="number"
                                 className="form-control p-2"
                                 defaultValue={details?.no_of_packages_declared}
+                                name={`no_of_packages_declared[${details.id}]`}
                               />
                             </div>
                             <div className="col-2">
@@ -193,16 +302,18 @@ export default function DeStuffingBillDetails() {
                                 type="text"
                                 className="form-control p-2"
                                 defaultValue={details?.package_weight}
+                                name={`package_weight[${details.id}]`}
                               />
                             </div>
                             <GridComponent details={details} index={i} />
                           </div>
                         </div>
                       ))}
-                      <button className="btn btn-primary w-20 mt-3">
+                      <button className="btn btn-primary w-25 mt-3">
                         Submit
                       </button>
                     </div>
+                      </form>
                   </>
                 ) : (
                   <div className="row justify-content-center align-items-center h-75">
