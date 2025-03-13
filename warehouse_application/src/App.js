@@ -13,6 +13,7 @@ import DestuffingFCL from "./pages/import/DestuffingFCL"
 import DestuffingLCL from "./pages/import/DestuffingLCL";
 import DirectDelivery from "./pages/import/DirectDelivery";
 import DestuffingBill from "./pages/import/DestuffingBill";
+import DeliveryBill from "./pages/import/DeliveryBill";
 
 export default function App() {
   const initialTheme = sessionStorage.getItem("myTheme") === "true";
@@ -52,6 +53,7 @@ export default function App() {
           <Route path="/DestuffingLCL" element={<DestuffingLCL />} />
           <Route path="/DirectDelivery" element={<DirectDelivery />} />
           <Route path="/DestuffingBill" element={<DestuffingBill />} />
+          <Route path="/DeliveryBill" element={<DeliveryBill />} />
           <Route path="/Jobs" element={<Jobs />} />
 
         </Routes>
