@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom'
 import Footer from '../main/footer'
 import { Modal } from 'bootstrap';
 import { useNavigate } from 'react-router-dom';
+import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 
 export default function DestuffingBill() {
     const [gridInputs, setGridInputs] = useState([{ id: 1, location: "", area: "" }]);
@@ -23,6 +25,25 @@ export default function DestuffingBill() {
         ));
     };
 
+    // selcet option 
+    // Options for the dropdown
+    const [options, setOptions] = useState([
+        { value: "Pant", label: "Pant" },
+        { value: "Shirt", label: "Shirt" },
+        { value: "shirt chota pena", label: "shirt chota pena" },
+        { value: "2pc", label: "2pc" },
+        { value: "Kurta", label: "Kurta" },
+    ]);
+
+    // State to store selected option
+    const [selectedOption, setSelectedOption] = useState(null);
+
+    // Function to handle new value creation
+    const handleCreate = (inputValue) => {
+        const newOption = { value: inputValue, label: inputValue };
+        setOptions((prevOptions) => [...prevOptions, newOption]);
+        setSelectedOption(newOption);
+    };
     return (
         <> <div className="layout-wrapper layout-content-navbar">
             <div className="layout-container">
@@ -98,6 +119,16 @@ export default function DestuffingBill() {
 
 
                                 {/* Submit Button */}
+                            </div>
+                            <div style={{ width: "300px" }}>
+                                <CreatableSelect
+                                    options={options}
+                                    value={selectedOption}
+                                    onChange={setSelectedOption}
+                                    onCreateOption={handleCreate} // Allow user input as an option
+                                    placeholder="Select or Type..."
+                                    isSearchable // Enables search
+                                />
                             </div>
                             <button className="btn btn-primary w-20 mt-3">Submit</button>
                         </div>
