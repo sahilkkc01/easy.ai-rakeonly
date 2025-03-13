@@ -38,13 +38,19 @@ export default function Index() {
                           <h4 className="fw-semibold">Import</h4>
                           <div className="d-flex justify-content-evenly">
                             <Link to="/DeliveryLCL" className="btn btn-label-primary">
+                              DeStuffing
+                            </Link>
+                            <Link to="/DeliveryLCL" className="btn btn-label-primary">
+                            Delivery
+                            </Link>
+                            {/* <Link to="/DeliveryLCL" className="btn btn-label-primary">
                               Delivery LCL
                             </Link>
                             <Link to="/DeliveryFCL" className="btn btn-label-primary">
                               Delivery FCL
-                            </Link>
+                            </Link> */}
                           </div>
-                          <div className="d-flex mt-3 justify-content-evenly">
+                          {/* <div className="d-flex mt-3 justify-content-evenly">
                             <Link to="/DirectDelivery " className="btn btn-label-primary">
                               Direct Delivery
                             </Link>
@@ -57,7 +63,7 @@ export default function Index() {
                               Destuffing FCL
                             </Link>
 
-                          </div>
+                          </div> */}
                         </div>
 
                       </div>
@@ -72,13 +78,13 @@ export default function Index() {
                           <h4 className="fw-semibold">Export</h4>
                           <div className="d-flex justify-content-evenly">
                             <Link to="/CartingLCL" className="btn btn-label-success">
-                              Carting LCL
+                              Carting 
                             </Link>
                             <Link to="/CartingFCL" className="btn btn-label-success">
-                              Carting FCL
+                            Stuffing
                             </Link>
                           </div>
-                          <div className="d-flex mt-3 justify-content-evenly">
+                          {/* <div className="d-flex mt-3 justify-content-evenly">
                             <Link to="/DirectStuffing " className="btn btn-label-success">
                               Direct Stuffing
                             </Link>
@@ -91,7 +97,7 @@ export default function Index() {
                               Stuffing FCL
                             </Link>
 
-                          </div>
+                          </div> */}
 
                         </div>
 
