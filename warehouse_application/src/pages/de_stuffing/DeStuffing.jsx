@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Modal } from "bootstrap";
 import { useNavigate, Link } from "react-router-dom";
-import Header from "./main/header";
-import Nav from "./main/nav";
-import Footer from "./main/footer";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Header from "../main/header";
+import Nav from "../main/nav";
+import Footer from "../main/footer";
 
 export default function DeStuffing() {
   const containerModalRef = useRef(null);
@@ -77,7 +77,7 @@ export default function DeStuffing() {
         <div className="layout-container">
           <Header />
           <div className="layout-page">
-            <Nav />
+            <Nav/>
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="card card-body">

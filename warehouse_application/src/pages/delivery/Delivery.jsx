@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Modal } from "bootstrap";
 import { useNavigate, Link } from "react-router-dom";
-import Header from "./main/header";
-import Nav from "./main/nav";
-import Footer from "./main/footer";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Header from "../main/header";
+import Nav from "../main/nav";
+import Footer from "../main/footer";
 
 export default function Delivery() {
   const containerModalRef = useRef(null);

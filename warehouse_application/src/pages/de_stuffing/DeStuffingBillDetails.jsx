@@ -1,24 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Modal } from "bootstrap";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
-import Header from "./main/header";
-import Nav from "./main/nav";
-import Footer from "./main/footer";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Header from "../main/header";
+import Nav from "../main/nav";
+import Footer from "../main/footer";
+import { formatToDateTimeLocal } from "../main/formatToDateTime";
 
-export default function DeliveryBillDetails() {
+export default function DeStuffingBillDetails() {
+  const iframeRef = useRef(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [GpmNo, setGpmNo] = useState(null);
+  const [Type, setType] = useState(null);
+  const [ContainerNo, setContainerNo] = useState(null);
+  const [TallySheet, setTallySheet] = useState(null);
   const [Data, setData] = useState(null);
   const [Locations, setLocations] = useState(null);
-  const [TotalTrucks, setTotalTrucks] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const fetchData = async (gpm_number) => {
+  const today = new Date();
+
+  const fetchData = async (type, containerNo) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/delivery/de_stuffing/${gpm_number}`;
+    const url = `https://ctas.live/backend/api/get/de_stuffing/${type}/${containerNo}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -70,17 +75,26 @@ export default function DeliveryBillDetails() {
 
   const GetFormData = async (e) => {
     e.preventDefault();
-    const gpm_number = e.target.gpm_number.value.toUpperCase();
-    setGpmNo(gpm_number);
-    setSearchParams({ gpm_number });
-    fetchData(gpm_number);
+    const container_no = e.target.container_no.value.toUpperCase();
+    const type = e.target.type.value.toUpperCase();
+    setContainerNo(container_no);
+    setType(type);
+    setSearchParams({ type, container_no });
+    // fetchData(type,container_no);
   };
 
   useEffect(() => {
-    const gpm_number = searchParams.get("gpm_number");
-    if (gpm_number) {
-      setGpmNo(gpm_number);
-      fetchData(gpm_number);
+    const container_no = searchParams.get("container_no");
+    const type = searchParams.get("type");
+    const tallySheet = searchParams.get("tally-sheet");
+    if (container_no && type) {
+      setContainerNo(container_no);
+      setType(type);
+      if (tallySheet) {
+        setTallySheet(tallySheet);
+      }else{
+        fetchData(type, container_no);
+      }
     }
   }, [searchParams]);
 
@@ -94,7 +108,7 @@ export default function DeliveryBillDetails() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    const url = `https://ctas.live/backend/api/delivery/de_stuffing/update`;
+    const url = `https://ctas.live/backend/api/de_stuffing/update`;
     try {
       const response = await axios.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -104,9 +118,9 @@ export default function DeliveryBillDetails() {
         Swal.fire({
           icon: response?.data?.status,
           text: response?.data?.message,
-          timer: 3000,
+          timer: 2000,
         }).then(() => {
-          // navigate(`/de-stuffing/tally-sheet?container_no=${ContainerNo}`);
+          navigate(`?tally-sheet=1&type=${Type}&container_no=${ContainerNo}`);
         });
       } else {
         Swal.fire({
@@ -127,7 +141,7 @@ export default function DeliveryBillDetails() {
     }
   };
 
-  const GridComponent = ({ index }) => {
+  const GridComponent = ({ details, index }) => {
     const [gridInputs, setGridInputs] = useState([{ id: 1 }]);
 
     const addGridInput = () => {
@@ -141,7 +155,7 @@ export default function DeliveryBillDetails() {
           <div key={input.id} className="d-flex align-items-center gap-3 mb-2">
             <select
               className="form-select p-2"
-              name={`grid_locations[${index}][${i}]`}
+              name={`grid_locations[${details.id}][${i}]`}
             >
               <option selected disabled>
                 Select Grid
@@ -156,7 +170,7 @@ export default function DeliveryBillDetails() {
               type="text"
               className="form-control p-2"
               placeholder="Area (SQM)"
-              name={`area[${index}][${i}]`}
+              name={`area[${details.id}][${i}]`}
             />
             <button
               type="button"
@@ -171,15 +185,37 @@ export default function DeliveryBillDetails() {
     );
   };
 
-  
-  const handleBillDetails = (key, sBillNo) => {
-    Data?.delivery_bill_details?.map((details, a) => {
-      if (details.boe_number == sBillNo) {
-        document.getElementById(`cargo_description_${key}`).value = `${details.commodity_description}`;
-        document.getElementById(`no_of_pkgs_${key}`).value = `${details.no_of_packages_declared}`;
-        document.getElementById(`pkgs_weight_${key}`).value = `${details.package_weight}`;
+  const handleBillPkgW = (id, pkg) => {
+    let no_of_pkgs = 0;
+    let package_weight = 0;
+    let Per_package_weight = 0;
+
+    Data?.de_stuffing_bill_details?.forEach((details) => {
+      if (details.id == id) {
+        package_weight += parseFloat(details.package_weight) || 0;
+        no_of_pkgs += parseFloat(details.no_of_packages_declared) || 0;
       }
     });
+    if (
+      package_weight &&
+      no_of_pkgs &&
+      package_weight != 0 &&
+      no_of_pkgs != 0
+    ) {
+      Per_package_weight += package_weight / no_of_pkgs.toFixed(2);
+    }
+
+    let weightInput = document.getElementById(`package_weight_${id}`);
+
+    if (weightInput) {
+      if (pkg && pkg != 0) {
+        weightInput.value = (Per_package_weight * pkg).toFixed(2);
+      } else {
+        weightInput.value = parseFloat(Per_package_weight) || 0;
+      }
+    } else {
+      console.log("Package weight input not found!");
+    }
   };
 
   return (
@@ -206,7 +242,44 @@ export default function DeliveryBillDetails() {
             <Nav />
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-                {Data && GpmNo ? (
+
+                {(ContainerNo && Type && TallySheet) ? (
+                  <div className="row justify-content-center">
+                    <div className="col-lg-10 col-md-11">
+                      <div className="text-end">
+                        <button
+                          onClick={() => {
+                            if (iframeRef.current) {
+                              iframeRef.current.contentWindow.print();
+                            }
+                          }}
+                          className="btn btn-label-primary mb-2"
+                        >
+                          Print
+                        </button>
+
+                        <Link
+                          to={'/de-stuffing'}
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Go Back
+                        </Link>
+                      </div>
+                      <div className="" style={{ width: 789, height: 1099 }}>
+                        <iframe
+                          ref={iframeRef}
+                          src={`/de-stuffing/tally-sheet?type=${Type}&container_no=${ContainerNo}`}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "white",
+                          }}
+                          title="A4 Iframe"
+                        ></iframe>
+                      </div>
+                    </div>
+                  </div>
+                ) : Data && ContainerNo && Type ? (
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
                       <div className="row">
@@ -219,15 +292,6 @@ export default function DeliveryBillDetails() {
                                 name="id"
                                 defaultValue={Data?.id}
                               />
-                              <div className="col-4">
-                                <label className="form-label">Gpm No</label>
-                                <input
-                                  type="text"
-                                  className="form-control p-2"
-                                  defaultValue={Data?.gpm_number}
-                                  readOnly
-                                />
-                              </div>
                               <div className="col-4">
                                 <label className="form-label">
                                   Container No
@@ -252,12 +316,24 @@ export default function DeliveryBillDetails() {
                               </div>
                               <div className="col-4">
                                 <label className="form-label">
+                                  Container Type
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={Data?.container_type}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
                                   Start Date Time
                                 </label>
                                 <input
                                   type="datetime-local"
                                   className="form-control p-2"
                                   name="start_time"
+                                  defaultValue={formatToDateTimeLocal(today)}
                                 />
                               </div>
                               <div className="col-4">
@@ -268,6 +344,7 @@ export default function DeliveryBillDetails() {
                                   type="datetime-local"
                                   className="form-control p-2"
                                   name="end_time"
+                                  defaultValue={formatToDateTimeLocal(today)}
                                 />
                               </div>
                             </div>
@@ -275,47 +352,22 @@ export default function DeliveryBillDetails() {
                         </div>
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
-                        {Array.from({ length: TotalTrucks }, (_, i) => (
+                        {Data?.de_stuffing_bill_details?.map((details, i) => (
                           <div
                             key={i}
                             className="card card-body px-3 py-4 my-2"
                           >
                             <div className="row">
                               <div className="col-2">
-                                <label
-                                  htmlFor="truck_no"
-                                  className="form-label"
-                                >
-                                  Truck Number
+                                <label htmlFor="billNo" className="form-label">
+                                  Bill Number
                                 </label>
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  name="truck_no"
+                                  defaultValue={details?.bol_number}
+                                  readOnly
                                 />
-                              </div>
-                              <div className="col-2">
-                                <label htmlFor="billNo" className="form-label">
-                                  Bill Number
-                                </label>
-                                <select
-                                  name="boe"
-                                  className="form-select p-2"
-                                  onChange={(e) =>
-                                    handleBillDetails(i, e.target.value)
-                                  }
-                                >
-                                  <option value="" selected disabled>
-                                    Select Bill
-                                  </option>
-                                  {Data?.delivery_bill_details?.map(
-                                    (details,k) => (
-                                      <option key={k} value={details?.boe_number} >
-                                        {details?.boe_number}
-                                      </option>
-                                    )
-                                  )}
-                                </select>
                               </div>
                               <div className="col-3">
                                 <label className="form-label">
@@ -324,7 +376,7 @@ export default function DeliveryBillDetails() {
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  id={`cargo_description_${i}`}
+                                  defaultValue={details?.commodity_description}
                                   readOnly
                                 />
                               </div>
@@ -333,8 +385,14 @@ export default function DeliveryBillDetails() {
                                 <input
                                   type="number"
                                   className="form-control p-2"
-                                  id={`no_of_pkgs_${i}`}
-                                  name={`no_of_pkgs[${i}]`}
+                                  defaultValue={
+                                    details?.no_of_packages_declared
+                                  }
+                                  name={`no_of_packages_declared[${details.id}]`}
+                                  id={`no_of_packages_declared_${details.id}`}
+                                  onChange={(e) => {
+                                    handleBillPkgW(details.id, e.target.value);
+                                  }}
                                 />
                               </div>
                               <div className="col-2">
@@ -342,24 +400,15 @@ export default function DeliveryBillDetails() {
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  id={`pkgs_weight_${i}`}
-                                  name={`pkgs_weight[${i}]`}
+                                  defaultValue={details?.package_weight}
+                                  name={`package_weight[${details.id}]`}
+                                  id={`package_weight_${details.id}`}
                                 />
                               </div>
-                              <GridComponent index={i} />
+                              <GridComponent details={details} index={i} />
                             </div>
                           </div>
                         ))}
-                        <div className="col-12 my-2 text-end">
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-primary"
-                            onClick={() => setTotalTrucks(TotalTrucks + 1)}
-                          >
-                            Add Truck
-                          </button>
-                        </div>
-                        <hr />
                         <button className="btn btn-primary w-25 mt-3">
                           Submit
                         </button>
@@ -371,22 +420,39 @@ export default function DeliveryBillDetails() {
                     <div className="col-6">
                       <div className="card my-3">
                         <div className="card-body">
-                          <h4 className="text-center text-primary">Delivery</h4>
+                          <h4 className="text-center text-primary">
+                            DeStuffing
+                          </h4>
                           <form action="" onSubmit={GetFormData}>
-                            <p>Please Enter GPM Number to Fetch Data</p>
+                            <p>Please Enter Container Number to Fetch Data</p>
+                            <div className="form-floating form-floating-outline mb-6">
+                              <select
+                                name="type"
+                                id="type"
+                                className="form-select"
+                                required
+                              >
+                                <option value="" selected disabled>
+                                  Select Type
+                                </option>
+                                <option value="LCL">LCL</option>
+                                <option value="FCL">FCL</option>
+                              </select>
+                              <label htmlFor="type">Type</label>
+                            </div>
                             <div className="form-floating form-floating-outline mb-6">
                               <input
                                 type="text"
                                 className="form-control mb-3"
-                                placeholder="Enter GPM Number"
-                                name="gpm_number"
+                                placeholder="Enter Container Number"
+                                name="container_no"
                                 onChange={(e) =>
                                   (e.target.value =
                                     e.target.value.toUpperCase())
                                 }
                               />
                               <label htmlFor="Container_Number">
-                                GPM Number
+                                Container Number
                               </label>
                             </div>
                             <button

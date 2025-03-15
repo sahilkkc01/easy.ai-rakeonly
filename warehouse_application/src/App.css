@@ -29,3 +29,33 @@
 .rmdp-container {
   display: block !important; 
 }
+
+
+.tally-sheet {
+  font-size: 12px !important;
+}
+
+.tally-sheet .top .table-font thead tr th {
+  font-size: 10px !important;
+  font-weight: bolder !important;
+  text-align: start !important;
+}
+
+.tally-sheet .top .table-font tbody tr td {
+  font-size: 11px !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: normal !important;
+  text-align: start !important;
+}
+
+.tally-sheet .main .table-font thead tr th {
+  font-size: 10px !important;
+  padding: 0.35rem 0.7rem !important;
+  font-weight: bolder !important;
+}
+
+.tally-sheet .main .table-font tbody tr td {
+  font-size: 11px !important;
+  padding: 0.35rem 0.7rem !important;
+  font-weight: normal !important;
+}

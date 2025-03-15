@@ -1,23 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Modal } from "bootstrap";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
-import Header from "./main/header";
-import Nav from "./main/nav";
-import Footer from "./main/footer";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Header from "../main/header";
+import Nav from "../main/nav";
+import Footer from "../main/footer";
+import { formatToDateTimeLocal } from "../main/formatToDateTime";
 
-export default function DeStuffingBillDetails() {
+export default function DeliveryBillDetails() {
   const navigate = useNavigate();
+    const iframeRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [ContainerNo, setContainerNo] = useState(null);
+  const [GpmNo, setGpmNo] = useState(null);
+    const [TallySheet, setTallySheet] = useState(null);
   const [Data, setData] = useState(null);
   const [Locations, setLocations] = useState(null);
+  const [TotalTrucks, setTotalTrucks] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const fetchData = async (containerNo) => {
+  const today = new Date();
+
+  const fetchData = async (gpm_number) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/de_stuffing_data/LCL/${containerNo}`;
+    const url = `https://ctas.live/backend/api/get/delivery/de_stuffing/${gpm_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -69,17 +74,22 @@ export default function DeStuffingBillDetails() {
 
   const GetFormData = async (e) => {
     e.preventDefault();
-    const container_no = e.target.container_no.value.toUpperCase();
-    setContainerNo(container_no);
-    setSearchParams({ container_no });
-    fetchData(container_no);
+    const gpm_number = e.target.gpm_number.value.toUpperCase();
+    setGpmNo(gpm_number);
+    setSearchParams({ gpm_number });
+    fetchData(gpm_number);
   };
 
   useEffect(() => {
-    const container_no = searchParams.get("container_no");
-    if (container_no) {
-      setContainerNo(container_no);
-      fetchData(container_no);
+    const gpm_number = searchParams.get("gpm_number");
+    const tallySheet = searchParams.get("tally-sheet");
+    if (gpm_number) {
+      setGpmNo(gpm_number);
+      if (tallySheet) {
+        setTallySheet(tallySheet);
+      }else{
+        fetchData(gpm_number);
+      }
     }
   }, [searchParams]);
 
@@ -93,10 +103,10 @@ export default function DeStuffingBillDetails() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    const url = `https://ctas.live/backend/api/de_stuffing/update`;
+    const url = `https://ctas.live/backend/api/delivery/de_stuffing/update`;
     try {
       const response = await axios.post(url, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { "Content-Type": "multipart/form-data" },
       });
       console.log(response.data);
       if (response?.data?.status === "success") {
@@ -105,7 +115,7 @@ export default function DeStuffingBillDetails() {
           text: response?.data?.message,
           timer: 3000,
         }).then(() => {
-          navigate(`/de-stuffing/tally-sheet?container_no=${ContainerNo}`);
+          navigate(`?tally-sheet=1&gpm_number=${GpmNo}`);
         });
       } else {
         Swal.fire({
@@ -124,11 +134,9 @@ export default function DeStuffingBillDetails() {
     } finally {
       setLoading(false);
     }
-
   };
 
-
-  const GridComponent = ({ details, index }) => {
+  const GridComponent = ({ index }) => {
     const [gridInputs, setGridInputs] = useState([{ id: 1 }]);
 
     const addGridInput = () => {
@@ -142,7 +150,7 @@ export default function DeStuffingBillDetails() {
           <div key={input.id} className="d-flex align-items-center gap-3 mb-2">
             <select
               className="form-select p-2"
-              name={`grid_locations[${details.id}][${i}]`}
+              name={`grid_locations[${index}][${i}]`}
             >
               <option selected disabled>
                 Select Grid
@@ -157,7 +165,7 @@ export default function DeStuffingBillDetails() {
               type="text"
               className="form-control p-2"
               placeholder="Area (SQM)"
-              name={`area[${details.id}][${i}]`}
+              name={`area[${index}][${i}]`}
             />
             <button
               type="button"
@@ -170,6 +178,59 @@ export default function DeStuffingBillDetails() {
         ))}
       </div>
     );
+  };
+
+  const handleBillDetails = (key, sBillNo) => {
+    Data?.delivery_bill_details?.map((details, a) => {
+      if (details.boe_number == sBillNo) {
+        document.getElementById(
+          `cargo_description_${key}`
+        ).value = `${details.commodity_description}`;
+        document.getElementById(
+          `no_of_pkgs_${key}`
+        ).value = `${details.no_of_packages_declared}`;
+        document.getElementById(
+          `pkgs_weight_${key}`
+        ).value = `${details.package_weight}`;
+      }
+    });
+  };
+
+  const handleBillPkgW = (key, pkg) => {
+    let no_of_pkgs = 0;
+    let package_weight = 0;
+    let Per_package_weight = 0;
+
+    let boe_number = document.getElementById(`boe_${key}`)?.value;
+
+    Data?.delivery_bill_details?.forEach((details) => {
+      if (details.boe_number == boe_number) {
+        package_weight += parseFloat(details.package_weight) || 0;
+        no_of_pkgs += parseFloat(details.no_of_packages_declared) || 0;
+      }
+    });
+    if (
+      package_weight &&
+      no_of_pkgs &&
+      package_weight != 0 &&
+      no_of_pkgs != 0
+    ) {
+      Per_package_weight += package_weight / no_of_pkgs.toFixed(2);
+    }
+
+    let weightInput = document.getElementById(`pkgs_weight_${key}`);
+
+    if (weightInput) {
+      if (pkg && pkg != 0) {
+        weightInput.value = (Per_package_weight * pkg).toFixed(2);
+      } else if (pkg == 0) {
+        weightInput.value = 0;
+      } else {
+        weightInput.value = parseFloat(Per_package_weight) || 0;
+      }
+    } else {
+      console.log("Package weight input not found!");
+    }
   };
 
   return (
@@ -196,9 +257,45 @@ export default function DeStuffingBillDetails() {
             <Nav />
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-                {Data && ContainerNo ? (
+                {GpmNo && TallySheet ? (
+                  <div className="row justify-content-center">
+                    <div className="col-lg-10 col-md-11">
+                      <div className="text-end">
+                        <button
+                          onClick={() => {
+                            if (iframeRef.current) {
+                              iframeRef.current.contentWindow.print();
+                            }
+                          }}
+                          className="btn btn-label-primary mb-2"
+                        >
+                          Print
+                        </button>
+
+                        <Link
+                          to={"/delivery"}
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Go Back
+                        </Link>
+                      </div>
+                      <div className="" style={{ width: 789, height: 1099 }}>
+                        <iframe
+                          ref={iframeRef}
+                          src={`/delivery/tally-sheet?gpm_number=${GpmNo}`}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "white",
+                          }}
+                          title="A4 Iframe"
+                        ></iframe>
+                      </div>
+                    </div>
+                  </div>
+                ) : Data && GpmNo ? (
                   <>
-                    <form action="" onSubmit={handleSubmitForm} >
+                    <form action="" onSubmit={handleSubmitForm}>
                       <div className="row">
                         <h4 className="text-primary mb-3">Container Details</h4>
                         <div className="card">
@@ -210,7 +307,18 @@ export default function DeStuffingBillDetails() {
                                 defaultValue={Data?.id}
                               />
                               <div className="col-4">
-                                <label className="form-label">Container No</label>
+                                <label className="form-label">Gpm No</label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={Data?.gpm_number}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  Container No
+                                </label>
                                 <input
                                   type="text"
                                   className="form-control p-2"
@@ -231,23 +339,13 @@ export default function DeStuffingBillDetails() {
                               </div>
                               <div className="col-4">
                                 <label className="form-label">
-                                  Container Type
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control p-2"
-                                  defaultValue={Data?.container_type}
-                                  readOnly
-                                />
-                              </div>
-                              <div className="col-4">
-                                <label className="form-label">
                                   Start Date Time
                                 </label>
                                 <input
                                   type="datetime-local"
                                   className="form-control p-2"
                                   name="start_time"
+                                  defaultValue={formatToDateTimeLocal(today)}
                                 />
                               </div>
                               <div className="col-4">
@@ -258,6 +356,7 @@ export default function DeStuffingBillDetails() {
                                   type="datetime-local"
                                   className="form-control p-2"
                                   name="end_time"
+                                  defaultValue={formatToDateTimeLocal(today)}
                                 />
                               </div>
                             </div>
@@ -265,19 +364,51 @@ export default function DeStuffingBillDetails() {
                         </div>
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
-                        {Data?.de_stuffing_bill_details?.map((details, i) => (
-                          <div key={i} className="card card-body px-3 py-4 my-2">
+                        {Array.from({ length: TotalTrucks }, (_, i) => (
+                          <div
+                            key={i}
+                            className="card card-body px-3 py-4 my-2"
+                          >
                             <div className="row">
                               <div className="col-2">
-                                <label htmlFor="billNo" className="form-label">
-                                  Bill Number
+                                <label
+                                  htmlFor="truck_number"
+                                  className="form-label"
+                                >
+                                  Truck Number
                                 </label>
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  defaultValue={details?.bol_number}
-                                  readOnly
+                                  name="truck_number"
                                 />
+                              </div>
+                              <div className="col-2">
+                                <label htmlFor="billNo" className="form-label">
+                                  Bill Number
+                                </label>
+                                <select
+                                  name="boe"
+                                  className="form-select p-2"
+                                  onChange={(e) =>
+                                    handleBillDetails(i, e.target.value)
+                                  }
+                                  id={`boe_${i}`}
+                                >
+                                  <option value="" selected disabled>
+                                    Select Bill
+                                  </option>
+                                  {Data?.delivery_bill_details?.map(
+                                    (details, k) => (
+                                      <option
+                                        key={k}
+                                        value={details?.boe_number}
+                                      >
+                                        {details?.boe_number}
+                                      </option>
+                                    )
+                                  )}
+                                </select>
                               </div>
                               <div className="col-3">
                                 <label className="form-label">
@@ -286,7 +417,7 @@ export default function DeStuffingBillDetails() {
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  defaultValue={details?.commodity_description}
+                                  id={`cargo_description_${i}`}
                                   readOnly
                                 />
                               </div>
@@ -295,8 +426,11 @@ export default function DeStuffingBillDetails() {
                                 <input
                                   type="number"
                                   className="form-control p-2"
-                                  defaultValue={details?.no_of_packages_declared}
-                                  name={`no_of_packages_declared[${details.id}]`}
+                                  id={`no_of_pkgs_${i}`}
+                                  name={`no_of_pkgs[${i}]`}
+                                  onChange={(e) =>
+                                    handleBillPkgW(i, e.target.value)
+                                  }
                                 />
                               </div>
                               <div className="col-2">
@@ -304,14 +438,24 @@ export default function DeStuffingBillDetails() {
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  defaultValue={details?.package_weight}
-                                  name={`package_weight[${details.id}]`}
+                                  id={`pkgs_weight_${i}`}
+                                  name={`pkgs_weight[${i}]`}
                                 />
                               </div>
-                              <GridComponent details={details} index={i} />
+                              <GridComponent index={i} />
                             </div>
                           </div>
                         ))}
+                        <div className="col-12 my-2 text-end">
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-primary"
+                            onClick={() => setTotalTrucks(TotalTrucks + 1)}
+                          >
+                            Add Truck
+                          </button>
+                        </div>
+                        <hr />
                         <button className="btn btn-primary w-25 mt-3">
                           Submit
                         </button>
@@ -323,24 +467,22 @@ export default function DeStuffingBillDetails() {
                     <div className="col-6">
                       <div className="card my-3">
                         <div className="card-body">
-                          <h4 className="text-center text-primary">
-                            DeStuffing
-                          </h4>
+                          <h4 className="text-center text-primary">Delivery</h4>
                           <form action="" onSubmit={GetFormData}>
-                            <p>Please Enter Container Number to Fetch Data</p>
+                            <p>Please Enter GPM Number to Fetch Data</p>
                             <div className="form-floating form-floating-outline mb-6">
                               <input
                                 type="text"
                                 className="form-control mb-3"
-                                placeholder="Enter Container Number"
-                                name="container_no"
+                                placeholder="Enter GPM Number"
+                                name="gpm_number"
                                 onChange={(e) =>
-                                (e.target.value =
-                                  e.target.value.toUpperCase())
+                                  (e.target.value =
+                                    e.target.value.toUpperCase())
                                 }
                               />
                               <label htmlFor="Container_Number">
-                                Container Number
+                                GPM Number
                               </label>
                             </div>
                             <button

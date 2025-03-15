@@ -5,6 +5,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import './App.css';
 import Index from "./pages/index";
 import Jobs from "./pages/Jobs";
 import DeliveryLCL from "./pages/import/DeliveryLCL";
@@ -13,12 +14,17 @@ import DestuffingFCL from "./pages/import/DestuffingFCL"
 import DestuffingLCL from "./pages/import/DestuffingLCL";
 import DirectDelivery from "./pages/import/DirectDelivery";
 import DestuffingBill from "./pages/import/DestuffingBill";
-import DeStuffing from "./pages/DeStuffing";
-import DeStuffingBillDetails from "./pages/DeStuffingBillDetails";
 import DeliveryBill from "./pages/import/DeliveryBill";
-import DeStuffingTallySheet from "./pages/DeStuffingTallySheet";
-import Delivery from "./pages/Delivery";
-import DeliveryBillDetails from "./pages/DeliveryBillDetails";
+
+
+import DeStuffing from "./pages/de_stuffing/DeStuffing";
+import DeStuffingBillDetails from "./pages/de_stuffing/DeStuffingBillDetails";
+import DeStuffingTallySheet from "./pages/de_stuffing/DeStuffingTallySheet";
+import Delivery from "./pages/delivery/Delivery";
+import DeliveryBillDetails from "./pages/delivery/DeliveryBillDetails";
+import DeliveryTallySheet from "./pages/delivery/DeliveryTallySheet";
+
+
 
 export default function App() {
   const initialTheme = sessionStorage.getItem("myTheme") === "true";
@@ -58,7 +64,7 @@ export default function App() {
 
           <Route path="/delivery" element={<Delivery/>} />
           <Route path="/delivery/bill-details" element={<DeliveryBillDetails/>} />
-          <Route path="/delivery/tally-sheet" element={<DeStuffingTallySheet/>} />
+          <Route path="/delivery/tally-sheet" element={<DeliveryTallySheet/>} />
 
 
           <Route path="/DeliveryLCL" element={<DeliveryLCL />} />
