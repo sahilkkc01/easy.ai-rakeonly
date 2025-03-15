@@ -10,14 +10,15 @@ import Swal from "sweetalert2";
 export default function DeliveryBillDetails() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [ContainerNo, setContainerNo] = useState(null);
+  const [GpmNo, setGpmNo] = useState(null);
   const [Data, setData] = useState(null);
   const [Locations, setLocations] = useState(null);
+  const [TotalTrucks, setTotalTrucks] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const fetchData = async (containerNo) => {
+  const fetchData = async (gpm_number) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/de_stuffing_data/LCL/${containerNo}`;
+    const url = `https://ctas.live/backend/api/get/delivery/de_stuffing/${gpm_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -69,34 +70,34 @@ export default function DeliveryBillDetails() {
 
   const GetFormData = async (e) => {
     e.preventDefault();
-    const container_no = e.target.container_no.value.toUpperCase();
-    setContainerNo(container_no);
-    setSearchParams({ container_no });
-    fetchData(container_no);
+    const gpm_number = e.target.gpm_number.value.toUpperCase();
+    setGpmNo(gpm_number);
+    setSearchParams({ gpm_number });
+    fetchData(gpm_number);
   };
-  
+
   useEffect(() => {
-    const container_no = searchParams.get("container_no");
-    if (container_no) {
-      setContainerNo(container_no);
-      fetchData(container_no);
+    const gpm_number = searchParams.get("gpm_number");
+    if (gpm_number) {
+      setGpmNo(gpm_number);
+      fetchData(gpm_number);
     }
   }, [searchParams]);
-  
+
   useEffect(() => {
     if (Data) {
       fetchLocations();
     }
   }, [Data]);
 
-  const handleSubmitForm = async(e) => {
+  const handleSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    const url = `https://ctas.live/backend/api/de_stuffing/update`;
+    const url = `https://ctas.live/backend/api/delivery/de_stuffing/update`;
     try {
       const response = await axios.post(url, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { "Content-Type": "multipart/form-data" },
       });
       console.log(response.data);
       if (response?.data?.status === "success") {
@@ -104,8 +105,8 @@ export default function DeliveryBillDetails() {
           icon: response?.data?.status,
           text: response?.data?.message,
           timer: 3000,
-        }).then(()=>{
-          navigate(`/de-stuffing/tally-sheet?container_no=${ContainerNo}`);
+        }).then(() => {
+          // navigate(`/de-stuffing/tally-sheet?container_no=${ContainerNo}`);
         });
       } else {
         Swal.fire({
@@ -124,17 +125,15 @@ export default function DeliveryBillDetails() {
     } finally {
       setLoading(false);
     }
-
   };
 
-  
-  const GridComponent = ({ details, index }) => {
+  const GridComponent = ({ index }) => {
     const [gridInputs, setGridInputs] = useState([{ id: 1 }]);
-    
+
     const addGridInput = () => {
       setGridInputs([...gridInputs, { id: gridInputs.length + 1 }]);
     };
-    
+
     return (
       <div className="col-3">
         <label className="form-label">Grid Location & Area (SQM)</label>
@@ -142,7 +141,7 @@ export default function DeliveryBillDetails() {
           <div key={input.id} className="d-flex align-items-center gap-3 mb-2">
             <select
               className="form-select p-2"
-              name={`grid_locations[${details.id}][${i}]`}
+              name={`grid_locations[${index}][${i}]`}
             >
               <option selected disabled>
                 Select Grid
@@ -157,10 +156,10 @@ export default function DeliveryBillDetails() {
               type="text"
               className="form-control p-2"
               placeholder="Area (SQM)"
-              name={`area[${details.id}][${i}]`}
+              name={`area[${index}][${i}]`}
             />
             <button
-            type="button"
+              type="button"
               className="btn btn-success btn-sm px-2 py-1"
               onClick={addGridInput}
             >
@@ -170,6 +169,17 @@ export default function DeliveryBillDetails() {
         ))}
       </div>
     );
+  };
+
+  
+  const handleBillDetails = (key, sBillNo) => {
+    Data?.delivery_bill_details?.map((details, a) => {
+      if (details.boe_number == sBillNo) {
+        document.getElementById(`cargo_description_${key}`).value = `${details.commodity_description}`;
+        document.getElementById(`no_of_pkgs_${key}`).value = `${details.no_of_packages_declared}`;
+        document.getElementById(`pkgs_weight_${key}`).value = `${details.package_weight}`;
+      }
+    });
   };
 
   return (
@@ -196,151 +206,187 @@ export default function DeliveryBillDetails() {
             <Nav />
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-                {Data && ContainerNo ? (
+                {Data && GpmNo ? (
                   <>
-                  <form action="" onSubmit={handleSubmitForm} >
-                    <div className="row">
-                      <h4 className="text-primary mb-3">Container Details</h4>
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="row">
-                            <input
-                              type="hidden"
-                              name="id"
-                              defaultValue={Data?.id}
-                            />
-                            <div className="col-4">
-                              <label className="form-label">Container No</label>
+                    <form action="" onSubmit={handleSubmitForm}>
+                      <div className="row">
+                        <h4 className="text-primary mb-3">Container Details</h4>
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="row">
                               <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={Data?.container_number}
-                                readOnly
+                                type="hidden"
+                                name="id"
+                                defaultValue={Data?.id}
                               />
-                            </div>
-                            <div className="col-4">
-                              <label className="form-label">
-                                Container Size
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={Data?.container_size}
-                                readOnly
-                              />
-                            </div>
-                            <div className="col-4">
-                              <label className="form-label">
-                                Container Type
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={Data?.container_type}
-                                readOnly
-                              />
-                            </div>
-                            <div className="col-4">
-                              <label className="form-label">
-                                Start Date Time
-                              </label>
-                              <input
-                                type="datetime-local"
-                                className="form-control p-2"
-                                name="start_time"
-                              />
-                            </div>
-                            <div className="col-4">
-                              <label className="form-label">
-                                End Date Time
-                              </label>
-                              <input
-                                type="datetime-local"
-                                className="form-control p-2"
-                                name="end_time"
-                              />
+                              <div className="col-4">
+                                <label className="form-label">Gpm No</label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={Data?.gpm_number}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  Container No
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={Data?.container_number}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  Container Size
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={Data?.container_size}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  Start Date Time
+                                </label>
+                                <input
+                                  type="datetime-local"
+                                  className="form-control p-2"
+                                  name="start_time"
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  End Date Time
+                                </label>
+                                <input
+                                  type="datetime-local"
+                                  className="form-control p-2"
+                                  name="end_time"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      <h4 className="text-primary mb-3">Bill Details</h4>
-                      {Data?.de_stuffing_bill_details?.map((details, i) => (
-                        <div key={i} className="card card-body px-3 py-4 my-2">
-                          <div className="row">
-                            <div className="col-2">
-                              <label htmlFor="billNo" className="form-label">
-                                Bill Number
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={details?.bol_number}
-                                readOnly
-                              />
+                        <h4 className="text-primary mb-3">Bill Details</h4>
+                        {Array.from({ length: TotalTrucks }, (_, i) => (
+                          <div
+                            key={i}
+                            className="card card-body px-3 py-4 my-2"
+                          >
+                            <div className="row">
+                              <div className="col-2">
+                                <label
+                                  htmlFor="truck_no"
+                                  className="form-label"
+                                >
+                                  Truck Number
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  name="truck_no"
+                                />
+                              </div>
+                              <div className="col-2">
+                                <label htmlFor="billNo" className="form-label">
+                                  Bill Number
+                                </label>
+                                <select
+                                  name="boe"
+                                  className="form-select p-2"
+                                  onChange={(e) =>
+                                    handleBillDetails(i, e.target.value)
+                                  }
+                                >
+                                  <option value="" selected disabled>
+                                    Select Bill
+                                  </option>
+                                  {Data?.delivery_bill_details?.map(
+                                    (details,k) => (
+                                      <option key={k} value={details?.boe_number} >
+                                        {details?.boe_number}
+                                      </option>
+                                    )
+                                  )}
+                                </select>
+                              </div>
+                              <div className="col-3">
+                                <label className="form-label">
+                                  Cargo Description (Code)
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  id={`cargo_description_${i}`}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-2">
+                                <label className="form-label">No of Pkgs</label>
+                                <input
+                                  type="number"
+                                  className="form-control p-2"
+                                  id={`no_of_pkgs_${i}`}
+                                  name={`no_of_pkgs[${i}]`}
+                                />
+                              </div>
+                              <div className="col-2">
+                                <label className="form-label">Pkg Weight</label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  id={`pkgs_weight_${i}`}
+                                  name={`pkgs_weight[${i}]`}
+                                />
+                              </div>
+                              <GridComponent index={i} />
                             </div>
-                            <div className="col-3">
-                              <label className="form-label">
-                                Cargo Description (Code)
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={details?.commodity_description}
-                                readOnly
-                              />
-                            </div>
-                            <div className="col-2">
-                              <label className="form-label">No of Pkgs</label>
-                              <input
-                                type="number"
-                                className="form-control p-2"
-                                defaultValue={details?.no_of_packages_declared}
-                                name={`no_of_packages_declared[${details.id}]`}
-                              />
-                            </div>
-                            <div className="col-2">
-                              <label className="form-label">Pkg Weight</label>
-                              <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={details?.package_weight}
-                                name={`package_weight[${details.id}]`}
-                              />
-                            </div>
-                            <GridComponent details={details} index={i} />
                           </div>
+                        ))}
+                        <div className="col-12 my-2 text-end">
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-primary"
+                            onClick={() => setTotalTrucks(TotalTrucks + 1)}
+                          >
+                            Add Truck
+                          </button>
                         </div>
-                      ))}
-                      <button className="btn btn-primary w-25 mt-3">
-                        Submit
-                      </button>
-                    </div>
-                      </form>
+                        <hr />
+                        <button className="btn btn-primary w-25 mt-3">
+                          Submit
+                        </button>
+                      </div>
+                    </form>
                   </>
                 ) : (
                   <div className="row justify-content-center align-items-center h-75">
                     <div className="col-6">
                       <div className="card my-3">
                         <div className="card-body">
-                          <h4 className="text-center text-primary">
-                            DeStuffing
-                          </h4>
+                          <h4 className="text-center text-primary">Delivery</h4>
                           <form action="" onSubmit={GetFormData}>
-                            <p>Please Enter Container Number to Fetch Data</p>
+                            <p>Please Enter GPM Number to Fetch Data</p>
                             <div className="form-floating form-floating-outline mb-6">
                               <input
                                 type="text"
                                 className="form-control mb-3"
-                                placeholder="Enter Container Number"
-                                name="container_no"
+                                placeholder="Enter GPM Number"
+                                name="gpm_number"
                                 onChange={(e) =>
                                   (e.target.value =
                                     e.target.value.toUpperCase())
                                 }
                               />
                               <label htmlFor="Container_Number">
-                                Container Number
+                                GPM Number
                               </label>
                             </div>
                             <button

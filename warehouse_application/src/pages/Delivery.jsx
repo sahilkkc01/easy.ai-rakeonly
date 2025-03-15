@@ -99,7 +99,7 @@ export default function Delivery() {
                   {/* Create New Button */}
                   <div className="d-flex justify-content-between align-items-center mb-3">
                     <h4 className="fw-bold text-primary">Delivery</h4>
-                    <Link to={`/de-stuffing/bill-details`}
+                    <Link to={`/delivery/bill-details`}
                       className="btn btn-success"
                       // onClick={openContainerModal}
                     >
