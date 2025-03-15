@@ -150,7 +150,7 @@ export default function DeliveryBillDetails() {
           <div key={input.id} className="d-flex align-items-center gap-3 mb-2">
             <select
               className="form-select p-2"
-              name={`grid_locations[${index}][${i}]`}
+              name={`grid_location[${index}][${i}]`}
             >
               <option selected disabled>
                 Select Grid
@@ -192,6 +192,9 @@ export default function DeliveryBillDetails() {
         document.getElementById(
           `pkgs_weight_${key}`
         ).value = `${details.package_weight}`;
+        document.getElementById(
+          `pkg_code_${key}`
+        ).value = `${details.package_code}`;
       }
     });
   };
@@ -380,7 +383,7 @@ export default function DeliveryBillDetails() {
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  name="truck_number"
+                                  name={`truck_number[${i}]`}
                                 />
                               </div>
                               <div className="col-2">
@@ -388,7 +391,7 @@ export default function DeliveryBillDetails() {
                                   Bill Number
                                 </label>
                                 <select
-                                  name="boe"
+                                  name={`boe[${i}]`}
                                   className="form-select p-2"
                                   onChange={(e) =>
                                     handleBillDetails(i, e.target.value)
@@ -415,8 +418,16 @@ export default function DeliveryBillDetails() {
                                   Cargo Description (Code)
                                 </label>
                                 <input
+                                  type="hidden"
+                                  className="form-control p-2"
+                                  name={`pkg_code[${i}]`}
+                                  id={`pkg_code_${i}`}
+                                  readOnly
+                                />
+                                <input
                                   type="text"
                                   className="form-control p-2"
+                                  name={`cargo_description[${i}]`}
                                   id={`cargo_description_${i}`}
                                   readOnly
                                 />

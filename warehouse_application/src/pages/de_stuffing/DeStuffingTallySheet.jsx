@@ -215,7 +215,11 @@ export default function DeStuffingTallySheet() {
                     </td>
                     <td>{Details.no_of_packages_declared}</td>
                     <td>{Details.package_weight}</td>
-                    <td>{Details.grid_locations}</td>
+                    <td>
+                      {Details.grid_area?.map((grid, index) => (
+                        <span key={index}>{grid.grid_locations}, </span>
+                      ))}
+                    </td>
                     <td>
                       {Details.grid_area?.map((grid, index) => (
                         <span key={index}>{grid.area}, </span>

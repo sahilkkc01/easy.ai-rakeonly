@@ -250,12 +250,11 @@ export default function DeliveryTallySheet() {
                           {Trucks.pkgs_weight}
                       </td>
                       <td>
-                        
-                          {Trucks.grid_location}
-                       
+                          {Trucks?.grid_area?.map((grid_area) => (
+                            <span>{grid_area.grid_locations} ,</span>
+                          ))}
                       </td>
                       <td>
-                        
                           {Trucks?.grid_area?.map((grid_area) => (
                             <span>{grid_area.area} ,</span>
                           ))}
