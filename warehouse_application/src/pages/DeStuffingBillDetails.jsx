@@ -74,7 +74,7 @@ export default function DeStuffingBillDetails() {
     setSearchParams({ container_no });
     fetchData(container_no);
   };
-  
+
   useEffect(() => {
     const container_no = searchParams.get("container_no");
     if (container_no) {
@@ -82,14 +82,14 @@ export default function DeStuffingBillDetails() {
       fetchData(container_no);
     }
   }, [searchParams]);
-  
+
   useEffect(() => {
     if (Data) {
       fetchLocations();
     }
   }, [Data]);
 
-  const handleSubmitForm = async(e) => {
+  const handleSubmitForm = async (e) => {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
@@ -104,7 +104,7 @@ export default function DeStuffingBillDetails() {
           icon: response?.data?.status,
           text: response?.data?.message,
           timer: 3000,
-        }).then(()=>{
+        }).then(() => {
           navigate(`/de-stuffing/tally-sheet?container_no=${ContainerNo}`);
         });
       } else {
@@ -127,14 +127,14 @@ export default function DeStuffingBillDetails() {
 
   };
 
-  
+
   const GridComponent = ({ details, index }) => {
     const [gridInputs, setGridInputs] = useState([{ id: 1 }]);
-    
+
     const addGridInput = () => {
       setGridInputs([...gridInputs, { id: gridInputs.length + 1 }]);
     };
-    
+
     return (
       <div className="col-3">
         <label className="form-label">Grid Location & Area (SQM)</label>
@@ -160,7 +160,7 @@ export default function DeStuffingBillDetails() {
               name={`area[${details.id}][${i}]`}
             />
             <button
-            type="button"
+              type="button"
               className="btn btn-success btn-sm px-2 py-1"
               onClick={addGridInput}
             >
@@ -198,125 +198,125 @@ export default function DeStuffingBillDetails() {
               <div className="container-xxl flex-grow-1 container-p-y">
                 {Data && ContainerNo ? (
                   <>
-                  <form action="" onSubmit={handleSubmitForm} >
-                    <div className="row">
-                      <h4 className="text-primary mb-3">Container Details</h4>
-                      <div className="card">
-                        <div className="card-body">
-                          <div className="row">
-                            <input
-                              type="hidden"
-                              name="id"
-                              defaultValue={Data?.id}
-                            />
-                            <div className="col-4">
-                              <label className="form-label">Container No</label>
+                    <form action="" onSubmit={handleSubmitForm} >
+                      <div className="row">
+                        <h4 className="text-primary mb-3">Container Details</h4>
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="row">
                               <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={Data?.container_number}
-                                readOnly
+                                type="hidden"
+                                name="id"
+                                defaultValue={Data?.id}
                               />
-                            </div>
-                            <div className="col-4">
-                              <label className="form-label">
-                                Container Size
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={Data?.container_size}
-                                readOnly
-                              />
-                            </div>
-                            <div className="col-4">
-                              <label className="form-label">
-                                Container Type
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={Data?.container_type}
-                                readOnly
-                              />
-                            </div>
-                            <div className="col-4">
-                              <label className="form-label">
-                                Start Date Time
-                              </label>
-                              <input
-                                type="datetime-local"
-                                className="form-control p-2"
-                                name="start_time"
-                              />
-                            </div>
-                            <div className="col-4">
-                              <label className="form-label">
-                                End Date Time
-                              </label>
-                              <input
-                                type="datetime-local"
-                                className="form-control p-2"
-                                name="end_time"
-                              />
+                              <div className="col-4">
+                                <label className="form-label">Container No</label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={Data?.container_number}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  Container Size
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={Data?.container_size}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  Container Type
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={Data?.container_type}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  Start Date Time
+                                </label>
+                                <input
+                                  type="datetime-local"
+                                  className="form-control p-2"
+                                  name="start_time"
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  End Date Time
+                                </label>
+                                <input
+                                  type="datetime-local"
+                                  className="form-control p-2"
+                                  name="end_time"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      <h4 className="text-primary mb-3">Bill Details</h4>
-                      {Data?.de_stuffing_bill_details?.map((details, i) => (
-                        <div key={i} className="card card-body px-3 py-4 my-2">
-                          <div className="row">
-                            <div className="col-2">
-                              <label htmlFor="billNo" className="form-label">
-                                Bill Number
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={details?.bol_number}
-                                readOnly
-                              />
+                        <h4 className="text-primary mb-3">Bill Details</h4>
+                        {Data?.de_stuffing_bill_details?.map((details, i) => (
+                          <div key={i} className="card card-body px-3 py-4 my-2">
+                            <div className="row">
+                              <div className="col-2">
+                                <label htmlFor="billNo" className="form-label">
+                                  Bill Number
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={details?.bol_number}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-3">
+                                <label className="form-label">
+                                  Cargo Description (Code)
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={details?.commodity_description}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-2">
+                                <label className="form-label">No of Pkgs</label>
+                                <input
+                                  type="number"
+                                  className="form-control p-2"
+                                  defaultValue={details?.no_of_packages_declared}
+                                  name={`no_of_packages_declared[${details.id}]`}
+                                />
+                              </div>
+                              <div className="col-2">
+                                <label className="form-label">Pkg Weight</label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={details?.package_weight}
+                                  name={`package_weight[${details.id}]`}
+                                />
+                              </div>
+                              <GridComponent details={details} index={i} />
                             </div>
-                            <div className="col-3">
-                              <label className="form-label">
-                                Cargo Description (Code)
-                              </label>
-                              <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={details?.commodity_description}
-                                readOnly
-                              />
-                            </div>
-                            <div className="col-2">
-                              <label className="form-label">No of Pkgs</label>
-                              <input
-                                type="number"
-                                className="form-control p-2"
-                                defaultValue={details?.no_of_packages_declared}
-                                name={`no_of_packages_declared[${details.id}]`}
-                              />
-                            </div>
-                            <div className="col-2">
-                              <label className="form-label">Pkg Weight</label>
-                              <input
-                                type="text"
-                                className="form-control p-2"
-                                defaultValue={details?.package_weight}
-                                name={`package_weight[${details.id}]`}
-                              />
-                            </div>
-                            <GridComponent details={details} index={i} />
                           </div>
-                        </div>
-                      ))}
-                      <button className="btn btn-primary w-25 mt-3">
-                        Submit
-                      </button>
-                    </div>
-                      </form>
+                        ))}
+                        <button className="btn btn-primary w-25 mt-3">
+                          Submit
+                        </button>
+                      </div>
+                    </form>
                   </>
                 ) : (
                   <div className="row justify-content-center align-items-center h-75">
@@ -335,8 +335,8 @@ export default function DeStuffingBillDetails() {
                                 placeholder="Enter Container Number"
                                 name="container_no"
                                 onChange={(e) =>
-                                  (e.target.value =
-                                    e.target.value.toUpperCase())
+                                (e.target.value =
+                                  e.target.value.toUpperCase())
                                 }
                               />
                               <label htmlFor="Container_Number">
