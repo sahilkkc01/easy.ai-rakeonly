@@ -92,7 +92,7 @@ export default function DeStuffingBillDetails() {
       setType(type);
       if (tallySheet) {
         setTallySheet(tallySheet);
-      }else{
+      } else {
         fetchData(type, container_no);
       }
     }
@@ -352,63 +352,71 @@ export default function DeStuffingBillDetails() {
                         </div>
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
-                        {Data?.de_stuffing_bill_details?.map((details, i) => (
-                          <div
-                            key={i}
-                            className="card card-body px-3 py-4 my-2"
-                          >
-                            <div className="row">
-                              <div className="col-2">
-                                <label htmlFor="billNo" className="form-label">
-                                  Bill Number
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control p-2"
-                                  defaultValue={details?.bol_number}
-                                  readOnly
-                                />
+                        <div className="d-flex flex-wrap overflow-auto">
+                          {Data?.de_stuffing_bill_details?.map((details, i) => (
+                            <div
+                              key={i}
+                              className="card card-body px-3 py-4 m-2 flex-shrink-0"
+                              style={{ minWidth: "300px" }} // Adjust the min width as needed
+                            >
+                              <div className="row">
+                                <div className="col-2">
+                                  <label htmlFor={`billNo_${details.id}`} className="form-label">
+                                    Bill Number
+                                  </label>
+                                  <input
+                                    id={`billNo_${details.id}`}
+                                    type="text"
+                                    className="form-control p-2 text-nowrap"
+                                    defaultValue={details?.bol_number}
+                                    readOnly
+                                  />
+                                </div>
+                                <div className="col-3">
+                                  <label htmlFor={`cargoDesc_${details.id}`} className="form-label">
+                                    Cargo Description (Code)
+                                  </label>
+                                  <input
+                                    id={`cargoDesc_${details.id}`}
+                                    type="text"
+                                    className="form-control p-2 text-nowrap"
+                                    defaultValue={details?.commodity_description}
+                                    readOnly
+                                  />
+                                </div>
+                                <div className="col-2">
+                                  <label htmlFor={`noOfPkgs_${details.id}`} className="form-label">
+                                    No of Pkgs
+                                  </label>
+                                  <input
+                                    id={`noOfPkgs_${details.id}`}
+                                    type="number"
+                                    className="form-control p-2 text-nowrap"
+                                    defaultValue={details?.no_of_packages_declared}
+                                    name={`no_of_packages_declared[${details.id}]`}
+                                    onChange={(e) => {
+                                      handleBillPkgW(details.id, e.target.value);
+                                    }}
+                                  />
+                                </div>
+                                <div className="col-2">
+                                  <label htmlFor={`pkgWeight_${details.id}`} className="form-label">
+                                    Pkg Weight
+                                  </label>
+                                  <input
+                                    id={`pkgWeight_${details.id}`}
+                                    type="text"
+                                    className="form-control p-2 text-nowrap"
+                                    defaultValue={details?.package_weight}
+                                    name={`package_weight[${details.id}]`}
+                                  />
+                                </div>
+                                <GridComponent details={details} index={i} />
                               </div>
-                              <div className="col-3">
-                                <label className="form-label">
-                                  Cargo Description (Code)
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control p-2"
-                                  defaultValue={details?.commodity_description}
-                                  readOnly
-                                />
-                              </div>
-                              <div className="col-2">
-                                <label className="form-label">No of Pkgs</label>
-                                <input
-                                  type="number"
-                                  className="form-control p-2"
-                                  defaultValue={
-                                    details?.no_of_packages_declared
-                                  }
-                                  name={`no_of_packages_declared[${details.id}]`}
-                                  id={`no_of_packages_declared_${details.id}`}
-                                  onChange={(e) => {
-                                    handleBillPkgW(details.id, e.target.value);
-                                  }}
-                                />
-                              </div>
-                              <div className="col-2">
-                                <label className="form-label">Pkg Weight</label>
-                                <input
-                                  type="text"
-                                  className="form-control p-2"
-                                  defaultValue={details?.package_weight}
-                                  name={`package_weight[${details.id}]`}
-                                  id={`package_weight_${details.id}`}
-                                />
-                              </div>
-                              <GridComponent details={details} index={i} />
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
+
                         <button className="btn btn-primary w-25 mt-3">
                           Submit
                         </button>
@@ -417,7 +425,7 @@ export default function DeStuffingBillDetails() {
                   </>
                 ) : (
                   <div className="row justify-content-center align-items-center h-75">
-                    <div className="col-6">
+                    <div className="col-md-6 col-8">
                       <div className="card my-3">
                         <div className="card-body">
                           <h4 className="text-center text-primary">
@@ -447,8 +455,8 @@ export default function DeStuffingBillDetails() {
                                 placeholder="Enter Container Number"
                                 name="container_no"
                                 onChange={(e) =>
-                                  (e.target.value =
-                                    e.target.value.toUpperCase())
+                                (e.target.value =
+                                  e.target.value.toUpperCase())
                                 }
                               />
                               <label htmlFor="Container_Number">
