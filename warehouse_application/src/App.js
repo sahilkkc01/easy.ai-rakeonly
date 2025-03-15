@@ -17,6 +17,7 @@ import DeStuffing from "./pages/DeStuffing";
 import DeStuffingBillDetails from "./pages/DeStuffingBillDetails";
 import DeliveryBill from "./pages/import/DeliveryBill";
 import DeStuffingTallySheet from "./pages/DeStuffingTallySheet";
+import Delivery from "./pages/Delivery";
 
 export default function App() {
   const initialTheme = sessionStorage.getItem("myTheme") === "true";
@@ -53,6 +54,10 @@ export default function App() {
           <Route path="/de-stuffing" element={<DeStuffing/>} />
           <Route path="/de-stuffing/bill-details" element={<DeStuffingBillDetails/>} />
           <Route path="/de-stuffing/tally-sheet" element={<DeStuffingTallySheet/>} />
+
+          <Route path="/delivery" element={<Delivery/>} />
+          <Route path="/delivery/bill-details" element={<DeStuffingBillDetails/>} />
+          <Route path="/delivery/tally-sheet" element={<DeStuffingTallySheet/>} />
 
 
           <Route path="/DeliveryLCL" element={<DeliveryLCL />} />

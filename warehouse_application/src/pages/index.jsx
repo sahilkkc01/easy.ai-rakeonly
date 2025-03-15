@@ -40,7 +40,7 @@ export default function Index() {
                             <Link to="/de-stuffing" className="btn btn-label-primary">
                               DeStuffing
                             </Link>
-                            <Link to="/DeliveryLCL" className="btn btn-label-primary">
+                            <Link to="/delivery" className="btn btn-label-primary">
                               Delivery
                             </Link>
                             {/* <Link to="/DeliveryLCL" className="btn btn-label-primary">
