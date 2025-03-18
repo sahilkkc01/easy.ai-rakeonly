@@ -23,6 +23,12 @@ import DeStuffingTallySheet from "./pages/de_stuffing/DeStuffingTallySheet";
 import Delivery from "./pages/delivery/Delivery";
 import DeliveryBillDetails from "./pages/delivery/DeliveryBillDetails";
 import DeliveryTallySheet from "./pages/delivery/DeliveryTallySheet";
+import Carting from "./pages/carting/Carting";
+import CartingBillDetails from "./pages/carting/CartingBillDetails";
+import CartingTallySheet from "./pages/carting/CartingTallySheet";
+import Stuffing from "./pages/stuffing/Stuffing";
+import StuffingBillDetails from "./pages/stuffing/StuffingBillDetails";
+import StuffingTallySheet from "./pages/stuffing/StuffingTallySheet";
 
 
 
@@ -54,18 +60,24 @@ export default function App() {
   }, []);
   return (
     <Router>
-      <div>
-
         <Routes>
           <Route path="/" element={<Index />} />
+
           <Route path="/de-stuffing" element={<DeStuffing/>} />
           <Route path="/de-stuffing/bill-details" element={<DeStuffingBillDetails/>} />
-          <Route path="/de-stuffing/tally-sheet" element={<DeStuffingTallySheet/>} />
+          <Route path="/de-stuffing/tally_sheet" element={<DeStuffingTallySheet/>} />
 
           <Route path="/delivery" element={<Delivery/>} />
           <Route path="/delivery/bill-details" element={<DeliveryBillDetails/>} />
-          <Route path="/delivery/tally-sheet" element={<DeliveryTallySheet/>} />
+          <Route path="/delivery/tally_sheet" element={<DeliveryTallySheet/>} />
 
+          <Route path="/carting" element={<Carting/>} />
+          <Route path="/carting/bill-details" element={<CartingBillDetails/>} />
+          <Route path="/carting/tally_sheet" element={<CartingTallySheet/>} />
+
+          <Route path="/stuffing" element={<Stuffing/>} />
+          <Route path="/stuffing/bill-details" element={<StuffingBillDetails/>} />
+          <Route path="/stuffing/tally_sheet" element={<StuffingTallySheet/>} />
 
           <Route path="/DeliveryLCL" element={<DeliveryLCL />} />
           <Route path="/DeliveryFCL" element={<DeliveryFCL />} />
@@ -77,8 +89,6 @@ export default function App() {
           <Route path="/Jobs" element={<Jobs />} />
 
         </Routes>
-
-      </div>
     </Router>
 
   );

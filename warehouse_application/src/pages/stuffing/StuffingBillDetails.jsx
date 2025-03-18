@@ -7,12 +7,12 @@ import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTimeLocal } from "../main/formatToDateTime";
 
-export default function DeliveryBillDetails() {
+export default function StuffingBillDetails() {
   const navigate = useNavigate();
-    const iframeRef = useRef(null);
+  const iframeRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [GpmNo, setGpmNo] = useState(null);
-    const [TallySheet, setTallySheet] = useState(null);
+  const [ContainerNo, setContainerNo] = useState(null);
+  const [TallySheet, setTallySheet] = useState(null);
   const [Data, setData] = useState(null);
   const [Locations, setLocations] = useState(null);
   const [TotalTrucks, setTotalTrucks] = useState(1);
@@ -20,9 +20,9 @@ export default function DeliveryBillDetails() {
 
   const today = new Date();
 
-  const fetchData = async (gpm_number) => {
+  const fetchData = async (container_no) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/delivery/de_stuffing/${gpm_number}`;
+    const url = `https://ctas.live/backend/api/get/stuffing?type=FCL&container_number=${container_no}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -74,21 +74,21 @@ export default function DeliveryBillDetails() {
 
   const GetFormData = async (e) => {
     e.preventDefault();
-    const gpm_number = e.target.gpm_number.value.toUpperCase();
-    setGpmNo(gpm_number);
-    setSearchParams({ gpm_number });
-    fetchData(gpm_number);
+    const container_no = e.target.container_no.value.toUpperCase();
+    setContainerNo(container_no);
+    setSearchParams({ container_no });
+    fetchData(container_no);
   };
 
   useEffect(() => {
-    const gpm_number = searchParams.get("gpm_number");
+    const container_no = searchParams.get("container_no");
     const tallySheet = searchParams.get("tally_sheet");
-    if (gpm_number) {
-      setGpmNo(gpm_number);
+    if (container_no) {
+      setContainerNo(container_no);
       if (tallySheet) {
         setTallySheet(tallySheet);
-      }else{
-        fetchData(gpm_number);
+      } else {
+        fetchData(container_no);
       }
     }
   }, [searchParams]);
@@ -115,7 +115,7 @@ export default function DeliveryBillDetails() {
           text: response?.data?.message,
           timer: 3000,
         }).then(() => {
-          navigate(`?tally_sheet=1&gpm_number=${GpmNo}`);
+          navigate(`?tally_sheet=1&container_no=${ContainerNo}`);
         });
       } else {
         Swal.fire({
@@ -260,7 +260,7 @@ export default function DeliveryBillDetails() {
             <Nav />
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-                {GpmNo && TallySheet ? (
+                {ContainerNo && TallySheet ? (
                   <div className="row justify-content-center">
                     <div className="col-lg-10 col-md-11">
                       <div className="text-end">
@@ -285,7 +285,7 @@ export default function DeliveryBillDetails() {
                       <div className="" style={{ width: 789, height: 1099 }}>
                         <iframe
                           ref={iframeRef}
-                          src={`/delivery/tally_sheet?gpm_number=${GpmNo}`}
+                          src={`/delivery/tally_sheet?container_no=${ContainerNo}`}
                           style={{
                             width: "100%",
                             height: "100%",
@@ -296,7 +296,7 @@ export default function DeliveryBillDetails() {
                       </div>
                     </div>
                   </div>
-                ) : Data && GpmNo ? (
+                ) : Data && ContainerNo ? (
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
                       <div className="row">
@@ -314,7 +314,7 @@ export default function DeliveryBillDetails() {
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  defaultValue={Data?.gpm_number}
+                                  defaultValue={Data?.container_no}
                                   readOnly
                                 />
                               </div>
@@ -325,7 +325,7 @@ export default function DeliveryBillDetails() {
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  defaultValue={Data?.container_number}
+                                  defaultValue={Data?.container_no}
                                   readOnly
                                 />
                               </div>
@@ -478,22 +478,22 @@ export default function DeliveryBillDetails() {
                     <div className="col-6">
                       <div className="card my-3">
                         <div className="card-body">
-                          <h4 className="text-center text-primary">Delivery</h4>
+                          <h4 className="text-center text-primary">Stuffing</h4>
                           <form action="" onSubmit={GetFormData}>
-                            <p>Please Enter GPM Number to Fetch Data</p>
+                            <p>Please Enter Container Number to Fetch Data</p>
                             <div className="form-floating form-floating-outline mb-6">
                               <input
                                 type="text"
                                 className="form-control mb-3"
-                                placeholder="Enter GPM Number"
-                                name="gpm_number"
+                                placeholder="Enter Container Number"
+                                name="container_no"
                                 onChange={(e) =>
                                   (e.target.value =
                                     e.target.value.toUpperCase())
                                 }
                               />
                               <label htmlFor="Container_Number">
-                                GPM Number
+                                Container Number
                               </label>
                             </div>
                             <button

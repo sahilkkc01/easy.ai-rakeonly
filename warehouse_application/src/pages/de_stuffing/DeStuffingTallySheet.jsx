@@ -101,7 +101,7 @@ export default function DeStuffingTallySheet() {
         </div>
       )}
       <div className="card card-body p-4">
-        <div className="card tally-sheet shadow-none">
+        <div className="card tally_sheet shadow-none">
           <div className="row">
             <div className="col">
               <span> S.No:</span> <b> {Data.id}</b>

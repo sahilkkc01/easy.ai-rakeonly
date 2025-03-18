@@ -77,10 +77,10 @@ export default function Index() {
                           </div>
                           <h4 className="fw-semibold">Export</h4>
                           <div className="d-flex justify-content-evenly">
-                            <Link to="/CartingLCL" className="btn btn-label-success">
+                            <Link to="/carting" className="btn btn-label-success">
                               Carting
                             </Link>
-                            <Link to="/CartingFCL" className="btn btn-label-success">
+                            <Link to="/stuffing" className="btn btn-label-success">
                               Stuffing
                             </Link>
                           </div>

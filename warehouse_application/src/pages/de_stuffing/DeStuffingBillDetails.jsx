@@ -86,7 +86,7 @@ export default function DeStuffingBillDetails() {
   useEffect(() => {
     const container_no = searchParams.get("container_no");
     const type = searchParams.get("type");
-    const tallySheet = searchParams.get("tally-sheet");
+    const tallySheet = searchParams.get("tally_sheet");
     if (container_no && type) {
       setContainerNo(container_no);
       setType(type);
@@ -120,7 +120,7 @@ export default function DeStuffingBillDetails() {
           text: response?.data?.message,
           timer: 2000,
         }).then(() => {
-          navigate(`?tally-sheet=1&type=${Type}&container_no=${ContainerNo}`);
+          navigate(`?tally_sheet=1&type=${Type}&container_no=${ContainerNo}`);
         });
       } else {
         Swal.fire({
@@ -268,7 +268,7 @@ export default function DeStuffingBillDetails() {
                       <div className="" style={{ width: 789, height: 1099 }}>
                         <iframe
                           ref={iframeRef}
-                          src={`/de-stuffing/tally-sheet?type=${Type}&container_no=${ContainerNo}`}
+                          src={`/de-stuffing/tally_sheet?type=${Type}&container_no=${ContainerNo}`}
                           style={{
                             width: "100%",
                             height: "100%",

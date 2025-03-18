@@ -7,7 +7,7 @@ import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTime } from "../main/formatToDateTime";
 
-export default function DeliveryTallySheet() {
+export default function StuffingTallySheet() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();

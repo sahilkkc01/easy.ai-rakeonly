@@ -7,12 +7,12 @@ import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTimeLocal } from "../main/formatToDateTime";
 
-export default function DeliveryBillDetails() {
+export default function CartingBillDetails() {
   const navigate = useNavigate();
-    const iframeRef = useRef(null);
+  const iframeRef = useRef(null);
   const [loading, setLoading] = useState(false);
-  const [GpmNo, setGpmNo] = useState(null);
-    const [TallySheet, setTallySheet] = useState(null);
+  const [CrnNo, setCrnNo] = useState(null);
+  const [TallySheet, setTallySheet] = useState(null);
   const [Data, setData] = useState(null);
   const [Locations, setLocations] = useState(null);
   const [TotalTrucks, setTotalTrucks] = useState(1);
@@ -20,9 +20,9 @@ export default function DeliveryBillDetails() {
 
   const today = new Date();
 
-  const fetchData = async (gpm_number) => {
+  const fetchData = async (crn_number) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/delivery/de_stuffing/${gpm_number}`;
+    const url = `https://ctas.live/backend/api/get/carting?crn_number=${crn_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -48,7 +48,7 @@ export default function DeliveryBillDetails() {
 
   const fetchLocations = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/warehouse/empty/locations?type=Import`;
+    const url = `https://ctas.live/backend/api/warehouse/empty/locations?type=Export`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -74,21 +74,20 @@ export default function DeliveryBillDetails() {
 
   const GetFormData = async (e) => {
     e.preventDefault();
-    const gpm_number = e.target.gpm_number.value.toUpperCase();
-    setGpmNo(gpm_number);
-    setSearchParams({ gpm_number });
-    fetchData(gpm_number);
+    const crn_number = e.target.crn_number.value.toUpperCase();
+    setCrnNo(crn_number);
+    setSearchParams({ crn_number });
   };
 
   useEffect(() => {
-    const gpm_number = searchParams.get("gpm_number");
+    const crn_number = searchParams.get("crn_number");
     const tallySheet = searchParams.get("tally_sheet");
-    if (gpm_number) {
-      setGpmNo(gpm_number);
+    if (crn_number) {
+      setCrnNo(crn_number);
       if (tallySheet) {
         setTallySheet(tallySheet);
-      }else{
-        fetchData(gpm_number);
+      } else {
+        fetchData(crn_number);
       }
     }
   }, [searchParams]);
@@ -103,7 +102,8 @@ export default function DeliveryBillDetails() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    const url = `https://ctas.live/backend/api/delivery/de_stuffing/update`;
+    // const url = `https://ctas.live/backend/api/carting/update`;
+    const url = `http://192.168.1.7:8000/api/carting/update`;
     try {
       const response = await axios.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -115,7 +115,7 @@ export default function DeliveryBillDetails() {
           text: response?.data?.message,
           timer: 3000,
         }).then(() => {
-          navigate(`?tally_sheet=1&gpm_number=${GpmNo}`);
+          navigate(`?tally_sheet=1&crn_number=${CrnNo}`);
         });
       } else {
         Swal.fire({
@@ -181,8 +181,8 @@ export default function DeliveryBillDetails() {
   };
 
   const handleBillDetails = (key, sBillNo) => {
-    Data?.delivery_bill_details?.map((details, a) => {
-      if (details.boe_number == sBillNo) {
+    Data?.carting_shipping_bill_details?.map((details, a) => {
+      if (details.shipping_bill_number == sBillNo) {
         document.getElementById(
           `cargo_description_${key}`
         ).value = `${details.commodity_description}`;
@@ -204,10 +204,10 @@ export default function DeliveryBillDetails() {
     let package_weight = 0;
     let Per_package_weight = 0;
 
-    let boe_number = document.getElementById(`boe_${key}`)?.value;
+    let shipping_bill_number = document.getElementById(`sbill_${key}`)?.value;
 
-    Data?.delivery_bill_details?.forEach((details) => {
-      if (details.boe_number == boe_number) {
+    Data?.carting_shipping_bill_details?.forEach((details) => {
+      if (details.shipping_bill_number == shipping_bill_number) {
         package_weight += parseFloat(details.package_weight) || 0;
         no_of_pkgs += parseFloat(details.no_of_packages_declared) || 0;
       }
@@ -260,7 +260,7 @@ export default function DeliveryBillDetails() {
             <Nav />
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-                {GpmNo && TallySheet ? (
+                {CrnNo && TallySheet ? (
                   <div className="row justify-content-center">
                     <div className="col-lg-10 col-md-11">
                       <div className="text-end">
@@ -276,7 +276,7 @@ export default function DeliveryBillDetails() {
                         </button>
 
                         <Link
-                          to={"/delivery"}
+                          to={"/carting"}
                           className="btn btn-primary mb-2 ms-2"
                         >
                           Go Back
@@ -285,7 +285,7 @@ export default function DeliveryBillDetails() {
                       <div className="" style={{ width: 789, height: 1099 }}>
                         <iframe
                           ref={iframeRef}
-                          src={`/delivery/tally_sheet?gpm_number=${GpmNo}`}
+                          src={`/carting/tally_sheet?crn_number=${CrnNo}`}
                           style={{
                             width: "100%",
                             height: "100%",
@@ -296,7 +296,7 @@ export default function DeliveryBillDetails() {
                       </div>
                     </div>
                   </div>
-                ) : Data && GpmNo ? (
+                ) : Data && CrnNo ? (
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
                       <div className="row">
@@ -310,36 +310,41 @@ export default function DeliveryBillDetails() {
                                 defaultValue={Data?.id}
                               />
                               <div className="col-4">
-                                <label className="form-label">Gpm No</label>
+                                <label className="form-label">Crn No</label>
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  defaultValue={Data?.gpm_number}
+                                  defaultValue={Data?.crn_number}
                                   readOnly
                                 />
                               </div>
-                              <div className="col-4">
+                              {Data?.carting_containers?.map((container ,i)=>(
+                                <div className="col-8 d-flex gap-2">
+                                 <div className="col">
                                 <label className="form-label">
                                   Container No
                                 </label>
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  defaultValue={Data?.container_number}
+                                  defaultValue={container?.container_number}
                                   readOnly
                                 />
                               </div>
-                              <div className="col-4">
+                              <div className="col">
                                 <label className="form-label">
                                   Container Size
                                 </label>
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  defaultValue={Data?.container_size}
+                                  defaultValue={container?.container_size}
                                   readOnly
                                 />
                               </div>
+                                </div>
+                              ))}
+                             
                               <div className="col-4">
                                 <label className="form-label">
                                   Start Date Time
@@ -387,27 +392,40 @@ export default function DeliveryBillDetails() {
                                 />
                               </div>
                               <div className="col-2">
+                                <label
+                                  htmlFor="truck_arrival_date"
+                                  className="form-label"
+                                >
+                                  Truck Arrival Date
+                                </label>
+                                <input
+                                  type="datetime-local"
+                                  className="form-control p-2"
+                                  name={`truck_arrival_date[${i}]`}
+                                />
+                              </div>
+                              <div className="col-2">
                                 <label htmlFor="billNo" className="form-label">
                                   Bill Number
                                 </label>
                                 <select
-                                  name={`boe[${i}]`}
+                                  name={`sbill[${i}]`}
                                   className="form-select p-2"
                                   onChange={(e) =>
                                     handleBillDetails(i, e.target.value)
                                   }
-                                  id={`boe_${i}`}
+                                  id={`sbill_${i}`}
                                 >
                                   <option value="" selected disabled>
                                     Select Bill
                                   </option>
-                                  {Data?.delivery_bill_details?.map(
+                                  {Data?.carting_shipping_bill_details?.map(
                                     (details, k) => (
                                       <option
                                         key={k}
-                                        value={details?.boe_number}
+                                        value={details?.shipping_bill_number}
                                       >
-                                        {details?.boe_number}
+                                        {details?.shipping_bill_number}
                                       </option>
                                     )
                                   )}
@@ -475,26 +493,24 @@ export default function DeliveryBillDetails() {
                   </>
                 ) : (
                   <div className="row justify-content-center align-items-center h-75">
-                    <div className="col-6">
+                    <div className="col-md-6 col-8">
                       <div className="card my-3">
                         <div className="card-body">
-                          <h4 className="text-center text-primary">Delivery</h4>
+                          <h4 className="text-center text-primary">Carting</h4>
                           <form action="" onSubmit={GetFormData}>
-                            <p>Please Enter GPM Number to Fetch Data</p>
+                            <p>Please Enter CRN Number to Fetch Data</p>
                             <div className="form-floating form-floating-outline mb-6">
                               <input
                                 type="text"
                                 className="form-control mb-3"
-                                placeholder="Enter GPM Number"
-                                name="gpm_number"
+                                placeholder="Enter CRN Number"
+                                name="crn_number"
                                 onChange={(e) =>
                                   (e.target.value =
                                     e.target.value.toUpperCase())
                                 }
                               />
-                              <label htmlFor="Container_Number">
-                                GPM Number
-                              </label>
+                              <label htmlFor="crn_number">CRN Number</label>
                             </div>
                             <button
                               type="submit"

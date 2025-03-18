@@ -7,15 +7,15 @@ import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTime } from "../main/formatToDateTime";
 
-export default function DeliveryTallySheet() {
+export default function CartingTallySheet() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [Data, setData] = useState(null);
 
-  const fetchData = async (gpm_number) => {
+  const fetchData = async (crn_number) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/delivery/de_stuffing/${gpm_number}`;
+    const url = `https://ctas.live/backend/api/get/carting?crn_number=${crn_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -40,9 +40,9 @@ export default function DeliveryTallySheet() {
   };
 
   useEffect(() => {
-    const gpm_number = searchParams.get("gpm_number");
-    if (gpm_number) {
-      fetchData(gpm_number);
+    const crn_number = searchParams.get("crn_number");
+    if (crn_number) {
+      fetchData(crn_number);
     }
   }, [searchParams]);
 
@@ -54,23 +54,22 @@ export default function DeliveryTallySheet() {
   const formattedDate = today.toLocaleDateString("en-GB");
 
   useEffect(() => {
-    if (Data && Data.delivery_trucks) {
-      let totalPackages = 0;
-      let totalPackagesWeight = 0;
-      let totalArea = 0;
+    let totalPackages = 0;
+    let totalPackagesWeight = 0;
+    let totalArea = 0;
 
-      Data.delivery_trucks.forEach((Details) => {
+    if (Data && Data.carting_trucks) {
+      Data.carting_trucks.forEach((Details) => {
         totalPackages += parseInt(Details.no_of_pkgs ?? 0);
         totalPackagesWeight += parseFloat(Details.pkgs_weight ?? 0);
-        // totalArea += parseFloat(Details.area_m ?? 0);
         Details?.grid_area?.map(
           (grid_area) => (totalArea += parseFloat(grid_area.area ?? 0))
         );
       });
-      setTotalPackages(totalPackages);
-      setTotalPackagesWeight(totalPackagesWeight);
-      setTotalArea(totalArea);
     }
+    setTotalPackages(totalPackages);
+    setTotalPackagesWeight(totalPackagesWeight.toFixed(2));
+    setTotalArea(totalArea);
   }, [Data]);
 
   if (!Data) {
@@ -95,8 +94,9 @@ export default function DeliveryTallySheet() {
           </div>
         </div>
       )}
-      <div className="card tally_sheet shadow-none">
-        <div className="card-body">
+
+      <div className="card card-body p-4">
+        <div className="card tally_sheet shadow-none">
           <div className="row">
             <div className="col">
               <span> S.No:</span> <b> {Data.id}</b>
@@ -106,105 +106,114 @@ export default function DeliveryTallySheet() {
             <div className="col text-center">
               <b>Cargo Handling Operator </b>
               <br />
-              <span>Container Delivery Tally Sheet</span>
+              <span>Container Carting Tally Sheet</span>
             </div>
-            <div className="col text-end">
-            </div>
+            <div className="col text-end"></div>
           </div>
           <hr />
           <div className="row px-0 top">
             <table className="table table-borderless mb-4 table-font text-nowrap">
               <tbody>
                 <tr>
-                  <td>GPM Number</td>
-                  <td>
-                    <strong>: {Data.gpm_number}</strong>
-                  </td>
-                  <td>Total No Of Trucks</td>
-                  <td>
-                    <strong>: {Data?.delivery_trucks?.length}</strong>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Bill Of Entry</td>
-                  <td>
+                  <td>Sbill Number</td>
+                  <td className="text-wrap">
                     <strong>
                       :
-                      {Data?.delivery_bill_details?.map((details, i) => (
+                      {Data?.carting_shipping_bill_details?.map((de, i) => (
                         <>
-                          <span>{details.boe_number}, </span>
-                          { (i + 1) % 3 === 0 && <br /> }
+                          <span>{de.shipping_bill_number},</span>
+                          {(i + 1) % 3 === 0 && <br />}
                         </>
                       ))}
                     </strong>
                   </td>
+                  <td>Total No Of Trucks</td>
+                  <td>
+                    <strong>
+                      : {Data.carting_trucks && Data.carting_trucks.length}
+                    </strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>CRN Number</td>
+                  <td>
+                    <strong>: {Data.crn_number}</strong>
+                  </td>
                   <td>Sline Code</td>
                   <td>
-                    <strong>: {Data.shipping_line_code}</strong>
+                    <strong>: {Data.shipping_liner_code}</strong>
                   </td>
                 </tr>
                 <tr>
                   <td>Container Number</td>
                   <td>
-                    <strong>: {Data.container_number}</strong>
+                    <strong>
+                      : {Data?.carting_containers?.[0]?.container_number}
+                    </strong>
                   </td>
                   <td>Declared Gross Weight</td>
                   <td>
-                    <strong>: {Data.gross_weight} Tons</strong>
+                    <strong>: {Data.gross_weight}</strong>
                   </td>
                 </tr>
                 <tr>
                   <td>Container Size</td>
                   <td>
-                    <strong>: {Data.container_size}</strong>
+                    <strong>
+                      : {Data?.carting_containers?.[0]?.container_size}
+                    </strong>
+                  </td>
+                  <td>Warehouse Name</td>
+                  <td>
+                    <strong>: Export Warehouse</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Type</td>
+                  <td>
+                    <strong className="text-uppercase">: {Data.type}</strong>
                   </td>
                   <td>Start Date & Time</td>
                   <td>
                     <strong>
-                      :
-                        {Data.start_time && formatToDateTime(Data.start_time)}
+                      :{Data.start_time && formatToDateTime(Data.start_time)}
+                    </strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>GW Port Code</td>
+                  <td>
+                    <strong>:{Data.gw_port_code}</strong>
+                  </td>
+                  <td>End Date & Time</td>
+                  <td>
+                    <strong>
+                      :{Data.end_time && formatToDateTime(Data.end_time)}
                     </strong>
                   </td>
                 </tr>
                 <tr>
                   <td>Cha Code</td>
                   <td>
-                    <strong>: {Data.cha_code}</strong>
+                    <strong>:{Data.cha_code}</strong>
                   </td>
-                  <td>End Date & Time</td>
-                  <td>
-                    <strong>
-                      :
-                      
-                       { Data.end_time && formatToDateTime(Data.end_time)}
-                    </strong>
-                  </td>
+                  <td>Excess / Short Packages</td>
+                  <td>-</td>
                 </tr>
                 <tr>
                   <td>Total No. of Packages Declared</td>
                   <td>
                     <strong>: {totalPackages}</strong>
                   </td>
-                  <td>Excess / Short Packages</td>
+                  <td>Exporter Name</td>
                   <td>
-                    <strong>:- </strong>
+                    <strong>: {Data.exporter_name}</strong>
                   </td>
                 </tr>
                 <tr>
                   <td>Handling Type</td>
                   <td>
-                    <strong>
-                      :
-                        {Data.handling_type}
-                    </strong>
-                  </td>
-                  <td>Importer Name</td>
-                  <td>
-                    <strong>
-                      :
-                     
-                      {Data.importer_name}
-                    </strong>
+                    <strong>:{Data.handline_type}</strong>
                   </td>
                 </tr>
               </tbody>
@@ -215,7 +224,8 @@ export default function DeliveryTallySheet() {
               <thead className="">
                 <tr>
                   <th>Truck Number</th>
-                  <th>Bill of Entry No</th>
+                  <th>Truck Arrival Date</th>
+                  <th>SBill</th>
                   <th>Pkg Code</th>
                   <th>Cargo Description (Code)</th>
                   <th>No of Pkgs</th>
@@ -225,50 +235,39 @@ export default function DeliveryTallySheet() {
                 </tr>
               </thead>
               <tbody>
-                {Data.delivery_trucks &&
-                  Data.delivery_trucks.map((Trucks, k) => (
-                    <tr key={k}>
-                      <td>
-                         { Trucks.truck_number}
-                      </td>
-                      <td>
-                        
-                         { Trucks.boe}
-                      </td>
-                      <td>
-                         { Trucks.pkg_code}
-                      </td>
-                      <td>
-                        {Trucks.cargo_description}
-                        
-                      </td>
+                {Data.carting_trucks &&
+                  Data.carting_trucks.map((Trucks, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{Trucks.truck_number}</td>
+                        <td>{formatToDateTime(Trucks.truck_arrival_date)}</td>
+                        <td>{Trucks.sbill}</td>
+                        <td>{Trucks.pkg_code}</td>
+                        <td>{Trucks.cargo_description}</td>
 
-                      <td>
-                         { Trucks.no_of_pkgs}
-                      </td>
-                      <td>
-                          {Trucks.pkgs_weight}
-                      </td>
-                      <td>
+                        <td>{Trucks.no_of_pkgs}</td>
+                        <td>{Trucks.pkgs_weight}</td>
+                        <td>
                           {Trucks?.grid_area?.map((grid_area) => (
                             <span>{grid_area.grid_locations} ,</span>
                           ))}
-                      </td>
-                      <td>
+                        </td>
+                        <td>
                           {Trucks?.grid_area?.map((grid_area) => (
                             <span>{grid_area.area} ,</span>
                           ))}
-                      </td>
-                    </tr>
-                  ))}
-
-                {Data.delivery_trucks
+                        </td>
+                      </tr>
+                    );
+                  })}
+                {Data.carting_trucks
                   ? Array.from(
                       {
-                        length: Math.max(0, 10 - Data.delivery_trucks.length),
+                        length: Math.max(0, 10 - Data.carting_trucks.length),
                       },
                       (_, i) => (
                         <tr key={i}>
+                          <td></td>
                           <td></td>
                           <td></td>
                           <td></td>
@@ -290,11 +289,13 @@ export default function DeliveryTallySheet() {
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
                       </tr>
                     ))}
 
                 <tr>
                   <td>Total</td>
+                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
