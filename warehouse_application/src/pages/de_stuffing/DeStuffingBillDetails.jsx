@@ -235,15 +235,12 @@ export default function DeStuffingBillDetails() {
           </div>
         </div>
       )}
-      <div className="layout-wrapper layout-content-navbar">
+      <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
         <div className="layout-container">
-          <Header />
           <div className="layout-page">
-            <Nav />
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-
-                {(ContainerNo && Type && TallySheet) ? (
+                {ContainerNo && Type && TallySheet ? (
                   <div className="row justify-content-center">
                     <div className="col-lg-10 col-md-11">
                       <div className="text-end">
@@ -257,9 +254,13 @@ export default function DeStuffingBillDetails() {
                         >
                           Print
                         </button>
-
+                        <a href="?"
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Search Another
+                        </a>
                         <Link
-                          to={'/de-stuffing'}
+                          to={"/de-stuffing"}
                           className="btn btn-primary mb-2 ms-2"
                         >
                           Go Back
@@ -282,6 +283,19 @@ export default function DeStuffingBillDetails() {
                 ) : Data && ContainerNo && Type ? (
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
+                    <div className="text-end">
+                        <a href="?"
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Search Another
+                        </a>
+                        <Link
+                          to={"/de-stuffing"}
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Go Back
+                        </Link>
+                      </div>
                       <div className="row">
                         <h4 className="text-primary mb-3">Container Details</h4>
                         <div className="card">
@@ -361,7 +375,10 @@ export default function DeStuffingBillDetails() {
                             >
                               <div className="row">
                                 <div className="col-2">
-                                  <label htmlFor={`billNo_${details.id}`} className="form-label">
+                                  <label
+                                    htmlFor={`billNo_${details.id}`}
+                                    className="form-label"
+                                  >
                                     Bill Number
                                   </label>
                                   <input
@@ -373,34 +390,50 @@ export default function DeStuffingBillDetails() {
                                   />
                                 </div>
                                 <div className="col-3">
-                                  <label htmlFor={`cargoDesc_${details.id}`} className="form-label">
+                                  <label
+                                    htmlFor={`cargoDesc_${details.id}`}
+                                    className="form-label"
+                                  >
                                     Cargo Description (Code)
                                   </label>
                                   <input
                                     id={`cargoDesc_${details.id}`}
                                     type="text"
                                     className="form-control p-2 text-nowrap"
-                                    defaultValue={details?.commodity_description}
+                                    defaultValue={
+                                      details?.commodity_description
+                                    }
                                     readOnly
                                   />
                                 </div>
                                 <div className="col-2">
-                                  <label htmlFor={`noOfPkgs_${details.id}`} className="form-label">
+                                  <label
+                                    htmlFor={`noOfPkgs_${details.id}`}
+                                    className="form-label"
+                                  >
                                     No of Pkgs
                                   </label>
                                   <input
                                     id={`noOfPkgs_${details.id}`}
                                     type="number"
                                     className="form-control p-2 text-nowrap"
-                                    defaultValue={details?.no_of_packages_declared}
+                                    defaultValue={
+                                      details?.no_of_packages_declared
+                                    }
                                     name={`no_of_packages_declared[${details.id}]`}
                                     onChange={(e) => {
-                                      handleBillPkgW(details.id, e.target.value);
+                                      handleBillPkgW(
+                                        details.id,
+                                        e.target.value
+                                      );
                                     }}
                                   />
                                 </div>
                                 <div className="col-2">
-                                  <label htmlFor={`pkgWeight_${details.id}`} className="form-label">
+                                  <label
+                                    htmlFor={`pkgWeight_${details.id}`}
+                                    className="form-label"
+                                  >
                                     Pkg Weight
                                   </label>
                                   <input
@@ -455,8 +488,8 @@ export default function DeStuffingBillDetails() {
                                 placeholder="Enter Container Number"
                                 name="container_no"
                                 onChange={(e) =>
-                                (e.target.value =
-                                  e.target.value.toUpperCase())
+                                  (e.target.value =
+                                    e.target.value.toUpperCase())
                                 }
                               />
                               <label htmlFor="Container_Number">

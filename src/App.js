@@ -81,9 +81,6 @@ export default function App() {
 
           {/* GATE */}
           <Route path="/Gate" element={<PrivateRoute ><GateIN /></PrivateRoute>} />
-
-          <Route path="/GateOld" element={<Index />} />
-
           <Route path="/CISF" element={<PrivateRoute ><Cisf /></PrivateRoute>} />
           <Route path="/CISFIn" element={<PrivateRoute ><CisfIn /></PrivateRoute>} />
           <Route path="/CISFOut" element={<PrivateRoute ><CisfOut /></PrivateRoute>} />
@@ -95,6 +92,7 @@ export default function App() {
 
           {/* YARD */}
           <Route path="/YardTransactions" element={<PrivateRoute><YardTransactions /></PrivateRoute>} />
+          <Route path="/Rst" element={<PrivateRoute><Rst/></PrivateRoute>} />
 
           {/* WAREHOUSE */}
           <Route path="/CartingReadFCL" element={<PrivateRoute><CWHCartingRead /></PrivateRoute>} />
@@ -112,21 +110,20 @@ export default function App() {
           <Route path="/TallySheetDeStuffingFCL/:ContainerNo" element={<TallySheetDeStuffingFCL />} />
           <Route path="/TallySheetDeStuffingLCL/:ContainerNo" element={<TallySheetDeStuffingLCL />} />
 
+          {/* 
           <Route path="/DTMSGate" element={<PrivateRoute ><DTMSGate /></PrivateRoute>} />
+          <Route path="/GateOld" element={<Index />} />
           <Route path="/DTMSYardTransactions" element={<PrivateRoute><DTMSRst /></PrivateRoute>} />
-          <Route path="/RakeOutWords" element={<PrivateRoute><RakeOutWord /></PrivateRoute>} />
+          <Route path="/RakeOutWords" element={<RakeOutWord />} />
           <Route path="/RakeOutWordData/:type" element={<RakeOutWordData />} />
           <Route path="/EIRMain/:Permit" element={<PrivateRoute><EIRMain /></PrivateRoute>} />
-          <Route path="/EIR/:Permit" element={<PrivateRoute><EIR /></PrivateRoute>} />
-
-
+          <Route path="/EIR/:Permit" element={<PrivateRoute><EIR /></PrivateRoute>} /> 
           <Route path="/GateTools" element={<Gate />} />
           <Route path="/rake_survey_tool" element={<Rake_survey_tool />} />
-
           <Route path="/GateOUT" element={<GateOUT />} />
-
-          <Route path="/Rst" element={<Rst />} />
           <Route path="/WTR" element={<WTR />} />
+            */}
+
 
         </Routes>
       </div>

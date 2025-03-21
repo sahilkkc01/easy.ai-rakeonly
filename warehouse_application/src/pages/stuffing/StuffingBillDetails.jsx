@@ -15,14 +15,15 @@ export default function StuffingBillDetails() {
   const [TallySheet, setTallySheet] = useState(null);
   const [Data, setData] = useState(null);
   const [Locations, setLocations] = useState(null);
-  const [TotalTrucks, setTotalTrucks] = useState(1);
+  const [TotalBills, setTotalBills] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const today = new Date();
 
-  const fetchData = async (container_no) => {
+  const fetchData = async (container_number) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/stuffing?type=FCL&container_number=${container_no}`;
+    // const url = `https://ctas.live/backend/api/get/stuffing?type=FCL&container_number=${container_number}`;
+    const url = `http://192.168.1.13:8000/api/get/stuffing?type=FCL&container_number=${container_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -48,7 +49,7 @@ export default function StuffingBillDetails() {
 
   const fetchLocations = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/warehouse/empty/locations?type=Import`;
+    const url = `https://ctas.live/backend/api/warehouse/empty/locations?type=Export`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -74,21 +75,21 @@ export default function StuffingBillDetails() {
 
   const GetFormData = async (e) => {
     e.preventDefault();
-    const container_no = e.target.container_no.value.toUpperCase();
-    setContainerNo(container_no);
-    setSearchParams({ container_no });
-    fetchData(container_no);
+    const container_number = e.target.container_number.value.toUpperCase();
+    setContainerNo(container_number);
+    setSearchParams({ container_number });
+    fetchData(container_number);
   };
 
   useEffect(() => {
-    const container_no = searchParams.get("container_no");
+    const container_number = searchParams.get("container_number");
     const tallySheet = searchParams.get("tally_sheet");
-    if (container_no) {
-      setContainerNo(container_no);
+    if (container_number) {
+      setContainerNo(container_number);
       if (tallySheet) {
         setTallySheet(tallySheet);
       } else {
-        fetchData(container_no);
+        fetchData(container_number);
       }
     }
   }, [searchParams]);
@@ -103,7 +104,8 @@ export default function StuffingBillDetails() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    const url = `https://ctas.live/backend/api/delivery/de_stuffing/update`;
+    const url = `http://192.168.1.13:8000/api/stuffing/update`;
+    // const url = `https://ctas.live/backend/api/stuffing/update`;
     try {
       const response = await axios.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -115,7 +117,7 @@ export default function StuffingBillDetails() {
           text: response?.data?.message,
           timer: 3000,
         }).then(() => {
-          navigate(`?tally_sheet=1&container_no=${ContainerNo}`);
+          navigate(`?tally_sheet=1&container_number=${ContainerNo}`);
         });
       } else {
         Swal.fire({
@@ -285,7 +287,7 @@ export default function StuffingBillDetails() {
                       <div className="" style={{ width: 789, height: 1099 }}>
                         <iframe
                           ref={iframeRef}
-                          src={`/delivery/tally_sheet?container_no=${ContainerNo}`}
+                          src={`/delivery/tally_sheet?container_number=${ContainerNo}`}
                           style={{
                             width: "100%",
                             height: "100%",
@@ -310,22 +312,13 @@ export default function StuffingBillDetails() {
                                 defaultValue={Data?.id}
                               />
                               <div className="col-4">
-                                <label className="form-label">Gpm No</label>
-                                <input
-                                  type="text"
-                                  className="form-control p-2"
-                                  defaultValue={Data?.container_no}
-                                  readOnly
-                                />
-                              </div>
-                              <div className="col-4">
                                 <label className="form-label">
                                   Container No
                                 </label>
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  defaultValue={Data?.container_no}
+                                  defaultValue={Data?.container_number}
                                   readOnly
                                 />
                               </div>
@@ -337,6 +330,17 @@ export default function StuffingBillDetails() {
                                   type="text"
                                   className="form-control p-2"
                                   defaultValue={Data?.container_size}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  Container Type
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={Data?.container_type}
                                   readOnly
                                 />
                               </div>
@@ -367,69 +371,34 @@ export default function StuffingBillDetails() {
                         </div>
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
-                        {Array.from({ length: TotalTrucks }, (_, i) => (
+                        {Array.from({ length: TotalBills }, (_, i) => (
                           <div
                             key={i}
                             className="card card-body px-3 py-4 my-2"
                           >
                             <div className="row">
                               <div className="col-2">
-                                <label
-                                  htmlFor="truck_number"
-                                  className="form-label"
-                                >
-                                  Truck Number
+                                <label htmlFor="shipping_bill_number" className="form-label">
+                                  Bill Number
                                 </label>
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  name={`truck_number[${i}]`}
+                                  name={`shipping_bill_number[${i}]`}
+                                  id={`shipping_bill_number_${i}`}
+                                  
                                 />
-                              </div>
-                              <div className="col-2">
-                                <label htmlFor="billNo" className="form-label">
-                                  Bill Number
-                                </label>
-                                <select
-                                  name={`boe[${i}]`}
-                                  className="form-select p-2"
-                                  onChange={(e) =>
-                                    handleBillDetails(i, e.target.value)
-                                  }
-                                  id={`boe_${i}`}
-                                >
-                                  <option value="" selected disabled>
-                                    Select Bill
-                                  </option>
-                                  {Data?.delivery_bill_details?.map(
-                                    (details, k) => (
-                                      <option
-                                        key={k}
-                                        value={details?.boe_number}
-                                      >
-                                        {details?.boe_number}
-                                      </option>
-                                    )
-                                  )}
-                                </select>
                               </div>
                               <div className="col-3">
                                 <label className="form-label">
-                                  Cargo Description (Code)
+                                  Cargo Description
                                 </label>
-                                <input
-                                  type="hidden"
-                                  className="form-control p-2"
-                                  name={`pkg_code[${i}]`}
-                                  id={`pkg_code_${i}`}
-                                  readOnly
-                                />
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  name={`cargo_description[${i}]`}
-                                  id={`cargo_description_${i}`}
-                                  readOnly
+                                  name={`commodity_description[${i}]`}
+                                  id={`commodity_description_${i}`}
+                                  
                                 />
                               </div>
                               <div className="col-2">
@@ -437,8 +406,8 @@ export default function StuffingBillDetails() {
                                 <input
                                   type="number"
                                   className="form-control p-2"
-                                  id={`no_of_pkgs_${i}`}
-                                  name={`no_of_pkgs[${i}]`}
+                                  id={`no_of_packages_declared_${i}`}
+                                  name={`no_of_packages_declared[${i}]`}
                                   onChange={(e) =>
                                     handleBillPkgW(i, e.target.value)
                                   }
@@ -449,8 +418,8 @@ export default function StuffingBillDetails() {
                                 <input
                                   type="text"
                                   className="form-control p-2"
-                                  id={`pkgs_weight_${i}`}
-                                  name={`pkgs_weight[${i}]`}
+                                  id={`package_weight_${i}`}
+                                  name={`package_weight[${i}]`}
                                 />
                               </div>
                               <GridComponent index={i} />
@@ -461,9 +430,9 @@ export default function StuffingBillDetails() {
                           <button
                             type="button"
                             className="btn btn-sm btn-primary"
-                            onClick={() => setTotalTrucks(TotalTrucks + 1)}
+                            onClick={() => setTotalBills(TotalBills + 1)}
                           >
-                            Add Truck
+                            Add Bill
                           </button>
                         </div>
                         <hr />
@@ -486,7 +455,7 @@ export default function StuffingBillDetails() {
                                 type="text"
                                 className="form-control mb-3"
                                 placeholder="Enter Container Number"
-                                name="container_no"
+                                name="container_number"
                                 onChange={(e) =>
                                   (e.target.value =
                                     e.target.value.toUpperCase())
