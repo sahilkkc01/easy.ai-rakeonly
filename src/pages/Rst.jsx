@@ -46,6 +46,10 @@ function Rst() {
     return () => clearInterval(interval); 
   }, []);
   
+  useEffect(() => {
+      GetData();
+  }, []);
+  
 
   return (
     <>
