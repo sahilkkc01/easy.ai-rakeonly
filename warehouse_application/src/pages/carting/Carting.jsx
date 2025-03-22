@@ -73,11 +73,9 @@ export default function Carting() {
           </div>
         </div>
       )}
-      <div className="layout-wrapper layout-content-navbar">
-        <div className="layout-container">
-          <Header />
-          <div className="layout-page">
-            <Nav/>
+     <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
+              <div className="layout-container">
+                <div className="layout-page">
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="card card-body">

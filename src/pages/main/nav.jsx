@@ -15,7 +15,6 @@ export default function Nav() {
       setPermissions(parsedPermissions);
       // console.log(parsedPermissions);
       // This will now log the object correctly
-
     }
   }, [user_permissions]);
   const initialTheme = sessionStorage.getItem("myTheme") === "true";
@@ -86,11 +85,11 @@ export default function Nav() {
         id="layout-navbar"
       >
         <div className="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
-          <a
-            className="nav-item nav-link px-0 me-xl-6"
-            href="#"
-          >
-            <i className="ri-menu-fill ri-24px" onClick={() => setToggleSide(!toggleSide)}></i>
+          <a className="nav-item nav-link px-0 me-xl-6" href="#">
+            <i
+              className="ri-menu-fill ri-24px"
+              onClick={() => setToggleSide(!toggleSide)}
+            ></i>
           </a>
         </div>
 
@@ -110,7 +109,16 @@ export default function Nav() {
               </div>
             </div>
           </div> */}
-
+          {localStorage.getItem("equipment_id") && (
+            <div className="navbar-nav align-items-center gap-2 ms-5">
+              <div className="nav-item navbar-search-wrapper mb-0">
+                <button className="btn btn-primary ">
+                  {" "}
+                  {localStorage.getItem("equipment_id")}
+                </button>
+              </div>
+            </div>
+          )}
           <ul className="navbar-nav flex-row align-items-center ms-auto">
             <li className="nav-item ">
               <h4 className="mb-0 me-4">{time.toLocaleTimeString()}</h4>
@@ -118,17 +126,21 @@ export default function Nav() {
             <li className="nav-item me-3">
               <Link className="nav-link btn btn-text-secondary rounded-pill btn-icon">
                 <i
-                  className={`${theme ? "ri-moon-line" : "ri-sun-line"
-                    }  ri-22px`}
+                  className={`${
+                    theme ? "ri-moon-line" : "ri-sun-line"
+                  }  ri-22px`}
                   onClick={changeTheme}
                 />
               </Link>
             </li>
 
             <li className="nav-item">
-              <Link to={'/Logout'} className="nav-link btn btn-text-danger rounded-pill btn-icon btn-label-danger">
-               {/* <i class="ri-logout-box-r-line ri-24px"></i> */}
-               <img src="/logout.png" style={{width:'22px'}} alt="" />
+              <Link
+                to={"/Logout"}
+                className="nav-link btn btn-text-danger rounded-pill btn-icon btn-label-danger"
+              >
+                {/* <i class="ri-logout-box-r-line ri-24px"></i> */}
+                <img src="/logout.png" style={{ width: "22px" }} alt="" />
               </Link>
             </li>
 
@@ -185,10 +197,7 @@ export default function Nav() {
                 </li>
                 <li>
                   <div className="d-grid px-4 pt-2 pb-1">
-                    <Link  
-                    to={'/Logout'}
-                      className="btn btn-danger d-flex"
-                    >
+                    <Link to={"/Logout"} className="btn btn-danger d-flex">
                       <small className="align-middle">Logout</small>
                       <i className="ri-logout-box-r-line ms-2 ri-16px" />
                     </Link>
@@ -210,8 +219,6 @@ export default function Nav() {
           <i className="ri-close-fill search-toggler cursor-pointer"></i>
         </div>
       </nav>
-
     </>
-
   );
 }
