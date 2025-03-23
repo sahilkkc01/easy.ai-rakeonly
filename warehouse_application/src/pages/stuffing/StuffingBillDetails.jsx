@@ -22,8 +22,7 @@ export default function StuffingBillDetails() {
 
   const fetchData = async (container_number) => {
     setLoading(true);
-    // const url = `https://ctas.live/backend/api/get/stuffing?type=FCL&container_number=${container_number}`;
-    const url = `http://192.168.1.13:8000/api/get/stuffing?type=FCL&container_number=${container_number}`;
+    const url = `https://ctas.live/backend/api/get/stuffing?type=FCL&container_number=${container_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -104,8 +103,7 @@ export default function StuffingBillDetails() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    const url = `http://192.168.1.13:8000/api/stuffing/update`;
-    // const url = `https://ctas.live/backend/api/stuffing/update`;
+    const url = `https://ctas.live/backend/api/stuffing/update`;
     try {
       const response = await axios.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -255,17 +253,15 @@ export default function StuffingBillDetails() {
           </div>
         </div>
       )}
-      <div className="layout-wrapper layout-content-navbar">
+      <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
         <div className="layout-container">
-          <Header />
           <div className="layout-page">
-            <Nav />
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
                 {ContainerNo && TallySheet ? (
                   <div className="row justify-content-center">
                     <div className="col-lg-10 col-md-11">
-                      <div className="text-end">
+                    <div className="text-end">
                         <button
                           onClick={() => {
                             if (iframeRef.current) {
@@ -276,9 +272,13 @@ export default function StuffingBillDetails() {
                         >
                           Print
                         </button>
-
+                        <a href="?"
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Search Another
+                        </a>
                         <Link
-                          to={"/delivery"}
+                          to={"/stuffing"}
                           className="btn btn-primary mb-2 ms-2"
                         >
                           Go Back
@@ -287,7 +287,7 @@ export default function StuffingBillDetails() {
                       <div className="" style={{ width: 789, height: 1099 }}>
                         <iframe
                           ref={iframeRef}
-                          src={`/delivery/tally_sheet?container_number=${ContainerNo}`}
+                          src={`/stuffing/tally_sheet?container_number=${ContainerNo}`}
                           style={{
                             width: "100%",
                             height: "100%",
@@ -301,6 +301,19 @@ export default function StuffingBillDetails() {
                 ) : Data && ContainerNo ? (
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
+                    <div className="text-end">
+                        <a href="?"
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Search Another
+                        </a>
+                        <Link
+                          to={"/stuffing"}
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Go Back
+                        </Link>
+                      </div>
                       <div className="row">
                         <h4 className="text-primary mb-3">Container Details</h4>
                         <div className="card">

@@ -13,9 +13,9 @@ export default function StuffingTallySheet() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [Data, setData] = useState(null);
 
-  const fetchData = async (gpm_number) => {
+  const fetchData = async (container_number) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/delivery/de_stuffing/${gpm_number}`;
+    const url = `https://ctas.live/backend/api/get/stuffing?type=FCL&container_number=${container_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -40,9 +40,9 @@ export default function StuffingTallySheet() {
   };
 
   useEffect(() => {
-    const gpm_number = searchParams.get("gpm_number");
-    if (gpm_number) {
-      fetchData(gpm_number);
+    const container_number = searchParams.get("container_number");
+    if (container_number) {
+      fetchData(container_number);
     }
   }, [searchParams]);
 
@@ -54,19 +54,21 @@ export default function StuffingTallySheet() {
   const formattedDate = today.toLocaleDateString("en-GB");
 
   useEffect(() => {
-    if (Data && Data.delivery_trucks) {
+    if (Data && Data.stuffing_shipping_bill_details) {
       let totalPackages = 0;
       let totalPackagesWeight = 0;
       let totalArea = 0;
 
-      Data.delivery_trucks.forEach((Details) => {
-        totalPackages += parseInt(Details.no_of_pkgs ?? 0);
-        totalPackagesWeight += parseFloat(Details.pkgs_weight ?? 0);
-        // totalArea += parseFloat(Details.area_m ?? 0);
-        Details?.grid_area?.map(
-          (grid_area) => (totalArea += parseFloat(grid_area.area ?? 0))
-        );
+      Data.stuffing_shipping_bill_details.forEach((Details) => {
+        totalPackages += parseInt(Details.no_of_packages_declared ?? 0);
+        totalPackagesWeight += parseFloat(Details.package_weight ?? 0);
+        if (Array.isArray(Details?.grid_area)) {
+          Details.grid_area.forEach((grid) => {
+            totalArea += parseFloat(grid.area ?? 0);
+          });
+        }
       });
+
       setTotalPackages(totalPackages);
       setTotalPackagesWeight(totalPackagesWeight);
       setTotalArea(totalArea);
@@ -96,7 +98,7 @@ export default function StuffingTallySheet() {
         </div>
       )}
       <div className="card tally_sheet shadow-none">
-        <div className="card-body">
+      <div className="card-body">
           <div className="row">
             <div className="col">
               <span> S.No:</span> <b> {Data.id}</b>
@@ -106,7 +108,7 @@ export default function StuffingTallySheet() {
             <div className="col text-center">
               <b>Cargo Handling Operator </b>
               <br />
-              <span>Container Delivery Tally Sheet</span>
+              <span>Container Stuffing Tally Sheet</span>
             </div>
             <div className="col text-end">
             </div>
@@ -116,31 +118,31 @@ export default function StuffingTallySheet() {
             <table className="table table-borderless mb-4 table-font text-nowrap">
               <tbody>
                 <tr>
-                  <td>GPM Number</td>
-                  <td>
-                    <strong>: {Data.gpm_number}</strong>
-                  </td>
-                  <td>Total No Of Trucks</td>
-                  <td>
-                    <strong>: {Data?.delivery_trucks?.length}</strong>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Bill Of Entry</td>
-                  <td>
+                  <td>Sbill Number</td>
+                  <td className="text-wrap">
                     <strong>
                       :
-                      {Data?.delivery_bill_details?.map((details, i) => (
+                      {Data?.stuffing_shipping_bill_details?.map((bills, i) => (
                         <>
-                          <span>{details.boe_number}, </span>
-                          { (i + 1) % 3 === 0 && <br /> }
-                        </>
+                        <span key={i}>{bills.shipping_bill_number} ,</span>
+                        {(i + 1) % 3 === 0 && <br />}
+                      </>
                       ))}
                     </strong>
                   </td>
+                  <td>Total No Of Containers</td>
+                  <td>
+                    <strong>: 1 </strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>CRN Number</td>
+                  <td>
+                    <strong>: {Data.crn_number}</strong>
+                  </td>
                   <td>Sline Code</td>
                   <td>
-                    <strong>: {Data.shipping_line_code}</strong>
+                    <strong>: {Data.shipping_liner_code}</strong>
                   </td>
                 </tr>
                 <tr>
@@ -158,26 +160,41 @@ export default function StuffingTallySheet() {
                   <td>
                     <strong>: {Data.container_size}</strong>
                   </td>
+                  <td>Warehouse Name</td>
+                  <td>
+                    <strong>: Export Warehouse</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Type</td>
+                  <td>
+                    <strong className="text-uppercase">: {Data.type}</strong>
+                  </td>
                   <td>Start Date & Time</td>
                   <td>
-                    <strong>
-                      :
-                        {Data.start_time && formatToDateTime(Data.start_time)}
-                    </strong>
+                    
+                      <strong>: {formatToDateTime(Data.start_time)}</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>GW Port Code</td>
+                  <td>
+                    <strong>:{Data.gw_port}</strong>
+                  </td>
+                  <td>End Date & Time</td>
+                  <td>
+                   
+                      <strong>: {formatToDateTime(Data.end_time)}</strong>
                   </td>
                 </tr>
                 <tr>
                   <td>Cha Code</td>
                   <td>
-                    <strong>: {Data.cha_code}</strong>
+                    <strong>:--</strong>
                   </td>
-                  <td>End Date & Time</td>
+                  <td>Excess / Short Packages</td>
                   <td>
-                    <strong>
-                      :
-                      
-                       { Data.end_time && formatToDateTime(Data.end_time)}
-                    </strong>
+                    <strong>: --</strong>
                   </td>
                 </tr>
                 <tr>
@@ -185,26 +202,15 @@ export default function StuffingTallySheet() {
                   <td>
                     <strong>: {totalPackages}</strong>
                   </td>
-                  <td>Excess / Short Packages</td>
+                  <td>Exporter Name</td>
                   <td>
-                    <strong>:- </strong>
+                    <strong>: --</strong>
                   </td>
                 </tr>
                 <tr>
                   <td>Handling Type</td>
                   <td>
-                    <strong>
-                      :
-                        {Data.handling_type}
-                    </strong>
-                  </td>
-                  <td>Importer Name</td>
-                  <td>
-                    <strong>
-                      :
-                     
-                      {Data.importer_name}
-                    </strong>
+                      <strong>:   {Data.handling_type}</strong>
                   </td>
                 </tr>
               </tbody>
@@ -214,8 +220,8 @@ export default function StuffingTallySheet() {
             <table className="table table-bordered table-font">
               <thead className="">
                 <tr>
-                  <th>Truck Number</th>
-                  <th>Bill of Entry No</th>
+                  <th>Container Number</th>
+                  <th>SBill No</th>
                   <th>Pkg Code</th>
                   <th>Cargo Description (Code)</th>
                   <th>No of Pkgs</th>
@@ -225,62 +231,55 @@ export default function StuffingTallySheet() {
                 </tr>
               </thead>
               <tbody>
-                {Data.delivery_trucks &&
-                  Data.delivery_trucks.map((Trucks, k) => (
-                    <tr key={k}>
-                      <td>
-                         { Trucks.truck_number}
-                      </td>
-                      <td>
-                        
-                         { Trucks.boe}
-                      </td>
-                      <td>
-                         { Trucks.pkg_code}
-                      </td>
-                      <td>
-                        {Trucks.cargo_description}
-                        
-                      </td>
+                {Data?.stuffing_shipping_bill_details?.map((Details, i) => (
+                  <tr key={i}>
+                    <td>{Data.container_number}</td>
+                    <td>
+                        {Details.shipping_bill_number}
+                    </td>
+                    <td>
+                     
+                        {Details.package_code}
+                    </td> 
 
-                      <td>
-                         { Trucks.no_of_pkgs}
-                      </td>
-                      <td>
-                          {Trucks.pkgs_weight}
-                      </td>
-                      <td>
-                          {Trucks?.grid_area?.map((grid_area) => (
-                            <span>{grid_area.grid_locations} ,</span>
+                    <td>
+                     {Details.commodity_description} (
+                          {Details.commodity_code})
+                    </td>
+                    <td>
+                     { Details.no_of_packages_declared}
+                    </td>
+                    <td>
+                    { Details.package_weight}
+                    </td>
+
+                    <td>
+                        { Details?.grid_area?.map((grid_area)=>(
+                           <>
+                            <span>{grid_area.grid_locations} </span> <br />
+                           </>
                           ))}
                       </td>
                       <td>
-                          {Trucks?.grid_area?.map((grid_area) => (
-                            <span>{grid_area.area} ,</span>
+                        
+                         { Details?.grid_area?.map((grid_area)=>(
+                           <>
+                            <span>{grid_area.area} </span> <br />
+                           </>
                           ))}
+                       
                       </td>
-                    </tr>
-                  ))}
-
-                {Data.delivery_trucks
+                  </tr>
+                ))}
+                {Data?.stuffing_shipping_bill_details
                   ? Array.from(
-                      {
-                        length: Math.max(0, 10 - Data.delivery_trucks.length),
-                      },
-                      (_, i) => (
-                        <tr key={i}>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                      )
-                    )
-                  : Array.from({ length: 10 }, (_, i) => (
+                    {
+                      length: Math.max(
+                        0,
+                        10 - Data.stuffing_shipping_bill_details.length
+                      ),
+                    },
+                    (_, i) => (
                       <tr key={i}>
                         <td></td>
                         <td></td>
@@ -291,7 +290,20 @@ export default function StuffingTallySheet() {
                         <td></td>
                         <td></td>
                       </tr>
-                    ))}
+                    )
+                  )
+                  : Array.from({ length: 10 }, (_, i) => (
+                    <tr key={i}>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  ))}
 
                 <tr>
                   <td>Total</td>

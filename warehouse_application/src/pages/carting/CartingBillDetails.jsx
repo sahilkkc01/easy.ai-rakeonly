@@ -102,8 +102,7 @@ export default function CartingBillDetails() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    // const url = `https://ctas.live/backend/api/carting/update`;
-    const url = `http://192.168.1.7:8000/api/carting/update`;
+    const url = `https://ctas.live/backend/api/carting/update`;
     try {
       const response = await axios.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -253,17 +252,16 @@ export default function CartingBillDetails() {
           </div>
         </div>
       )}
-      <div className="layout-wrapper layout-content-navbar">
+      <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
         <div className="layout-container">
-          <Header />
           <div className="layout-page">
-            <Nav />
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-                {CrnNo && TallySheet ? (
+            <div className="container">
+            {CrnNo && TallySheet ? (
                   <div className="row justify-content-center">
                     <div className="col-lg-10 col-md-11">
-                      <div className="text-end">
+                    <div className="text-end">
                         <button
                           onClick={() => {
                             if (iframeRef.current) {
@@ -274,7 +272,11 @@ export default function CartingBillDetails() {
                         >
                           Print
                         </button>
-
+                        <a href="?"
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Search Another
+                        </a>
                         <Link
                           to={"/carting"}
                           className="btn btn-primary mb-2 ms-2"
@@ -299,6 +301,19 @@ export default function CartingBillDetails() {
                 ) : Data && CrnNo ? (
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
+                    <div className="text-end">
+                        <a href="?"
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Search Another
+                        </a>
+                        <Link
+                          to={"/carting"}
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Go Back
+                        </Link>
+                      </div>
                       <div className="row">
                         <h4 className="text-primary mb-3">Container Details</h4>
                         <div className="card">
@@ -525,6 +540,7 @@ export default function CartingBillDetails() {
                   </div>
                 )}
 
+            </div>
                 <Footer />
                 <div className="content-backdrop fade" />
               </div>
