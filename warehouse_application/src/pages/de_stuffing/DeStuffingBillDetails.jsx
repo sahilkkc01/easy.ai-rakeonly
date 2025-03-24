@@ -149,13 +149,14 @@ export default function DeStuffingBillDetails() {
     };
 
     return (
-      <div className="col-3">
+      <div className="col-md-3 col-5">
         <label className="form-label">Grid Location & Area (SQM)</label>
         {gridInputs.map((input, i) => (
           <div key={input.id} className="d-flex align-items-center gap-3 mb-2">
             <select
               className="form-select p-2"
               name={`grid_locations[${details.id}][${i}]`}
+              onChange={(e) => GridAreaHandle(e.target.value, details.id, i)}
             >
               <option selected disabled>
                 Select Grid
@@ -171,6 +172,7 @@ export default function DeStuffingBillDetails() {
               className="form-control p-2"
               placeholder="Area (SQM)"
               name={`area[${details.id}][${i}]`}
+              id={`area_${details.id}_${i}`}
             />
             <button
               type="button"
@@ -185,6 +187,26 @@ export default function DeStuffingBillDetails() {
     );
   };
 
+  const GridAreaHandle = (grid, id, key) => {
+    let totalArea = 0;
+    let occupied = 0;
+  
+    Locations?.forEach((location) => {
+      if (location.camera_locations === grid) {
+        totalArea += parseInt(location.total_area) || 0;
+        occupied += parseInt(location.occupied_area) || 0;
+      }
+    });
+  
+    let available = totalArea - occupied;
+    let areaInput = document.getElementById(`area_${id}_${key}`);
+  
+    if (areaInput) {
+      areaInput.value = available >= 0 ? available : 0;
+      areaInput.max = available >= 0 ? available : 0; 
+    }
+  };
+  
   const handleBillPkgW = (id, pkg) => {
     let no_of_pkgs = 0;
     let package_weight = 0;
@@ -254,9 +276,7 @@ export default function DeStuffingBillDetails() {
                         >
                           Print
                         </button>
-                        <a href="?"
-                          className="btn btn-primary mb-2 ms-2"
-                        >
+                        <a href="?" className="btn btn-primary mb-2 ms-2">
                           Search Another
                         </a>
                         <Link
@@ -283,10 +303,8 @@ export default function DeStuffingBillDetails() {
                 ) : Data && ContainerNo && Type ? (
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
-                    <div className="text-end">
-                        <a href="?"
-                          className="btn btn-primary mb-2 ms-2"
-                        >
+                      <div className="text-end">
+                        <a href="?" className="btn btn-primary mb-2 ms-2">
                           Search Another
                         </a>
                         <Link
@@ -366,89 +384,80 @@ export default function DeStuffingBillDetails() {
                         </div>
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
-                        <div className="d-flex flex-wrap overflow-auto">
-                          {Data?.de_stuffing_bill_details?.map((details, i) => (
-                            <div
-                              key={i}
-                              className="card card-body px-3 py-4 m-2 flex-shrink-0"
-                              style={{ minWidth: "300px" }} // Adjust the min width as needed
-                            >
-                              <div className="row">
-                                <div className="col-2">
-                                  <label
-                                    htmlFor={`billNo_${details.id}`}
-                                    className="form-label"
-                                  >
-                                    Bill Number
-                                  </label>
-                                  <input
-                                    id={`billNo_${details.id}`}
-                                    type="text"
-                                    className="form-control p-2 text-nowrap"
-                                    defaultValue={details?.bol_number}
-                                    readOnly
-                                  />
-                                </div>
-                                <div className="col-3">
-                                  <label
-                                    htmlFor={`cargoDesc_${details.id}`}
-                                    className="form-label"
-                                  >
-                                    Cargo Description (Code)
-                                  </label>
-                                  <input
-                                    id={`cargoDesc_${details.id}`}
-                                    type="text"
-                                    className="form-control p-2 text-nowrap"
-                                    defaultValue={
-                                      details?.commodity_description
-                                    }
-                                    readOnly
-                                  />
-                                </div>
-                                <div className="col-2">
-                                  <label
-                                    htmlFor={`noOfPkgs_${details.id}`}
-                                    className="form-label"
-                                  >
-                                    No of Pkgs
-                                  </label>
-                                  <input
-                                    id={`noOfPkgs_${details.id}`}
-                                    type="number"
-                                    className="form-control p-2 text-nowrap"
-                                    defaultValue={
-                                      details?.no_of_packages_declared
-                                    }
-                                    name={`no_of_packages_declared[${details.id}]`}
-                                    onChange={(e) => {
-                                      handleBillPkgW(
-                                        details.id,
-                                        e.target.value
-                                      );
-                                    }}
-                                  />
-                                </div>
-                                <div className="col-2">
-                                  <label
-                                    htmlFor={`pkgWeight_${details.id}`}
-                                    className="form-label"
-                                  >
-                                    Pkg Weight
-                                  </label>
-                                  <input
-                                    id={`pkgWeight_${details.id}`}
-                                    type="text"
-                                    className="form-control p-2 text-nowrap"
-                                    defaultValue={details?.package_weight}
-                                    name={`package_weight[${details.id}]`}
-                                  />
-                                </div>
-                                <GridComponent details={details} index={i} />
+                        {Data?.de_stuffing_bill_details?.map((details, i) => (
+                          <div key={i} className="card card-body">
+                            <div className="d-flex gap-3 flex-row overflow-auto">
+                              <div className="col-md-2 col-3">
+                                <label
+                                  htmlFor={`billNo_${details.id}`}
+                                  className="form-label"
+                                >
+                                  Bill Number
+                                </label>
+                                <input
+                                  id={`billNo_${details.id}`}
+                                  type="text"
+                                  className="form-control p-2 text-nowrap"
+                                  defaultValue={
+                                    details?.bol_number ?? details?.boe_number
+                                  }
+                                  readOnly
+                                />
                               </div>
+                              <div className="col-md-3 col-5">
+                                <label
+                                  htmlFor={`cargoDesc_${details.id}`}
+                                  className="form-label"
+                                >
+                                  Cargo Description (Code)
+                                </label>
+                                <input
+                                  id={`cargoDesc_${details.id}`}
+                                  type="text"
+                                  className="form-control p-2 text-nowrap"
+                                  defaultValue={details?.commodity_description}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-md-2 col-2">
+                                <label
+                                  htmlFor={`noOfPkgs_${details.id}`}
+                                  className="form-label"
+                                >
+                                  No of Pkgs
+                                </label>
+                                <input
+                                  id={`noOfPkgs_${details.id}`}
+                                  type="number"
+                                  className="form-control p-2 text-nowrap"
+                                  defaultValue={
+                                    details?.no_of_packages_declared
+                                  }
+                                  name={`no_of_packages_declared[${details.id}]`}
+                                  onChange={(e) => {
+                                    handleBillPkgW(details.id, e.target.value);
+                                  }}
+                                />
+                              </div>
+                              <div className="col-2">
+                                <label
+                                  htmlFor={`pkgWeight_${details.id}`}
+                                  className="form-label"
+                                >
+                                  Pkg Weight
+                                </label>
+                                <input
+                                  id={`pkgWeight_${details.id}`}
+                                  type="text"
+                                  className="form-control p-2 text-nowrap"
+                                  defaultValue={details?.package_weight}
+                                  name={`package_weight[${details.id}]`}
+                                />
+                              </div>
+                              <GridComponent details={details} index={i} />
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
 
                         <button className="btn btn-primary w-25 mt-3">
                           Submit
