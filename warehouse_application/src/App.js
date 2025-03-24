@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 import './App.css';
 import Index from "./pages/index";
-import Jobs from "./pages/Jobs";
 import DeliveryLCL from "./pages/import/DeliveryLCL";
 import DeliveryFCL from "./pages/import/DeliveryFCL";
 import DestuffingFCL from "./pages/import/DestuffingFCL"
@@ -33,31 +32,31 @@ import StuffingTallySheet from "./pages/stuffing/StuffingTallySheet";
 
 
 export default function App() {
-  const initialTheme = sessionStorage.getItem("myTheme") === "true";
-  useEffect(() => {
-    const coreCss = document.querySelector(".template-customizer-core-css");
-    const themeCss = document.querySelector(".template-customizer-theme-css");
+  // const initialTheme = sessionStorage.getItem("myTheme") === "true";
+  // useEffect(() => {
+  //   const coreCss = document.querySelector(".template-customizer-core-css");
+  //   const themeCss = document.querySelector(".template-customizer-theme-css");
 
-    if (initialTheme) {
-      document.documentElement.setAttribute("data-style", "dark");
-      if (coreCss && themeCss) {
-        coreCss.setAttribute("href", "/assets/vendor/css/rtl/core-dark.css");
-        themeCss.setAttribute(
-          "href",
-          "/assets/vendor/css/rtl/theme-default-dark.css"
-        );
-      }
-    } else {
-      document.documentElement.setAttribute("data-style", "light");
-      if (coreCss && themeCss) {
-        coreCss.setAttribute("href", "/assets/vendor/css/rtl/core.css");
-        themeCss.setAttribute(
-          "href",
-          "/assets/vendor/css/rtl/theme-default.css"
-        );
-      }
-    }
-  }, []);
+  //   if (initialTheme) {
+  //     document.documentElement.setAttribute("data-style", "dark");
+  //     if (coreCss && themeCss) {
+  //       coreCss.setAttribute("href", "/assets/vendor/css/rtl/core-dark.css");
+  //       themeCss.setAttribute(
+  //         "href",
+  //         "/assets/vendor/css/rtl/theme-default-dark.css"
+  //       );
+  //     }
+  //   } else {
+  //     document.documentElement.setAttribute("data-style", "light");
+  //     if (coreCss && themeCss) {
+  //       coreCss.setAttribute("href", "/assets/vendor/css/rtl/core.css");
+  //       themeCss.setAttribute(
+  //         "href",
+  //         "/assets/vendor/css/rtl/theme-default.css"
+  //       );
+  //     }
+  //   }
+  // }, []);
   return (
     <Router>
         <Routes>
@@ -86,7 +85,6 @@ export default function App() {
           <Route path="/DirectDelivery" element={<DirectDelivery />} />
           <Route path="/DestuffingBill" element={<DestuffingBill />} />
           <Route path="/DeliveryBill" element={<DeliveryBill />} />
-          <Route path="/Jobs" element={<Jobs />} />
 
         </Routes>
     </Router>

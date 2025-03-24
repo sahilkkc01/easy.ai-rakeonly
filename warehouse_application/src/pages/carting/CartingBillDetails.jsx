@@ -143,7 +143,7 @@ export default function CartingBillDetails() {
     };
 
     return (
-      <div className="col-3">
+      <div className="col-md-3 col-4">
         <label className="form-label">Grid Location & Area (SQM)</label>
         {gridInputs.map((input, i) => (
           <div key={input.id} className="d-flex align-items-center gap-3 mb-2">
@@ -390,10 +390,10 @@ export default function CartingBillDetails() {
                         {Array.from({ length: TotalTrucks }, (_, i) => (
                           <div
                             key={i}
-                            className="card card-body px-3 py-4 my-2"
+                            className="card card-body my-3"
                           >
-                            <div className="row">
-                              <div className="col-2">
+                            <div className="d-flex gap-3 flex-row overflow-auto">
+                              <div className="col-md-2 col-3">
                                 <label
                                   htmlFor="truck_number"
                                   className="form-label"
@@ -406,7 +406,7 @@ export default function CartingBillDetails() {
                                   name={`truck_number[${i}]`}
                                 />
                               </div>
-                              <div className="col-2">
+                              <div className="col-md-2 col-3">
                                 <label
                                   htmlFor="truck_arrival_date"
                                   className="form-label"
@@ -419,7 +419,7 @@ export default function CartingBillDetails() {
                                   name={`truck_arrival_date[${i}]`}
                                 />
                               </div>
-                              <div className="col-2">
+                              <div className="col-md-2 col-3">
                                 <label htmlFor="billNo" className="form-label">
                                   Bill Number
                                 </label>
@@ -446,7 +446,7 @@ export default function CartingBillDetails() {
                                   )}
                                 </select>
                               </div>
-                              <div className="col-3">
+                              <div className="col-md-3 col-4">
                                 <label className="form-label">
                                   Cargo Description (Code)
                                 </label>
@@ -465,7 +465,7 @@ export default function CartingBillDetails() {
                                   readOnly
                                 />
                               </div>
-                              <div className="col-2">
+                              <div className="col-md-2 col-3">
                                 <label className="form-label">No of Pkgs</label>
                                 <input
                                   type="number"
@@ -477,7 +477,7 @@ export default function CartingBillDetails() {
                                   }
                                 />
                               </div>
-                              <div className="col-2">
+                              <div className="col-md-2 col-3">
                                 <label className="form-label">Pkg Weight</label>
                                 <input
                                   type="text"
@@ -507,7 +507,7 @@ export default function CartingBillDetails() {
                     </form>
                   </>
                 ) : (
-                  <div className="row justify-content-center align-items-center h-75">
+                  <div className="row justify-content-center align-items-center" style={{height:"70vh"}}>
                     <div className="col-md-6 col-8">
                       <div className="card my-3">
                         <div className="card-body">

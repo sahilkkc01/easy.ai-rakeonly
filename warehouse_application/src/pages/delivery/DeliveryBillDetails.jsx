@@ -144,7 +144,7 @@ export default function DeliveryBillDetails() {
     };
 
     return (
-      <div className="col-3">
+      <div className="col-md-3 col-4">
         <label className="form-label">Grid Location & Area (SQM)</label>
         {gridInputs.map((input, i) => (
           <div key={input.id} className="d-flex align-items-center gap-3 mb-2">
@@ -272,7 +272,9 @@ export default function DeliveryBillDetails() {
                         >
                           Print
                         </button>
-
+                        <a href="?" className="btn btn-primary mb-2 ms-2">
+                          Search Another
+                        </a>
                         <Link
                           to={"/delivery"}
                           className="btn btn-primary mb-2 ms-2"
@@ -297,6 +299,17 @@ export default function DeliveryBillDetails() {
                 ) : Data && GpmNo ? (
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
+                    <div className="text-end">
+                        <a href="?" className="btn btn-primary mb-2 ms-2">
+                          Search Another
+                        </a>
+                        <Link
+                          to={"/delivery"}
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Go Back
+                        </Link>
+                      </div>
                       <div className="row">
                         <h4 className="text-primary mb-3">Container Details</h4>
                         <div className="card">
@@ -368,10 +381,10 @@ export default function DeliveryBillDetails() {
                         {Array.from({ length: TotalTrucks }, (_, i) => (
                           <div
                             key={i}
-                            className="card card-body px-3 py-4 my-2"
+                            className="card card-body my-3"
                           >
-                            <div className="row">
-                              <div className="col-2">
+                            <div className="d-flex gap-3 flex-row overflow-auto">
+                              <div className="col-md-2 col-3">
                                 <label
                                   htmlFor="truck_number"
                                   className="form-label"
@@ -384,7 +397,7 @@ export default function DeliveryBillDetails() {
                                   name={`truck_number[${i}]`}
                                 />
                               </div>
-                              <div className="col-2">
+                              <div className="col-md-2 col-3">
                                 <label htmlFor="billNo" className="form-label">
                                   Bill Number
                                 </label>
@@ -411,7 +424,7 @@ export default function DeliveryBillDetails() {
                                   )}
                                 </select>
                               </div>
-                              <div className="col-3">
+                              <div className="col-md-3 col-4">
                                 <label className="form-label">
                                   Cargo Description (Code)
                                 </label>
@@ -430,7 +443,7 @@ export default function DeliveryBillDetails() {
                                   readOnly
                                 />
                               </div>
-                              <div className="col-2">
+                              <div className="col-md-2 col-3">
                                 <label className="form-label">No of Pkgs</label>
                                 <input
                                   type="number"
@@ -442,7 +455,7 @@ export default function DeliveryBillDetails() {
                                   }
                                 />
                               </div>
-                              <div className="col-2">
+                              <div className="col-md-2 col-3">
                                 <label className="form-label">Pkg Weight</label>
                                 <input
                                   type="text"

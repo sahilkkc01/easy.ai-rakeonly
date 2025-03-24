@@ -144,7 +144,7 @@ export default function StuffingBillDetails() {
     };
 
     return (
-      <div className="col-3">
+      <div className="col-md-3 col-4">
         <label className="form-label">Grid Location & Area (SQM)</label>
         {gridInputs.map((input, i) => (
           <div key={input.id} className="d-flex align-items-center gap-3 mb-2">
@@ -387,10 +387,10 @@ export default function StuffingBillDetails() {
                         {Array.from({ length: TotalBills }, (_, i) => (
                           <div
                             key={i}
-                            className="card card-body px-3 py-4 my-2"
+                            className="card card-body my-3"
                           >
-                            <div className="row">
-                              <div className="col-2">
+                            <div className="d-flex gap-3 flex-row overflow-auto">
+                              <div className="col-md-2 col-3">
                                 <label htmlFor="shipping_bill_number" className="form-label">
                                   Bill Number
                                 </label>
@@ -402,7 +402,7 @@ export default function StuffingBillDetails() {
                                   
                                 />
                               </div>
-                              <div className="col-3">
+                              <div className="col-md-3 col-4">
                                 <label className="form-label">
                                   Cargo Description
                                 </label>
@@ -414,7 +414,7 @@ export default function StuffingBillDetails() {
                                   
                                 />
                               </div>
-                              <div className="col-2">
+                              <div className="col-md-2 col-3">
                                 <label className="form-label">No of Pkgs</label>
                                 <input
                                   type="number"
@@ -426,7 +426,7 @@ export default function StuffingBillDetails() {
                                   }
                                 />
                               </div>
-                              <div className="col-2">
+                              <div className="col-md-2 col-3">
                                 <label className="form-label">Pkg Weight</label>
                                 <input
                                   type="text"

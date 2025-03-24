@@ -385,7 +385,7 @@ export default function DeStuffingBillDetails() {
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
                         {Data?.de_stuffing_bill_details?.map((details, i) => (
-                          <div key={i} className="card card-body">
+                          <div key={i} className="card card-body my-3">
                             <div className="d-flex gap-3 flex-row overflow-auto">
                               <div className="col-md-2 col-3">
                                 <label
