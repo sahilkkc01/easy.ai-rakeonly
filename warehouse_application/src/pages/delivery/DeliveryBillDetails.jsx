@@ -9,13 +9,13 @@ import { formatToDateTimeLocal } from "../main/formatToDateTime";
 
 export default function DeliveryBillDetails() {
   const navigate = useNavigate();
-    const iframeRef = useRef(null);
+  const iframeRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [GpmNo, setGpmNo] = useState(null);
-    const [TallySheet, setTallySheet] = useState(null);
+  const [TallySheet, setTallySheet] = useState(null);
   const [Data, setData] = useState(null);
   const [Locations, setLocations] = useState(null);
-  const [TotalTrucks, setTotalTrucks] = useState(1);
+  const [TotalTrucks, setTotalTrucks] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const today = new Date();
@@ -87,7 +87,7 @@ export default function DeliveryBillDetails() {
       setGpmNo(gpm_number);
       if (tallySheet) {
         setTallySheet(tallySheet);
-      }else{
+      } else {
         fetchData(gpm_number);
       }
     }
@@ -96,6 +96,10 @@ export default function DeliveryBillDetails() {
   useEffect(() => {
     if (Data) {
       fetchLocations();
+
+      if (Data?.delivery_trucks && Data?.delivery_trucks?.length > 0) {
+        setTotalTrucks(Data?.delivery_trucks?.length);
+      }
     }
   }, [Data]);
 
@@ -136,25 +140,41 @@ export default function DeliveryBillDetails() {
     }
   };
 
-  const GridComponent = ({ index }) => {
-    const [gridInputs, setGridInputs] = useState([{ id: 1 }]);
+  const GridComponent = ({ index ,data}) => {
 
+    const [gridInputs, setGridInputs] = useState(
+      data?.grid_area?.length > 0
+        ? data.grid_area.map((item, i) => ({
+            id: i + 1,
+            grid_location: item.grid_locations || "",
+            area: item.area || "",
+          }))
+        : [{ id: 1, grid_location: "", area: "" }]
+    );
+  
+    // Function to add a new grid input
     const addGridInput = () => {
-      setGridInputs([...gridInputs, { id: gridInputs.length + 1 }]);
+      setGridInputs([...gridInputs, { id: gridInputs.length + 1, grid_location: "", area: "" }]);
     };
-
+  
+    // Function to remove a grid input
+    const removeGridInput = (id) => {
+      setGridInputs(gridInputs.filter((input) => input.id !== id));
+    };
+// console.log(gridInputs);
     return (
-      <div className="col-md-3 col-4">
+      <div className="col-md-3 col-5">
         <label className="form-label">Grid Location & Area (SQM)</label>
         {gridInputs.map((input, i) => (
-          <div key={input.id} className="d-flex align-items-center gap-3 mb-2">
+          <div key={input.id} className="mb-2">
+            <div className="d-flex align-items-center gap-3 ">
             <select
               className="form-select p-2"
-              name={`grid_location[${index}][${i}]`}
+              name={`grid_locations[${index}][${i}]`}
+              defaultValue={input.grid_location}
+              onChange={(e) => GridAreaHandle(e.target.value, index, i)}
             >
-              <option selected disabled>
-                Select Grid
-              </option>
+              <option value="">Select Grid</option>
               {Locations?.map((location, j) => (
                 <option key={j} value={location.camera_locations}>
                   {location.camera_locations}
@@ -166,20 +186,76 @@ export default function DeliveryBillDetails() {
               className="form-control p-2"
               placeholder="Area (SQM)"
               name={`area[${index}][${i}]`}
+              id={`area_${index}_${i}`}
+              defaultValue={input.area}
+              onChange={(e) => AreaHandle(index, i)}
             />
-            <button
-              type="button"
-              className="btn btn-success btn-sm px-2 py-1"
-              onClick={addGridInput}
-            >
+            {/* Add button */}
+            <button type="button" className="btn btn-success btn-sm px-2 py-1" onClick={addGridInput}>
               +
             </button>
+            {gridInputs.length > 1 && (
+              <button
+                type="button"
+                className="btn btn-danger btn-sm px-2 py-1"
+                onClick={() => removeGridInput(input.id)}
+              >
+                -
+              </button>
+            )}
+          </div>
+          <small id={`error_area_${index}_${i}`}></small>
           </div>
         ))}
       </div>
     );
   };
 
+
+  const GridAreaHandle = (grid, id, key) => {
+    let totalArea = 0;
+    let occupied = 0;
+  
+    Locations?.forEach((location) => {
+      if (location.camera_locations === grid) {
+        totalArea += parseInt(location.total_area) || 0;
+        occupied += parseInt(location.occupied_area) || 0;
+      }
+    });
+
+    let available = totalArea - occupied;
+    let areaInput = document.getElementById(`area_${id}_${key}`);
+  
+    if (areaInput) {
+      areaInput.value = available >= 0 ? available : 0;
+      areaInput.max = available >= 0 ? available : 0; 
+    }
+  };
+
+  const AreaHandle = (id, key) => {
+    let areaInput = document.getElementById(`area_${id}_${key}`);
+    let errorMsg = document.getElementById(`error_area_${id}_${key}`);
+  
+    if (areaInput) {
+      let myValue = parseFloat(areaInput.value) || 0;
+      let myMaxValue = parseFloat(areaInput.getAttribute("max")) || 20; 
+  
+      if (myValue > myMaxValue) {
+        areaInput.classList.add("border", "border-danger"); 
+        if (errorMsg) {
+          errorMsg.className = "text-danger d-block mt-1";
+          errorMsg.innerText = `Grid Maximum Area Available ${myMaxValue}`;
+        }
+      } else {
+        areaInput.classList.remove("border", "border-danger");
+        if (errorMsg) {
+          errorMsg.className='';
+          errorMsg.innerText = '';
+        }
+      }
+    }
+  };
+  
   const handleBillDetails = (key, sBillNo) => {
     Data?.delivery_bill_details?.map((details, a) => {
       if (details.boe_number == sBillNo) {
@@ -253,9 +329,9 @@ export default function DeliveryBillDetails() {
           </div>
         </div>
       )}
-       <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
-              <div className="layout-container">
-                <div className="layout-page">
+      <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
+        <div className="layout-container">
+          <div className="layout-page">
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
                 {GpmNo && TallySheet ? (
@@ -299,7 +375,7 @@ export default function DeliveryBillDetails() {
                 ) : Data && GpmNo ? (
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
-                    <div className="text-end">
+                      <div className="text-end">
                         <a href="?" className="btn btn-primary mb-2 ms-2">
                           Search Another
                         </a>
@@ -379,10 +455,7 @@ export default function DeliveryBillDetails() {
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
                         {Array.from({ length: TotalTrucks }, (_, i) => (
-                          <div
-                            key={i}
-                            className="card card-body my-3"
-                          >
+                          <div key={i} className="card card-body my-3">
                             <div className="d-flex gap-3 flex-row overflow-auto">
                               <div className="col-md-2 col-3">
                                 <label
@@ -395,6 +468,7 @@ export default function DeliveryBillDetails() {
                                   type="text"
                                   className="form-control p-2"
                                   name={`truck_number[${i}]`}
+                                  defaultValue={Data?.delivery_trucks[i]?.truck_number ??null}
                                 />
                               </div>
                               <div className="col-md-2 col-3">
@@ -408,6 +482,7 @@ export default function DeliveryBillDetails() {
                                     handleBillDetails(i, e.target.value)
                                   }
                                   id={`boe_${i}`}
+                                  defaultValue={Data?.delivery_trucks[i]?.boe ??null}
                                 >
                                   <option value="" selected disabled>
                                     Select Bill
@@ -434,6 +509,7 @@ export default function DeliveryBillDetails() {
                                   name={`pkg_code[${i}]`}
                                   id={`pkg_code_${i}`}
                                   readOnly
+                                  defaultValue={Data?.delivery_trucks[i]?.pkg_code ??null}
                                 />
                                 <input
                                   type="text"
@@ -441,6 +517,7 @@ export default function DeliveryBillDetails() {
                                   name={`cargo_description[${i}]`}
                                   id={`cargo_description_${i}`}
                                   readOnly
+                                  defaultValue={Data?.delivery_trucks[i]?.cargo_description ??null}
                                 />
                               </div>
                               <div className="col-md-2 col-3">
@@ -453,6 +530,7 @@ export default function DeliveryBillDetails() {
                                   onChange={(e) =>
                                     handleBillPkgW(i, e.target.value)
                                   }
+                                  defaultValue={Data?.delivery_trucks[i]?.no_of_pkgs ??null}
                                 />
                               </div>
                               <div className="col-md-2 col-3">
@@ -462,9 +540,10 @@ export default function DeliveryBillDetails() {
                                   className="form-control p-2"
                                   id={`pkgs_weight_${i}`}
                                   name={`pkgs_weight[${i}]`}
+                                  defaultValue={Data?.delivery_trucks[i]?.pkgs_weight ??null}
                                 />
                               </div>
-                              <GridComponent index={i} />
+                              <GridComponent index={i} data={Data?.delivery_trucks[i] ??null} />
                             </div>
                           </div>
                         ))}
