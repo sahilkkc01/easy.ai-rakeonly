@@ -4,6 +4,8 @@ import Footer from "./main/footer";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { formatToDateTime } from "./main/formatToDateTime";
+import { Link } from "react-router-dom";
+// Link
 
 function Rst() {
   const [type, setType] = useState("Grid");
@@ -41,6 +43,7 @@ function Rst() {
       setLoading(false);
     }
   };
+  
   useEffect(() => {
     let interval;
 
@@ -147,18 +150,20 @@ function Rst() {
                         </button>
                       </li>
                       <li className="nav-item  pe-3">
-                        <button
+                        {/* <button
                           className={`${
                             type === "Map"
                               ? "btn btn-primary "
                               : "btn btn-label-primary"
                           }`}
                           onClick={() => setType("Map")}
-                        >
-                          Map
-                        </button>
+                        > */}
+                          {/* Map
+                        </button> */}
+                        <Link to='/RSTMap' class="btn btn-label-primary"> Map </Link>
                       </li>
                     </ul>
+                    
                     <div className="mt-5">
                       <div className="">
                         {type === "Grid" ? (

@@ -34,6 +34,7 @@ import Cisf from "./pages/Cisf.jsx";
 import CisfIn from "./pages/CisfIn.jsx";
 import CisfOut from "./pages/CisfOut.jsx";
 import Rst from "./pages/Rst.jsx";
+import RSTMap from "./pages/RSTMap.jsx";
 import CWHDelivery from "./pages/CWHDelivery.jsx";
 import DTMSGate from "./pages/DTMSGate.jsx";
 import DTMSRst from "./pages/DTMSRst.jsx";
@@ -93,7 +94,8 @@ export default function App() {
           {/* YARD */}
           <Route path="/YardTransactions" element={<PrivateRoute><YardTransactions /></PrivateRoute>} />
           <Route path="/Rst" element={<PrivateRoute><Rst/></PrivateRoute>} />
-
+          <Route path="/RSTMap" element={<RSTMap/>} />
+          {/* RSTMap */}
           {/* WAREHOUSE */}
           <Route path="/CartingReadFCL" element={<PrivateRoute><CWHCartingRead /></PrivateRoute>} />
           <Route path="/StuffingReadFCL" element={<PrivateRoute><CWHStuffingReadFCL /></PrivateRoute>} />
