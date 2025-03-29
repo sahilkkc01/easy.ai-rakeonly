@@ -9,6 +9,8 @@ import Footer from "../main/footer";
 import { formatToDateTimeLocal } from "../main/formatToDateTime";
 
 export default function DeStuffingBillDetails() {
+  const [isFinalSubmit,setIsFinalSubmit]=useState(false);
+  const [ID,setID]=useState(false);
   const iframeRef = useRef(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -49,7 +51,7 @@ export default function DeStuffingBillDetails() {
 
   const fetchLocations = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/warehouse/empty/locations?type=Import`;
+    const url = `https://ctas.live/backend/api/warehouse/locations?warehouse_type=Import`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -87,6 +89,14 @@ export default function DeStuffingBillDetails() {
     const container_no = searchParams.get("container_no");
     const type = searchParams.get("type");
     const tallySheet = searchParams.get("tally_sheet");
+    const FinalSubmit = searchParams.get("isFinalSubmit");
+    const id = searchParams.get("id");
+    if(FinalSubmit){
+      setIsFinalSubmit(FinalSubmit=='1'?true:false);
+    }
+    if(id){
+      setID(id);
+    }
     if (container_no && type) {
       setContainerNo(container_no);
       setType(type);
@@ -100,7 +110,11 @@ export default function DeStuffingBillDetails() {
 
   useEffect(() => {
     if (Data) {
+      setID(Data?.id);
       fetchLocations();
+      if(Data.status==='1' ||Data.status==='2'){
+        navigate(`?isFinalSubmit=1&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`);
+      }
     }
   }, [Data]);
 
@@ -120,7 +134,7 @@ export default function DeStuffingBillDetails() {
           text: response?.data?.message,
           timer: 2000,
         }).then(() => {
-          navigate(`?tally_sheet=1&type=${Type}&container_no=${ContainerNo}`);
+          navigate(`?isFinalSubmit=0&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`);
         });
       } else {
         Swal.fire({
@@ -142,25 +156,39 @@ export default function DeStuffingBillDetails() {
   };
 
   const GridComponent = ({ details, index }) => {
-    const [gridInputs, setGridInputs] = useState([{ id: 1 }]);
-
+    const [gridInputs, setGridInputs] = useState(
+      details?.grid_area?.length > 0
+        ? details.grid_area.map((item, i) => ({
+            id: i + 1,
+            grid_location: item.grid_locations || "",
+            area: item.area || "",
+          }))
+        : [{ id: 1, grid_location: "", area: "" }]
+    );
+  
+    // Function to add a new grid input
     const addGridInput = () => {
-      setGridInputs([...gridInputs, { id: gridInputs.length + 1 }]);
+      setGridInputs([...gridInputs, { id: gridInputs.length + 1, grid_location: "", area: "" }]);
     };
-
+  
+    // Function to remove a grid input
+    const removeGridInput = (id) => {
+      setGridInputs(gridInputs.filter((input) => input.id !== id));
+    };
+  
     return (
       <div className="col-md-3 col-5">
         <label className="form-label">Grid Location & Area (SQM)</label>
         {gridInputs.map((input, i) => (
-          <div key={input.id} className="d-flex align-items-center gap-3 mb-2">
+          <div key={input.id} className="mb-2">
+            <div className="d-flex align-items-center gap-3 ">
             <select
               className="form-select p-2"
               name={`grid_locations[${details.id}][${i}]`}
+              defaultValue={input.grid_location}
               onChange={(e) => GridAreaHandle(e.target.value, details.id, i)}
             >
-              <option selected disabled>
-                Select Grid
-              </option>
+              <option value="">Select Grid</option>
               {Locations?.map((location, j) => (
                 <option key={j} value={location.camera_locations}>
                   {location.camera_locations}
@@ -173,14 +201,24 @@ export default function DeStuffingBillDetails() {
               placeholder="Area (SQM)"
               name={`area[${details.id}][${i}]`}
               id={`area_${details.id}_${i}`}
+              defaultValue={input.area}
+              onChange={(e) => AreaHandle(details.id, i)}
             />
-            <button
-              type="button"
-              className="btn btn-success btn-sm px-2 py-1"
-              onClick={addGridInput}
-            >
+            {/* Add button */}
+            <button type="button" className="btn btn-success btn-sm px-2 py-1" onClick={addGridInput}>
               +
             </button>
+            {gridInputs.length > 1 && (
+              <button
+                type="button"
+                className="btn btn-danger btn-sm px-2 py-1"
+                onClick={() => removeGridInput(input.id)}
+              >
+                -
+              </button>
+            )}
+          </div>
+          <small id={`error_area_${details.id}_${i}`}></small>
           </div>
         ))}
       </div>
@@ -197,7 +235,7 @@ export default function DeStuffingBillDetails() {
         occupied += parseInt(location.occupied_area) || 0;
       }
     });
-  
+
     let available = totalArea - occupied;
     let areaInput = document.getElementById(`area_${id}_${key}`);
   
@@ -206,6 +244,31 @@ export default function DeStuffingBillDetails() {
       areaInput.max = available >= 0 ? available : 0; 
     }
   };
+
+  const AreaHandle = (id, key) => {
+    let areaInput = document.getElementById(`area_${id}_${key}`);
+    let errorMsg = document.getElementById(`error_area_${id}_${key}`);
+  
+    if (areaInput) {
+      let myValue = parseFloat(areaInput.value) || 0;
+      let myMaxValue = parseFloat(areaInput.getAttribute("max")) || 20; 
+  
+      if (myValue > myMaxValue) {
+        areaInput.classList.add("border", "border-danger"); 
+        if (errorMsg) {
+          errorMsg.className = "text-danger d-block mt-1";
+          errorMsg.innerText = `Grid Maximum Area Available ${myMaxValue}`;
+        }
+      } else {
+        areaInput.classList.remove("border", "border-danger");
+        if (errorMsg) {
+          errorMsg.className='';
+          errorMsg.innerText = '';
+        }
+      }
+    }
+  };
+  
   
   const handleBillPkgW = (id, pkg) => {
     let no_of_pkgs = 0;
@@ -240,6 +303,45 @@ export default function DeStuffingBillDetails() {
     }
   };
 
+const handleFinalSubmit = async()=>{
+
+  setLoading(true);
+
+  // const url = `https://ctas.live/backend/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}`;
+  const url = `http://127.0.0.1:8000/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}`;
+  try {
+    const response = await axios.get(url, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log(response.data);
+    if (response?.data?.status === "success") {
+      Swal.fire({
+        icon: response?.data?.status,
+        text: response?.data?.message,
+        timer: 2000,
+      }).then(() => {
+        navigate(`?isFinalSubmit=1&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`);
+      });
+    } else {
+      Swal.fire({
+        icon: response?.data?.status,
+        text: response?.data?.message,
+        timer: 3000,
+      });
+    }
+  } catch (error) {
+    Swal.fire({
+      icon: "error",
+      text: `Error Fetching Data: ${error.message}`,
+      timer: 3000,
+      showConfirmButton: false,
+    });
+  } finally {
+    setLoading(false);
+  }
+
+}
+
   return (
     <>
       {loading && (
@@ -266,7 +368,8 @@ export default function DeStuffingBillDetails() {
                   <div className="row justify-content-center">
                     <div className="col-lg-10 col-md-11">
                       <div className="text-end">
-                        <button
+                        {isFinalSubmit ?(
+                          <button
                           onClick={() => {
                             if (iframeRef.current) {
                               iframeRef.current.contentWindow.print();
@@ -276,15 +379,28 @@ export default function DeStuffingBillDetails() {
                         >
                           Print
                         </button>
+                        ):(
+                          <>
+                           <button type="button"
+                        //  href={`?isFinalSubmit=1&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`}
+                          className="btn btn-primary mb-2"
+                          onClick={handleFinalSubmit}
+                        >
+                          Final Submit
+                        </button>
+                            <a  
+                          href={`?isFinalSubmit=0&id=${ID}&type=${Type}&container_no=${ContainerNo}`}
+                          className="btn btn-primary mb-2 ms-2"
+                        >
+                          Edit
+                        </a>
+                          </>
+                        )}
+                        
                         <a href="?" className="btn btn-primary mb-2 ms-2">
                           Search Another
                         </a>
-                        <Link
-                          to={"/de-stuffing"}
-                          className="btn btn-primary mb-2 ms-2"
-                        >
-                          Go Back
-                        </Link>
+                      
                       </div>
                       <div className="" style={{ width: 789, height: 1099 }}>
                         <iframe
@@ -383,7 +499,10 @@ export default function DeStuffingBillDetails() {
                           </div>
                         </div>
 
-                        <h4 className="text-primary mb-3">Bill Details</h4>
+                        <div className="d-flex justify-content-between align-items-center my-2">
+                        <h4 className="text-primary m-0">Bill Details</h4>
+                        <button type="button" className="btn btn-sm btn-primary">Select Grid</button>
+                        </div>
                         {Data?.de_stuffing_bill_details?.map((details, i) => (
                           <div key={i} className="card card-body my-3">
                             <div className="d-flex gap-3 flex-row overflow-auto">
@@ -454,13 +573,13 @@ export default function DeStuffingBillDetails() {
                                   name={`package_weight[${details.id}]`}
                                 />
                               </div>
-                              <GridComponent details={details} index={i} />
+                              <GridComponent details={details} index={i}/>
                             </div>
                           </div>
                         ))}
 
-                        <button className="btn btn-primary w-25 mt-3">
-                          Submit
+                        <button  type="submit" className="btn btn-primary w-25 mt-3">
+                          Save Job
                         </button>
                       </div>
                     </form>
@@ -519,12 +638,9 @@ export default function DeStuffingBillDetails() {
                 )}
 
                 <Footer />
-                <div className="content-backdrop fade" />
               </div>
             </div>
           </div>
-          <div className="layout-overlay layout-menu-toggle"></div>
-          <div className="drag-target"></div>
         </div>
       </div>
     </>

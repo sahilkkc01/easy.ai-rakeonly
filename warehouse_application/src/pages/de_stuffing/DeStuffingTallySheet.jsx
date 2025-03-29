@@ -214,7 +214,7 @@ export default function DeStuffingTallySheet() {
                       {Details.commodity_description} ({Details.commodity_code})
                     </td>
                     <td>{Details.no_of_packages_declared}</td>
-                    <td>{Details.package_weight}</td>
+                    <td>{Details.package_weight ? Number(Details.package_weight).toFixed(2) : "0"}</td>
                     <td>
                       {Details.grid_area?.map((grid, index) => (
                         <span key={index}>{grid.grid_locations}, </span>
@@ -252,7 +252,7 @@ export default function DeStuffingTallySheet() {
                   <td></td>
                   <td></td>
                   <td>{totalPackages}</td>
-                  <td>{totalPackagesWeight}</td>
+                  <td>{totalPackagesWeight ? Number(totalPackagesWeight).toFixed(2) : "0"}</td>
                   <td></td>
                   <td>{totalArea}</td>
                 </tr>
