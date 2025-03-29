@@ -6,6 +6,7 @@ const Logout = () => {
   localStorage.removeItem("authToken");
   localStorage.removeItem("user");
   localStorage.removeItem("user_permissions");
+  localStorage.removeItem("equipment_id");
 
   localStorage.clear();
   
