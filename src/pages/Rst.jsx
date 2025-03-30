@@ -43,7 +43,7 @@ function Rst() {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     let interval;
 
@@ -127,11 +127,10 @@ function Rst() {
                     <ul className="nav nav-pills ">
                       <li className="nav-item pe-3">
                         <button
-                          className={`${
-                            type === "Grid"
+                          className={`${type === "Grid"
                               ? "btn btn-primary"
                               : "btn btn-label-primary"
-                          }`}
+                            }`}
                           onClick={() => setType("Grid")}
                         >
                           Grid
@@ -139,11 +138,10 @@ function Rst() {
                       </li>
                       <li className="nav-item  pe-3">
                         <button
-                          className={`${
-                            type === "Table"
+                          className={`${type === "Table"
                               ? "btn btn-primary"
                               : "btn btn-label-primary"
-                          }`}
+                            }`}
                           onClick={() => setType("Table")}
                         >
                           Table
@@ -158,12 +156,12 @@ function Rst() {
                           }`}
                           onClick={() => setType("Map")}
                         > */}
-                          {/* Map
+                        {/* Map
                         </button> */}
                         <Link to='/RSTMap' class="btn btn-label-primary"> Map </Link>
                       </li>
                     </ul>
-                    
+
                     <div className="mt-5">
                       <div className="">
                         {type === "Grid" ? (
@@ -173,16 +171,16 @@ function Rst() {
                                 <h4 className="text-primary text-center">
                                   Gate Jobs
                                 </h4>
-                                {Data?.yard_jobs_within_radius?.gate_in?.map(
+                                {Data?.yard_jobs_within_radius?.gate?.map(
                                   (data, i) => (
                                     <div key={i} className="custom-card mb-4">
-                                      <div className="custom-card-body">
+                                      <div className="custom-card-body" style={i ==  0 ? { backgroundColor: '#bfedbf' } : i ==  1 ? {backgroundColor: '#ecf6ec'} : {}}>
                                         <table className="table table-sm mb-0">
                                           <tbody>
-                                          <tr>
+                                            <tr>
                                               <td>Job Type</td>
                                               <td>
-                                                <strong>Gate</strong>
+                                                <strong>{data.job_type.toUpperCase()}</strong>
                                               </td>
                                             </tr>
                                             <tr>
@@ -204,7 +202,7 @@ function Rst() {
                                                 </strong>
                                               </td>
                                             </tr>
-                                           
+
                                             <tr>
                                               <td>SOURCE</td>
                                               <td>
@@ -230,16 +228,17 @@ function Rst() {
                                 <h4 className="text-primary text-center">
                                   Rake Jobs
                                 </h4>
-                                {Data?.yard_jobs_within_radius?.rake_in?.map(
+                                {Data?.yard_jobs_within_radius?.rake?.map(
                                   (data, i) => (
-                                    <div key={i} className="custom-card mb-4">
-                                      <div className="custom-card-body">
-                                      <table className="table table-sm mb-0">
+                                    <div key={i} className="custom-card mb-4"   >
+                                      <div className="custom-card-body" style={i ==  0 ? { backgroundColor: '#bfedbf' } : i ==  1 ? {backgroundColor: '#ecf6ec'} : {}}>
+                                        <table className="table table-sm mb-0">
                                           <tbody>
-                                          <tr>
+                                            <tr>
                                               <td>Job Type</td>
                                               <td>
-                                                <strong>Rake</strong>
+                                                <strong>{data.job_type.toUpperCase()}</strong>
+                                                {/* <strong>Rake</strong> */}
                                               </td>
                                             </tr>
                                             <tr>
@@ -261,7 +260,7 @@ function Rst() {
                                                 </strong>
                                               </td>
                                             </tr>
-                                           
+
                                             <tr>
                                               <td>SOURCE</td>
                                               <td>
@@ -289,53 +288,54 @@ function Rst() {
                                   Warehouse Jobs
                                 </h4>
                                 {Data?.warehouse_jobs?.map((data, i) => (
-                                  <div key={i} className="custom-card mb-4">
+                                  <div key={i} className="custom-card mb-4"  >
                                     <div className="custom-card-body">
-                                    <table className="table table-sm mb-0">
-                                          <tbody>
-                                            <tr>
-                                              <td>Job Type</td>
-                                              <td>
-                                                <strong>Warehouse</strong>
-                                              </td>
-                                            </tr>
-                                            <tr>
-                                              <td>C.NO.</td>
-                                              <td>
-                                                <strong>
-                                                  {data.container_no}
-                                                </strong>
-                                              </td>
-                                            </tr>
-                                            <tr>
-                                              <td>SIZE</td>
-                                              <td>
-                                                <strong>
+                                      <table className="table table-sm mb-0">
+                                        <tbody>
+                                          <tr>
+                                            <td>Job Type</td>
+                                            <td>
+                                              <strong>{data.job_type.toUpperCase()}</strong>
+                                              {/* <strong>Warehouse</strong> */}
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <td>C.NO.</td>
+                                            <td>
+                                              <strong>
+                                                {data.container_no}
+                                              </strong>
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <td>SIZE</td>
+                                            <td>
+                                              <strong>
                                                 {data?.container_size ??
-                                              data?.container_master
-                                                ?.container_size}
-                                                </strong>
-                                              </td>
-                                            </tr>
-                                            <tr>
-                                              <td>SOURCE</td>
-                                              <td>
-                                                <strong>
+                                                  data?.container_master
+                                                    ?.container_size}
+                                              </strong>
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <td>SOURCE</td>
+                                            <td>
+                                              <strong>
                                                 {
-                                              data?.container_master
-                                                ?.last_stk_loc
-                                            }
-                                                </strong>
-                                              </td>
-                                            </tr>
-                                            <tr>
-                                              <td>DEST</td>
-                                              <td>
-                                                <strong> {data?.warehouse?.toUpperCase()}</strong>
-                                              </td>
-                                            </tr>
-                                          </tbody>
-                                        </table>
+                                                  data?.container_master
+                                                    ?.last_stk_loc
+                                                }
+                                              </strong>
+                                            </td>
+                                          </tr>
+                                          <tr>
+                                            <td>DEST</td>
+                                            <td>
+                                              <strong> {data?.warehouse?.toUpperCase()}</strong>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
                                     </div>
                                   </div>
                                 ))}
@@ -353,6 +353,7 @@ function Rst() {
                                         <tr>
                                           <th>#</th>
                                           <th>Container No.</th>
+                                          <th>Job Type.</th>
                                           <th>Size</th>
                                           <th>ISO</th>
                                           <th>Source</th>
@@ -370,6 +371,9 @@ function Rst() {
                                                 data?.container_master
                                                   ?.container_size
                                               }
+                                            </td>
+                                            <td>
+                                              {data?.job_type}
                                             </td>
                                             <td>
                                               {data?.container_master?.iso_code}

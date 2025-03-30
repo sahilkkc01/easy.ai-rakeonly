@@ -110,7 +110,7 @@ const GoogleMapComponent = () => {
                         fontWeight: "bold",
                         color: "white",
                         borderRadius: "5%",
-                        border: "2px solid red",
+                        // border: "1px solid red",
                     }}
                 >
                     {number}
@@ -161,7 +161,7 @@ const GoogleMapComponent = () => {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {Data.yard_jobs_within_radius?.gate_in?.map((dd, i) => (
+                                                        {Data.yard_jobs_within_radius?.rake?.map((dd, i) => (
                                                             <tr>
                                                                 <td>{i + 1}</td>
                                                                 <td>{dd.job_type}</td>
@@ -190,7 +190,7 @@ const GoogleMapComponent = () => {
                                         /> */}
 
                                         {/* Dynamic Markers */}
-                                        {Data.yard_jobs_within_radius?.gate_in.map((dd, index) => {
+                                        {Data.yard_jobs_within_radius?.rake.map((dd, index) => {
                                             const lastLatLong = dd.container_master?.last_lat_long; // Ensure it exists
                                             if (!lastLatLong) return null; // Skip if missing data
 
