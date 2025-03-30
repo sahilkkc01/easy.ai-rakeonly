@@ -69,6 +69,12 @@ export default function IndexR() {
     fetchData();
   }, []);
 
+  
+  const handleSetModelData = (modelData) => {
+    setModelData(modelData);
+    setContainerType(modelData.lddmtflg == 'L' ? "Laden" : 'Empty');
+  };
+
   const handleFilter = (e) => {
     e.preventDefault();
     let wagon_no = e.target.wagon.value;
@@ -358,7 +364,7 @@ export default function IndexR() {
                                                 <td>
                                                   <button
                                                     onClick={() =>
-                                                      setModelData(summery)
+                                                      handleSetModelData(summery)
                                                     }
                                                     className="btn btn-sm btn-label-primary"
                                                     data-bs-toggle="modal"
