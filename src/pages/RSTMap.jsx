@@ -161,7 +161,7 @@ const GoogleMapComponent = () => {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {Data.yard_jobs_within_radius?.rake?.map((dd, i) => (
+                                                        {Data.yard_jobs_within_radius?.rake && Data.yard_jobs_within_radius?.rake?.map((dd, i) => (
                                                             
                                                                 <tr>
                                                                     <td>{i + 1}</td>
@@ -192,7 +192,7 @@ const GoogleMapComponent = () => {
                                         /> */}
 
                                         {/* Dynamic Markers */}
-                                        {Data.yard_jobs_within_radius?.rake.map((dd, index) => {
+                                        {Data.yard_jobs_within_radius?.rake && Data.yard_jobs_within_radius?.rake.map((dd, index) => {
                                             const lastLatLong = dd.container_master?.last_lat_long; // Ensure it exists
                                             if (!lastLatLong) return null; // Skip if missing data
 
