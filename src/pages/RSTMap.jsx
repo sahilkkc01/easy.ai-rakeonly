@@ -162,13 +162,15 @@ const GoogleMapComponent = () => {
                                                     </thead>
                                                     <tbody>
                                                         {Data.yard_jobs_within_radius?.rake?.map((dd, i) => (
-                                                            <tr>
-                                                                <td>{i + 1}</td>
-                                                                <td>{dd.job_type}</td>
-                                                                <td>{dd.container_no}</td>
-                                                                <td>{dd.pickup_from}</td>
-                                                                <td>{dd.drop_to}</td>
-                                                            </tr>
+                                                            
+                                                                <tr>
+                                                                    <td>{i + 1}</td>
+                                                                    <td>{dd.job_type}</td>
+                                                                    <td>{dd.container_no}</td>
+                                                                    <td>{dd.pickup_from}</td>
+                                                                    <td>{dd.drop_to}</td>
+                                                                </tr>
+                                                            
                                                         ))}
                                                     </tbody>
                                                 </table>
