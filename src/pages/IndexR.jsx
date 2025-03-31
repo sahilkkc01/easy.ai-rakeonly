@@ -326,8 +326,8 @@ export default function IndexR() {
                                     <tr className="table-primary">
                                       <td>#</td>
                                       <td>Container Number</td>
-                                      <td>Linear Seal</td>
-                                      <td>Custom Seal</td>
+                                      <td>Seal 1</td>
+                                      <td>Seal 2</td>
                                       <td>Action</td>
                                     </tr>
                                   </thead>
@@ -476,7 +476,7 @@ export default function IndexR() {
                             </div>
                           </div>
 
-                          <div className="col-sm-6 mb-4">
+                          {/* <div className="col-sm-6 mb-4">
                             <div className="form-floating form-floating-outline">
                               <select
                                 name="equipment_name"
@@ -508,12 +508,13 @@ export default function IndexR() {
                                 Select Equipment Name
                               </label>
                             </div>
-                          </div>
+                          </div> */}
+
                           <div className="col-sm-6 mb-4">
                             <div className="form-floating form-floating-outline">
                               <select
-                                name="is_container_damage"
-                                id="is_container_damage"
+                                name="damage_status"
+                                id="damage_status"
                                 className="form-control"
                                 value={DamageStatus}
                                 required
@@ -522,14 +523,17 @@ export default function IndexR() {
                                 }
                               >
                                 <option value="N">NO</option>
-                                <option value="Y">YES</option>
+                                <option value="contianer_damage">Container Damage</option>
+                                <option value="seal_damage">Seal Damage</option>
+                                <option value="seal_mismatch">Seal Mismatch</option>
+                                <option value="seal_missing">Seal Missing</option>
                               </select>
-                              <label htmlFor="is_container_damage">
+                              <label htmlFor="damage_status">
                                 Damage Status
                               </label>
                             </div>
                           </div>
-                          {DamageStatus == "Y" && (
+                          {DamageStatus != "N" && (
                             <div className="col-sm-6 mb-4">
                               <div className="form-floating form-floating-outline">
                                 <input
@@ -555,10 +559,10 @@ export default function IndexR() {
                                     className="form-control"
                                     name="seal_1_no"
                                     id="seal_1_no"
-                                    placeholder="Linear Seal"
+                                    placeholder="Seal 1"
                                     defaultValue={Seal_1_no ?? ModelData?.seal_1_no}
                                   />
-                                  <label htmlFor="seal_1_no">Linear Seal</label>
+                                  <label htmlFor="seal_1_no">Seal 1</label>
                                 </div>
                               </div>
                               <div className="col-md-6">
@@ -568,11 +572,15 @@ export default function IndexR() {
                                     className="form-control"
                                     name="seal_2_no"
                                     id="seal_2_no"
-                                    placeholder="Custom Seal"
+                                    placeholder="Seal 2"
                                     defaultValue={Seal_2_no ?? ModelData?.seal_2_no}
                                   />
-                                  <label htmlFor="seal_2_no">Custom Seal</label>
+                                  <label htmlFor="seal_2_no">Seal 2</label>
                                 </div>
+                              </div>
+                              <div className="col-md-6">
+                                  <p>CCLS Seal No : </p>
+                                  <p><b>{ModelData?.ccls_seal_no}</b></p>
                               </div>
                             </>
                           )}
@@ -602,7 +610,7 @@ export default function IndexR() {
                                 <div className="mt-2">
                                   <img
                                     src={Photos.container}
-                                    alt="Custom Seal"
+                                    alt="ContainerImg"
                                     className="img-thumbnail rounded-3"
                                     style={{
                                       width: "100px",
@@ -623,7 +631,7 @@ export default function IndexR() {
                                         className="btn btn-outline-info btn-sm me-2"
                                       >
                                         <i className="ri-camera-fill me-1"></i>{" "}
-                                          Linear Seal
+                                        Seal 1
                                         <input
                                           type="file"
                                           id="seal_1_image"
@@ -640,7 +648,7 @@ export default function IndexR() {
                                         <div className="mt-2">
                                           <img
                                             src={Photos.seal1}
-                                            alt="Linear Seal"
+                                            alt="Seal 1"
                                             className="img-thumbnail rounded-3"
                                             style={{
                                               width: "100px",
@@ -657,7 +665,7 @@ export default function IndexR() {
                                         className="btn btn-outline-info btn-sm me-2"
                                       >
                                         <i className="ri-camera-fill me-1"></i>
-                                        Custom Seal
+                                        Seal 2
                                         <input
                                           type="file"
                                           id="seal_2_image"
@@ -674,7 +682,7 @@ export default function IndexR() {
                                         <div className="mt-2">
                                           <img
                                             src={Photos.seal2}
-                                            alt="Custom Seal"
+                                            alt="Seal 2"
                                             className="img-thumbnail rounded-3"
                                             style={{
                                               width: "100px",
@@ -699,14 +707,14 @@ export default function IndexR() {
                           data-bs-dismiss="modal"
                           onClick={() => setModelData(null)}
                         >
-                          Close
+                          Cancel 
                         </button>
                         <button
                           type="submit"
                           data-bs-dismiss="modal"
                           className="btn btn-label-primary btn-sm"
                         >
-                          Save changes
+                          Submit 
                         </button>
                       </div>
                     </form>

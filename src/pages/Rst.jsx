@@ -353,8 +353,8 @@ function Rst() {
                                         <tr>
                                           <th>#</th>
                                           <th>Container No.</th>
-                                          <th>Job Type.</th>
                                           <th>Size</th>
+                                          <th>Job Type.</th>
                                           <th>ISO</th>
                                           <th>Source</th>
                                           <th>Destination</th>

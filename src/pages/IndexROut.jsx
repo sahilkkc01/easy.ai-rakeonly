@@ -67,6 +67,12 @@ export default function IndexROut() {
     fetchData();
   }, []);
 
+  const handleSetModelData = (modelData) => {
+    setModelData(modelData);
+    setContainerType(modelData.sealno != null ? "Laden" : 'Empty');
+  };
+
+
   const handleFilter = (e) => {
     e.preventDefault();
     let wagon_no = e.target.wagon.value;
@@ -326,8 +332,8 @@ export default function IndexROut() {
                                       <tr className="table-primary">
                                         <td>#</td>
                                         <td>Container Number</td>
-                                        <td>Linear Seal</td>
-                                        <td>Custom Seal</td>
+                                        <td>Seal 1</td>
+                                        <td>Seal 2</td>
                                         <td>Action</td>
                                       </tr>
                                     </thead>
@@ -363,7 +369,7 @@ export default function IndexROut() {
                                             <td>
                                               <button
                                                 onClick={() =>{
-                                                  setModelData(summery)
+                                                  handleSetModelData(summery)
                                                   setModelTrainData(trainData)
                                                 }
                                                 }
@@ -478,7 +484,8 @@ export default function IndexROut() {
                               <label htmlFor="itv_name">Select ITV</label>
                             </div>
                           </div>
-                          <div className="col-sm-6 mb-4">
+
+                          {/* <div className="col-sm-6 mb-4">
                             <div className="form-floating form-floating-outline">
                               <select
                                 name="equipment_name"
@@ -505,7 +512,8 @@ export default function IndexROut() {
                               </select>
                               <label htmlFor="equipment_name">Select Equipment Name</label>
                             </div>
-                          </div>
+                          </div> */}
+
                           <div className="col-sm-6 mb-4">
                             <div className="form-floating form-floating-outline">
                               <select
@@ -517,15 +525,18 @@ export default function IndexROut() {
                                   setDamageStatus(e.target.value)
                                 }
                               >
-                                <option value="N">NO</option>
-                                <option value="Y">YES</option>
+                                 <option value="N">NO</option>
+                                <option value="contianer_damage">Container Damage</option>
+                                <option value="seal_damage">Seal Damage</option>
+                                <option value="seal_mismatch">Seal Mismatch</option>
+                                <option value="seal_missing">Seal Missing</option>
                               </select>
                               <label htmlFor="is_container_damage">
                                 Damage Status
                               </label>
                             </div>
                           </div>
-                          {DamageStatus == "Y" && (
+                          {DamageStatus != "N" && (
                             <div className="col-sm-6 mb-4">
                               <div className="form-floating form-floating-outline">
                                 <input
@@ -551,10 +562,10 @@ export default function IndexROut() {
                                     className="form-control"
                                     name="seal_1_no"
                                     id="seal_1_no"
-                                    placeholder="Linear Seal"
+                                    placeholder="Seal 1"
                                     defaultValue={Seal_1_no ?? (ModelData?.seal_1_no ??ModelData?.sealno)}
                                   />
-                                  <label htmlFor="seal_1_no">Linear Seal</label>
+                                  <label htmlFor="seal_1_no">Seal 1</label>
                                 </div>
                               </div>
                               <div className="col-md-6">
@@ -564,16 +575,23 @@ export default function IndexROut() {
                                     className="form-control"
                                     name="seal_2_no"
                                     id="seal_2_no"
-                                    placeholder="Custom Seal"
+                                    placeholder="Seal 2"
                                     defaultValue={Seal_2_no ?? ModelData?.seal_2_no}
                                   />
-                                  <label htmlFor="seal_2_no">Custom Seal</label>
+                                  <label htmlFor="seal_2_no">Seal 2</label>
                                 </div>
+                              </div>
+
+                              <div className="col-md-6">
+                                  <div className="form-floating form-floating-outline mb-3">
+                                    <p>CCLS Seal No : </p>
+                                    <p><b>{ModelData?.sealno}</b></p>
+                                  </div>
                               </div>
                             </>
                           )}
 
-<div className="col-md-12 my-3">
+                          <div className="col-md-12 my-3">
                             {ContainerType == "Empty" ? (
                               <>
                               <label
@@ -598,7 +616,7 @@ export default function IndexROut() {
                                 <div className="mt-2">
                                   <img
                                     src={Photos.container}
-                                    alt="Custom Seal"
+                                    alt="Container"
                                     className="img-thumbnail rounded-3"
                                     style={{
                                       width: "100px",
@@ -619,7 +637,7 @@ export default function IndexROut() {
                                         className="btn btn-outline-info btn-sm me-2"
                                       >
                                         <i className="ri-camera-fill me-1"></i>{" "}
-                                        Linear Seal
+                                        Seal 1
                                         <input
                                           type="file"
                                           id="seal_1_image"
@@ -640,7 +658,7 @@ export default function IndexROut() {
                                         <div className="mt-2">
                                           <img
                                             src={Photos.seal1}
-                                            alt="Linear Seal"
+                                            alt="Seal 1"
                                             className="img-thumbnail rounded-3"
                                             style={{
                                               width: "100px",
@@ -657,7 +675,7 @@ export default function IndexROut() {
                                         className="btn btn-outline-info btn-sm me-2"
                                       >
                                         <i className="ri-camera-fill me-1"></i>
-                                        Custom Seal
+                                        Seal 2
                                         <input
                                           type="file"
                                           id="seal_2_image"
@@ -678,7 +696,7 @@ export default function IndexROut() {
                                         <div className="mt-2">
                                           <img
                                             src={Photos.seal2}
-                                            alt="Custom Seal"
+                                            alt="Seal 2"
                                             className="img-thumbnail rounded-3"
                                             style={{
                                               width: "100px",
@@ -703,14 +721,14 @@ export default function IndexROut() {
                           data-bs-dismiss="modal"
                           onClick={()=>setModelData(null)}
                         >
-                          Close
+                          Cancel 
                         </button>
                         <button
                           type="submit"
                             data-bs-dismiss="modal"
                           className="btn btn-label-primary btn-sm"
                         >
-                          Save changes
+                          Submit 
                         </button>
                       </div>
                     </form>
