@@ -11,6 +11,8 @@ export default function Delivery() {
   const containerModalRef = useRef(null);
   const navigate = useNavigate();
   const [loading,setLoading]=useState(false);
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const containerModalEl = document.getElementById("containerModal");
@@ -27,6 +29,24 @@ export default function Delivery() {
       console.error("Container modal instance is not available.");
     }
   };
+
+  // table data fetch from api
+
+
+const fetchData = async () => {
+  try {
+    const response = await axios.get("https://ctas.live/backend/api/delivery/live/data");
+    setData(response.data); // Assuming API returns an array of objects
+    setLoading(false);
+  } catch (err) {
+    setError("Failed to fetch data.");
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  fetchData();
+}, []);
 
 
   const GetFormData = async(e)=>{
@@ -100,7 +120,7 @@ export default function Delivery() {
                         </div>
                         <div className="card-body">
                           <div className="table-responsive">
-                            <table className="table table-striped table-sm table-hover">
+                            {/* <table className="table table-striped table-sm table-hover">
                               <thead>
                                 <tr>
                                   <th>Type</th>
@@ -127,7 +147,45 @@ export default function Delivery() {
                                   <td>25/09/24 13:56</td>
                                 </tr>
                               </tbody>
-                            </table>
+                            </table> */}
+                            <table className="table table-striped table-sm table-hover">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>GPM Number</th>
+              <th>Container Size</th>
+              <th>Seal No</th>
+              <th>Bills No</th>
+              <th>Start Date Time</th>
+              <th>End Date Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.length > 0 ? (
+              data.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.type}</td>
+                  <td>{item.container_no}</td>
+                  <td>{item.container_size}</td>
+                  <td>{item.seal_no}</td>
+                  <td>
+                    {item.bills_no.split(",").map((bill, i) => (
+                      <div key={i}>{bill}</div>
+                    ))}
+                  </td>
+                  <td>{item.start_datetime}</td>
+                  <td>{item.end_datetime}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center">
+                  No data available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
                           </div>
                         </div>
                       </div>
