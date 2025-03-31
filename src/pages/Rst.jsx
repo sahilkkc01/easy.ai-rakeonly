@@ -355,7 +355,7 @@ function Rst() {
                                           <th>Container No.</th>
                                           <th>Size</th>
                                           <th>Job Type.</th>
-                                          <th>ISO</th>
+                                          {/* <th>ISO</th> */}
                                           <th>Source</th>
                                           <th>Destination</th>
                                           <th>DateTime</th>
@@ -375,9 +375,9 @@ function Rst() {
                                             <td>
                                               {data?.job_type}
                                             </td>
-                                            <td>
+                                            {/* <td>
                                               {data?.container_master?.iso_code}
-                                            </td>
+                                            </td> */}
                                             <td>{data.pickup_from}</td>
                                             <td>{data.drop_to}</td>
                                             <td>
