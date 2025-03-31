@@ -8,6 +8,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import "../Pages.css";
 import { compressImage } from "./main/formatToDateTime";
+import EIRMain from "./EIRMain";
 
 export default function IndexR() {
   const NewUser = localStorage.getItem("user");
@@ -21,6 +22,7 @@ export default function IndexR() {
   const [wagon, setWagon] = useState(null);
   const [train, setTrain] = useState(null);
   const [container, setContainer] = useState(null);
+  const [EIRshow, setEIRshow] = useState(false);
 
 
   const [Seal_1_no, setSeal_1_no] = useState("");
@@ -72,6 +74,8 @@ export default function IndexR() {
   
   const handleSetModelData = (modelData) => {
     setModelData(modelData);
+    setEIRshow(true)
+
     setContainerType(modelData.lddmtflg == 'L' ? "Laden" : 'Empty');
   };
 
@@ -255,481 +259,492 @@ export default function IndexR() {
       ) : (
         ""
       )}
-      <div className="layout-wrapper layout-content-navbar">
-        <div className="layout-container">
-          <Header />
-          <div className="layout-page">
-            <div className="content-wrapper">
-              <Nav />
-              <div className="container-xxl flex-grow-1 container-p-y">
-                {/* <LinksButtons /> */}
+      {EIRshow == false ? (
+        <>
+          <div className="layout-wrapper layout-content-navbar">
+            <div className="layout-container">
+              <Header />
+              <div className="layout-page">
+                <div className="content-wrapper">
+                  <Nav />
+                  <div className="container-xxl flex-grow-1 container-p-y">
+                    {/* <LinksButtons /> */}
 
-                <div className="row">
-                  <div className="col-md-12 d-none">
-                    <div className="card">
-                      <div className="card-body">
-                        <div className="col-md-12">
-                          <h5 className="text-primary">Train Details</h5>
+                    <div className="row">
+                      <div className="col-md-12 d-none">
+                        <div className="card">
+                          <div className="card-body">
+                            <div className="col-md-12">
+                              <h5 className="text-primary">Train Details</h5>
+                            </div>
+                            <form
+                              className="row align-items-center"
+                              onSubmit={handleFilter}
+                            >
+                              {/* <div className="col-sm-6 col-md-3 mb-2">
+                                <label htmlFor="">Train Number</label>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="train"
+                                />
+                              </div> */}
+                              <div className="col-sm-6 col-md-3 mb-2">
+                                <label htmlFor="">Wagon Number</label>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="wagon"
+                                />
+                              </div>
+                              <div className="col-sm-6 col-md-3 mb-2">
+                                <label htmlFor="">Container Number</label>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  name="container"
+                                />
+                              </div>
+                              <div className="col-sm-2">
+                                <button
+                                  type="submit"
+                                  className="btn btn-label-primary mt-2"
+                                >
+                                  <i className="ri ri-arrow-right-line"></i>
+                                </button>
+                              </div>
+                            </form>
+                          </div>
                         </div>
-                        <form
-                          className="row align-items-center"
-                          onSubmit={handleFilter}
-                        >
-                          {/* <div className="col-sm-6 col-md-3 mb-2">
-                            <label htmlFor="">Train Number</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              name="train"
-                            />
-                          </div> */}
-                          <div className="col-sm-6 col-md-3 mb-2">
-                            <label htmlFor="">Wagon Number</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              name="wagon"
+                      </div>
+                      <div className="col-lg-12">
+                        <div className="card my-3">
+                          <div className="card-body px-2">
+                            {advanceSummeryTrain &&
+                              advanceSummeryTrain.map((trainData, i) => (
+                                <div key={i}>
+                                  <div className="table-responsive text-nowrap mb-4">
+                                    <h5 className="text-primary">
+                                      Train No: <b>{trainData.train_no}</b>
+                                    </h5>
+                                    <table className="table table-hover table-font table-bordered table-striped ">
+                                      <thead>
+                                        <tr className="table-primary">
+                                          <td>#</td>
+                                          <td>Container Number</td>
+                                          <td>Seal 1</td>
+                                          <td>Seal 2</td>
+                                          <td>Action</td>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {trainData &&
+                                          trainData.rake_transections &&
+                                          trainData.rake_transections.map(
+                                            (summery, index) => {
+                                              if (summery.status == "0") {
+                                                return (
+                                                  <tr key={index}>
+                                                    <td>
+                                                      <span>{index + 1}</span>
+                                                    </td>
+                                                    <td>
+                                                      <span>
+                                                        C : {summery.container_no}
+                                                      </span>
+                                                      <br />
+                                                      <span>
+                                                        W : {summery.wagon_no}
+                                                      </span>
+                                                    </td>
+                                                    <td>
+                                                      {summery.seal_1_no
+                                                        ? summery.seal_1_no
+                                                        : "--"}
+                                                    </td>
+                                                    <td>
+                                                      {summery.seal_2_no
+                                                        ? summery.seal_2_no
+                                                        : "--"}
+                                                    </td>
+                                                    <td>
+                                                      <button
+                                                        onClick={() =>
+                                                          handleSetModelData(summery)
+                                                        }
+                                                        className="btn btn-sm btn-label-primary"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#verifyModel"
+                                                      >
+                                                        <i className="ri-verified-badge-fill me-1"></i>
+                                                        Verify
+                                                      </button>
+                                                    </td>
+                                                  </tr>
+                                                );
+                                              }
+                                            }
+                                          )}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              ))}
+
+                            {advanceSummeryTrain.length === 0 && (
+                              <p className="text-center text-danger">
+                                No Data Found
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className="modal fade"
+                    id="verifyModel"
+                    tabIndex={-1}
+                    aria-labelledby="exampleModalLabel"
+                    aria-hidden="true"
+                  >
+                    <div className="modal-dialog modal-dialog-centered modal-lg">
+                      <div className="modal-content">
+                        <form action="#" onSubmit={handleFormSubmit}>
+                          <div className="modal-header bg-label-primary py-3">
+                            <h1 className="modal-title fs-5" id="exampleModalLabel">
+                              Container No : {ModelData?.container_no}
+                            </h1>
+                            <button
+                              type="button"
+                              className="btn-close"
+                              data-bs-dismiss="modal"
+                              aria-label="Close"
+                              onClick={() => setModelData(null)}
                             />
                           </div>
-                          <div className="col-sm-6 col-md-3 mb-2">
-                            <label htmlFor="">Container Number</label>
-                            <input
-                              type="text"
-                              className="form-control"
-                              name="container"
-                            />
+                          <div className="modal-body">
+                            <div className="row">
+                              <input
+                                type="hidden"
+                                name="id"
+                                id="id"
+                                defaultValue={ModelData?.id}
+                              />
+                              <input
+                                type="hidden"
+                                name="container_no"
+                                id="container_no"
+                                defaultValue={ModelData?.container_no}
+                              />
+                              <div className="col-sm-6 mb-4">
+                                <div className="form-floating form-floating-outline">
+                                  <select
+                                    name="container_type"
+                                    id="container_type"
+                                    className="form-control"
+                                    value={ContainerType}
+                                    required
+                                    onChange={(e) =>
+                                      setContainerType(e.target.value)
+                                    }
+                                  >
+                                    <option value="Empty">Empty</option>
+                                    <option value="Laden">Laden</option>
+                                  </select>
+                                  <label htmlFor="container_type">
+                                    Container Type
+                                  </label>
+                                </div>
+                              </div>
+                              <div className="col-sm-6 mb-4">
+                                <div className="form-floating form-floating-outline">
+                                  <select
+                                    name="itv_name"
+                                    id="itv_name"
+                                    className="form-control p-2 mb-2"
+                                    required
+                                  >
+                                    <option>Select ITV </option>
+                                    {Array.from({ length: 30 }, (_, index) => {
+                                      const value = `itv${String(
+                                        index + 1
+                                      ).padStart(2, "0")}`;
+                                      return (
+                                        <option key={value} value={value}>
+                                          {value}
+                                        </option>
+                                      );
+                                    })}
+                                  </select>
+                                  <label htmlFor="itv_name">Select ITV</label>
+                                </div>
+                              </div>
+
+                              {/* <div className="col-sm-6 mb-4">
+                                <div className="form-floating form-floating-outline">
+                                  <select
+                                    name="equipment_name"
+                                    id="equipment_name"
+                                    className="form-control p-2 mb-2"
+                                    required
+                                  >
+                                    <option value="" selected disable>
+                                      Select Equipment Name
+                                    </option>
+                                    <option value="RTG9">RTG9</option>
+                                    <option value="RTG8">RTG8</option>
+                                    <option value="RTG7">RTG7</option>
+                                    <option value="RTG6">RTG6</option>
+                                    <option value="R-S3">R-S3</option>
+                                    <option value="R-S2">R-S2</option>
+                                    <option value="R-S1">R-S1</option>
+                                    <option value="RH03">RH03</option>
+                                    <option value="RH04">RH04</option>
+                                    <option value="RH05">RH05</option>
+                                    <option value="RH06">RH06</option>
+                                    <option value="RH07">RH07</option>
+                                    <option value="RH08">RH08</option>
+                                    <option value="RH10">RH10</option>
+                                    <option value="RH12">RH12</option>
+                                    <option value="RH13">RH13</option>
+                                  </select>
+                                  <label htmlFor="equipment_name">
+                                    Select Equipment Name
+                                  </label>
+                                </div>
+                              </div> */}
+
+                              <div className="col-sm-6 mb-4">
+                                <div className="form-floating form-floating-outline">
+                                  <select
+                                    name="damage_status"
+                                    id="damage_status"
+                                    className="form-control"
+                                    value={DamageStatus}
+                                    required
+                                    onChange={(e) =>
+                                      setDamageStatus(e.target.value)
+                                    }
+                                  >
+                                    <option value="N">NO</option>
+                                    <option value="contianer_damage">Container Damage</option>
+                                    <option value="seal_damage">Seal Damage</option>
+                                    <option value="seal_mismatch">Seal Mismatch</option>
+                                    <option value="seal_missing">Seal Missing</option>
+                                  </select>
+                                  <label htmlFor="damage_status">
+                                    Damage Status
+                                  </label>
+                                </div>
+                              </div>
+                              {DamageStatus != "N" && (
+                                <div className="col-sm-6 mb-4">
+                                  <div className="form-floating form-floating-outline">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      name="damage_remark"
+                                      id="damage_remark"
+                                      placeholder="Damage Remark"
+                                    />
+                                    <label htmlFor="damage_remark">
+                                      Damage Remark
+                                    </label>
+                                  </div>
+                                </div>
+                              )}
+
+                              {ContainerType == "Laden" && (
+                                <>
+                                  <div className="col-md-6">
+                                    <div className="form-floating form-floating-outline mb-3">
+                                      <input
+                                        type="text"
+                                        className="form-control"
+                                        name="seal_1_no"
+                                        id="seal_1_no"
+                                        placeholder="Seal 1"
+                                        defaultValue={Seal_1_no ?? ModelData?.seal_1_no}
+                                      />
+                                      <label htmlFor="seal_1_no">Seal 1</label>
+                                    </div>
+                                  </div>
+                                  <div className="col-md-6">
+                                    <div className="form-floating form-floating-outline mb-3">
+                                      <input
+                                        type="text"
+                                        className="form-control"
+                                        name="seal_2_no"
+                                        id="seal_2_no"
+                                        placeholder="Seal 2"
+                                        defaultValue={Seal_2_no ?? ModelData?.seal_2_no}
+                                      />
+                                      <label htmlFor="seal_2_no">Seal 2</label>
+                                    </div>
+                                  </div>
+                                  <div className="col-md-6">
+                                      <p>CCLS Seal No : </p>
+                                      <p><b>{ModelData?.ccls_seal_no}</b></p>
+                                  </div>
+                                </>
+                              )}
+
+                              <div className="col-md-12 my-3">
+                                {ContainerType == "Empty" ? (
+                                  <>
+                                  <label
+                                    htmlFor="container_image"
+                                    className="btn btn-outline-info btn-sm me-2"
+                                  >
+                                    <i className="ri-camera-fill me-1"></i>
+                                    Container Image
+                                    <input
+                                      type="file"
+                                      id="container_image"
+                                      name="container_image"
+                                      className="d-none"
+                                      accept="image/*"
+                                      capture="environment"
+                                      onChange={(e) =>
+                                        handleImageChange(e, "container")
+                                      }
+                                    />
+                                  </label>
+                                  {Photos?.container && (
+                                    <div className="mt-2">
+                                      <img
+                                        src={Photos.container}
+                                        alt="ContainerImg"
+                                        className="img-thumbnail rounded-3"
+                                        style={{
+                                          width: "100px",
+                                          height: "100px",
+                                          objectFit: "cover",
+                                        }}
+                                      />
+                                    </div>
+                                  )}
+                                  </>
+                                ) : (
+                                  ContainerType == "Laden" && (
+                                    <>
+                                      <div className="d-flex align-items-center gap-4">
+                                        <div className="">
+                                          <label
+                                            htmlFor="seal_1_image"
+                                            className="btn btn-outline-info btn-sm me-2"
+                                          >
+                                            <i className="ri-camera-fill me-1"></i>{" "}
+                                            Seal 1
+                                            <input
+                                              type="file"
+                                              id="seal_1_image"
+                                              name="seal_1_image"
+                                              className="d-none"
+                                              accept="image/*"
+                                              capture="environment"
+                                              onChange={(e) =>
+                                                {handleImageChange(e, "seal1");  handleImageToText(e, 1)}
+                                              }
+                                            />
+                                          </label>
+                                          {Photos?.seal1 && (
+                                            <div className="mt-2">
+                                              <img
+                                                src={Photos.seal1}
+                                                alt="Seal 1"
+                                                className="img-thumbnail rounded-3"
+                                                style={{
+                                                  width: "100px",
+                                                  height: "100px",
+                                                  objectFit: "cover",
+                                                }}
+                                              />
+                                            </div>
+                                          )}
+                                        </div>
+                                        <div className="">
+                                          <label
+                                            htmlFor="seal_2_image"
+                                            className="btn btn-outline-info btn-sm me-2"
+                                          >
+                                            <i className="ri-camera-fill me-1"></i>
+                                            Seal 2
+                                            <input
+                                              type="file"
+                                              id="seal_2_image"
+                                              name="seal_2_image"
+                                              className="d-none"
+                                              accept="image/*"
+                                              capture="environment"
+                                              onChange={(e) =>
+                                              { handleImageChange(e, "seal2"); handleImageToText(e, 2) }
+                                              }
+                                            />
+                                          </label>
+                                          {Photos?.seal2 && (
+                                            <div className="mt-2">
+                                              <img
+                                                src={Photos.seal2}
+                                                alt="Seal 2"
+                                                className="img-thumbnail rounded-3"
+                                                style={{
+                                                  width: "100px",
+                                                  height: "100px",
+                                                  objectFit: "cover",
+                                                }}
+                                              />
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </>
+                                  )
+                                )}
+                              </div>
+                            </div>
                           </div>
-                          <div className="col-sm-2">
+                          <div className="modal-footer border-top py-3">
+                            <button
+                              type="button"
+                              className="btn btn-secondary btn-sm"
+                              data-bs-dismiss="modal"
+                              onClick={() => setModelData(null)}
+                            >
+                              Cancel 
+                            </button>
                             <button
                               type="submit"
-                              className="btn btn-label-primary mt-2"
+                              data-bs-dismiss="modal"
+                              className="btn btn-label-primary btn-sm"
                             >
-                              <i className="ri ri-arrow-right-line"></i>
+                              Submit 
                             </button>
                           </div>
                         </form>
                       </div>
                     </div>
                   </div>
-                  <div className="col-lg-12">
-                    <div className="card my-3">
-                      <div className="card-body px-2">
-                        {advanceSummeryTrain &&
-                          advanceSummeryTrain.map((trainData, i) => (
-                            <div key={i}>
-                              <div className="table-responsive text-nowrap mb-4">
-                                <h5 className="text-primary">
-                                  Train No: <b>{trainData.train_no}</b>
-                                </h5>
-                                <table className="table table-hover table-font table-bordered table-striped ">
-                                  <thead>
-                                    <tr className="table-primary">
-                                      <td>#</td>
-                                      <td>Container Number</td>
-                                      <td>Seal 1</td>
-                                      <td>Seal 2</td>
-                                      <td>Action</td>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {trainData &&
-                                      trainData.rake_transections &&
-                                      trainData.rake_transections.map(
-                                        (summery, index) => {
-                                          if (summery.status == "0") {
-                                            return (
-                                              <tr key={index}>
-                                                <td>
-                                                  <span>{index + 1}</span>
-                                                </td>
-                                                <td>
-                                                  <span>
-                                                    C : {summery.container_no}
-                                                  </span>
-                                                  <br />
-                                                  <span>
-                                                    W : {summery.wagon_no}
-                                                  </span>
-                                                </td>
-                                                <td>
-                                                  {summery.seal_1_no
-                                                    ? summery.seal_1_no
-                                                    : "--"}
-                                                </td>
-                                                <td>
-                                                  {summery.seal_2_no
-                                                    ? summery.seal_2_no
-                                                    : "--"}
-                                                </td>
-                                                <td>
-                                                  <button
-                                                    onClick={() =>
-                                                      handleSetModelData(summery)
-                                                    }
-                                                    className="btn btn-sm btn-label-primary"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#verifyModel"
-                                                  >
-                                                    <i className="ri-verified-badge-fill me-1"></i>
-                                                    Verify
-                                                  </button>
-                                                </td>
-                                              </tr>
-                                            );
-                                          }
-                                        }
-                                      )}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          ))}
 
-                        {advanceSummeryTrain.length === 0 && (
-                          <p className="text-center text-danger">
-                            No Data Found
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                  <Footer />
+                  <div className="content-backdrop fade"></div>
                 </div>
               </div>
-
-              <div
-                className="modal fade"
-                id="verifyModel"
-                tabIndex={-1}
-                aria-labelledby="exampleModalLabel"
-                aria-hidden="true"
-              >
-                <div className="modal-dialog modal-dialog-centered modal-lg">
-                  <div className="modal-content">
-                    <form action="#" onSubmit={handleFormSubmit}>
-                      <div className="modal-header bg-label-primary py-3">
-                        <h1 className="modal-title fs-5" id="exampleModalLabel">
-                          Container No : {ModelData?.container_no}
-                        </h1>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                          onClick={() => setModelData(null)}
-                        />
-                      </div>
-                      <div className="modal-body">
-                        <div className="row">
-                          <input
-                            type="hidden"
-                            name="id"
-                            id="id"
-                            defaultValue={ModelData?.id}
-                          />
-                          <input
-                            type="hidden"
-                            name="container_no"
-                            id="container_no"
-                            defaultValue={ModelData?.container_no}
-                          />
-                          <div className="col-sm-6 mb-4">
-                            <div className="form-floating form-floating-outline">
-                              <select
-                                name="container_type"
-                                id="container_type"
-                                className="form-control"
-                                value={ContainerType}
-                                required
-                                onChange={(e) =>
-                                  setContainerType(e.target.value)
-                                }
-                              >
-                                <option value="Empty">Empty</option>
-                                <option value="Laden">Laden</option>
-                              </select>
-                              <label htmlFor="container_type">
-                                Container Type
-                              </label>
-                            </div>
-                          </div>
-                          <div className="col-sm-6 mb-4">
-                            <div className="form-floating form-floating-outline">
-                              <select
-                                name="itv_name"
-                                id="itv_name"
-                                className="form-control p-2 mb-2"
-                                required
-                              >
-                                <option>Select ITV </option>
-                                {Array.from({ length: 30 }, (_, index) => {
-                                  const value = `itv${String(
-                                    index + 1
-                                  ).padStart(2, "0")}`;
-                                  return (
-                                    <option key={value} value={value}>
-                                      {value}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                              <label htmlFor="itv_name">Select ITV</label>
-                            </div>
-                          </div>
-
-                          {/* <div className="col-sm-6 mb-4">
-                            <div className="form-floating form-floating-outline">
-                              <select
-                                name="equipment_name"
-                                id="equipment_name"
-                                className="form-control p-2 mb-2"
-                                required
-                              >
-                                <option value="" selected disable>
-                                  Select Equipment Name
-                                </option>
-                                <option value="RTG9">RTG9</option>
-                                <option value="RTG8">RTG8</option>
-                                <option value="RTG7">RTG7</option>
-                                <option value="RTG6">RTG6</option>
-                                <option value="R-S3">R-S3</option>
-                                <option value="R-S2">R-S2</option>
-                                <option value="R-S1">R-S1</option>
-                                <option value="RH03">RH03</option>
-                                <option value="RH04">RH04</option>
-                                <option value="RH05">RH05</option>
-                                <option value="RH06">RH06</option>
-                                <option value="RH07">RH07</option>
-                                <option value="RH08">RH08</option>
-                                <option value="RH10">RH10</option>
-                                <option value="RH12">RH12</option>
-                                <option value="RH13">RH13</option>
-                              </select>
-                              <label htmlFor="equipment_name">
-                                Select Equipment Name
-                              </label>
-                            </div>
-                          </div> */}
-
-                          <div className="col-sm-6 mb-4">
-                            <div className="form-floating form-floating-outline">
-                              <select
-                                name="damage_status"
-                                id="damage_status"
-                                className="form-control"
-                                value={DamageStatus}
-                                required
-                                onChange={(e) =>
-                                  setDamageStatus(e.target.value)
-                                }
-                              >
-                                <option value="N">NO</option>
-                                <option value="contianer_damage">Container Damage</option>
-                                <option value="seal_damage">Seal Damage</option>
-                                <option value="seal_mismatch">Seal Mismatch</option>
-                                <option value="seal_missing">Seal Missing</option>
-                              </select>
-                              <label htmlFor="damage_status">
-                                Damage Status
-                              </label>
-                            </div>
-                          </div>
-                          {DamageStatus != "N" && (
-                            <div className="col-sm-6 mb-4">
-                              <div className="form-floating form-floating-outline">
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  name="damage_remark"
-                                  id="damage_remark"
-                                  placeholder="Damage Remark"
-                                />
-                                <label htmlFor="damage_remark">
-                                  Damage Remark
-                                </label>
-                              </div>
-                            </div>
-                          )}
-
-                          {ContainerType == "Laden" && (
-                            <>
-                              <div className="col-md-6">
-                                <div className="form-floating form-floating-outline mb-3">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    name="seal_1_no"
-                                    id="seal_1_no"
-                                    placeholder="Seal 1"
-                                    defaultValue={Seal_1_no ?? ModelData?.seal_1_no}
-                                  />
-                                  <label htmlFor="seal_1_no">Seal 1</label>
-                                </div>
-                              </div>
-                              <div className="col-md-6">
-                                <div className="form-floating form-floating-outline mb-3">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    name="seal_2_no"
-                                    id="seal_2_no"
-                                    placeholder="Seal 2"
-                                    defaultValue={Seal_2_no ?? ModelData?.seal_2_no}
-                                  />
-                                  <label htmlFor="seal_2_no">Seal 2</label>
-                                </div>
-                              </div>
-                              <div className="col-md-6">
-                                  <p>CCLS Seal No : </p>
-                                  <p><b>{ModelData?.ccls_seal_no}</b></p>
-                              </div>
-                            </>
-                          )}
-
-                          <div className="col-md-12 my-3">
-                            {ContainerType == "Empty" ? (
-                              <>
-                              <label
-                                htmlFor="container_image"
-                                className="btn btn-outline-info btn-sm me-2"
-                              >
-                                <i className="ri-camera-fill me-1"></i>
-                                Container Image
-                                <input
-                                  type="file"
-                                  id="container_image"
-                                  name="container_image"
-                                  className="d-none"
-                                  accept="image/*"
-                                  capture="environment"
-                                  onChange={(e) =>
-                                    handleImageChange(e, "container")
-                                  }
-                                />
-                              </label>
-                              {Photos?.container && (
-                                <div className="mt-2">
-                                  <img
-                                    src={Photos.container}
-                                    alt="ContainerImg"
-                                    className="img-thumbnail rounded-3"
-                                    style={{
-                                      width: "100px",
-                                      height: "100px",
-                                      objectFit: "cover",
-                                    }}
-                                  />
-                                </div>
-                              )}
-                              </>
-                            ) : (
-                              ContainerType == "Laden" && (
-                                <>
-                                  <div className="d-flex align-items-center gap-4">
-                                    <div className="">
-                                      <label
-                                        htmlFor="seal_1_image"
-                                        className="btn btn-outline-info btn-sm me-2"
-                                      >
-                                        <i className="ri-camera-fill me-1"></i>{" "}
-                                        Seal 1
-                                        <input
-                                          type="file"
-                                          id="seal_1_image"
-                                          name="seal_1_image"
-                                          className="d-none"
-                                          accept="image/*"
-                                          capture="environment"
-                                          onChange={(e) =>
-                                            {handleImageChange(e, "seal1");  handleImageToText(e, 1)}
-                                          }
-                                        />
-                                      </label>
-                                      {Photos?.seal1 && (
-                                        <div className="mt-2">
-                                          <img
-                                            src={Photos.seal1}
-                                            alt="Seal 1"
-                                            className="img-thumbnail rounded-3"
-                                            style={{
-                                              width: "100px",
-                                              height: "100px",
-                                              objectFit: "cover",
-                                            }}
-                                          />
-                                        </div>
-                                      )}
-                                    </div>
-                                    <div className="">
-                                      <label
-                                        htmlFor="seal_2_image"
-                                        className="btn btn-outline-info btn-sm me-2"
-                                      >
-                                        <i className="ri-camera-fill me-1"></i>
-                                        Seal 2
-                                        <input
-                                          type="file"
-                                          id="seal_2_image"
-                                          name="seal_2_image"
-                                          className="d-none"
-                                          accept="image/*"
-                                          capture="environment"
-                                          onChange={(e) =>
-                                           { handleImageChange(e, "seal2"); handleImageToText(e, 2) }
-                                          }
-                                        />
-                                      </label>
-                                      {Photos?.seal2 && (
-                                        <div className="mt-2">
-                                          <img
-                                            src={Photos.seal2}
-                                            alt="Seal 2"
-                                            className="img-thumbnail rounded-3"
-                                            style={{
-                                              width: "100px",
-                                              height: "100px",
-                                              objectFit: "cover",
-                                            }}
-                                          />
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="modal-footer border-top py-3">
-                        <button
-                          type="button"
-                          className="btn btn-secondary btn-sm"
-                          data-bs-dismiss="modal"
-                          onClick={() => setModelData(null)}
-                        >
-                          Cancel 
-                        </button>
-                        <button
-                          type="submit"
-                          data-bs-dismiss="modal"
-                          className="btn btn-label-primary btn-sm"
-                        >
-                          Submit 
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-
-              <Footer />
-              <div className="content-backdrop fade"></div>
             </div>
+            <div className="layout-overlay layout-menu-toggle"></div>
+            <div className="drag-target"></div>
           </div>
-        </div>
-        <div className="layout-overlay layout-menu-toggle"></div>
-        <div className="drag-target"></div>
-      </div>
+        </>
+        ) : (
+          <>
+            <EIRMain data={ModelData}/>
+          </>
+        ) 
+      }
+
+
     </>
   );
 }

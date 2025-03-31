@@ -3,63 +3,63 @@ import "./EIR.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-export default function EIRMain() {
+export default function EIRMain(data = []) {
   const { Permit } = useParams();
-  const [Data,setData] = useState();
+  const [Data,setData] = useState(data.data);
 
-  useEffect(() => {
-    GetData(Permit);
-  }, [Permit])
+  // useEffect(() => {
+  //   GetData(Permit);
+  // }, [Permit])
 
   useEffect(() => {
     console.log("Response from server:", Data);
   }, [Data])
 
-  const GetData = async (Permit) => {
-    const url = `https://ctas.live/backend/api/get/permit_detail/${Permit}?gate_no=1&type=IN`;
-    try {
-      const response = await axios.get(url, {
-        headers: { "Content-Type": "application/json" },
-      });
-      if (response.data && response.data.data) {
-        setData(response.data.data);
-      } else {
-        Swal.fire({
-          icon: "Info",
-          text: `No message returned from the server.`,
-          timer: 3000,
-          showConfirmButton: false,
-        });
-        console.warn("No data found for the given input.");
-      }
-    } catch (error) {
-      console.error("Error in Permit Data Fetch :", error);
-      Swal.fire({
-        icon: "error",
-        text: `Error in Data Submit: ${error.message}`,
-        timer: 3000,
-        showConfirmButton: false,
-      });
-    }
-  };
+  // const GetData = async (Permit) => {
+  //   const url = `https://ctas.live/backend/api/get/permit_detail/${Permit}?gate_no=1&type=IN`;
+  //   try {
+  //     const response = await axios.get(url, {
+  //       headers: { "Content-Type": "application/json" },
+  //     });
+  //     if (response.data && response.data.data) {
+  //       setData(response.data.data);
+  //     } else {
+  //       Swal.fire({
+  //         icon: "Info",
+  //         text: `No message returned from the server.`,
+  //         timer: 3000,
+  //         showConfirmButton: false,
+  //       });
+  //       console.warn("No data found for the given input.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error in Permit Data Fetch :", error);
+  //     Swal.fire({
+  //       icon: "error",
+  //       text: `Error in Data Submit: ${error.message}`,
+  //       timer: 3000,
+  //       showConfirmButton: false,
+  //     });
+  //   }
+  // };
 
-  const handleFormSubmit =(e)=>{
-e.preventDefault();
-const formData = new FormData(e.target);
-const formValues = Object.fromEntries(formData.entries());
+  // const handleFormSubmit =(e)=>{
+  //     e.preventDefault();
+  //     const formData = new FormData(e.target);
+  //     const formValues = Object.fromEntries(formData.entries());
 
-console.log(formValues);
-alert('success');
-  }
+  //     console.log(formValues);
+  //     alert('success');
+  // }
 
 
   return (
     <>
       <div className="A5 m-auto main-p p-2 px-5">
-        <form className="row justify-content-center align-items-center" onSubmit={handleFormSubmit}>
+        <form className="row justify-content-center align-items-center" >
           <div className="text-end position-absolute top-0 right-0">
-          <button className="btn btn-label-info btn-sm m-3" type="submit" >Save</button>
-
+            {/* <button className="btn btn-label-info btn-sm m-3" type="submit" >Close</button> */}
+            <a href="?" className="btn btn-danger mt-2 me-2">Close</a>
           </div>
           <div className="col-8 text-center  mb-5">
             <h1 className="m-0 h1">SUNIC TECHNOLOGIES PVT. LTD.</h1>
@@ -107,7 +107,7 @@ alert('success');
           <div className="col-12 mb-3">
             <div className="d-flex align-items-end">
               <label htmlFor="">Container&nbsp;No.</label>
-              <input type="text" className="form-control border-bottoms"  defaultValue={Data && Data.container_no} name="container_no" />
+              <input type="text" className="form-control border-bottoms"  defaultValue={Data && (Data.container_no ?? Data.ctrno)} name="container_no" />
             </div>
           </div>
           <div className="col-12 mb-3">
@@ -115,13 +115,13 @@ alert('success');
               <div className="col-7">
                 <div className="d-flex align-items-end">
                   <label htmlFor="">Size</label>
-                  <input type="text" className="form-control border-bottoms"  defaultValue={Data && Data.container_size} name="container_size" />
+                  <input type="text" className="form-control border-bottoms"  defaultValue={Data && (Data.container_size ?? Data.ctrsize)} name="container_size" />
                 </div>
               </div>
               <div className="col-5">
                 <div className="d-flex align-items-end">
                   <label htmlFor="">Type</label>
-                  <input type="text" className="form-control border-bottoms"  defaultValue={Data && Data.container_type} name="container_type" />
+                  <input type="text" className="form-control border-bottoms"  defaultValue={Data && (Data.container_type ?? Data.ctrtype)} name="container_type" />
                 </div>
               </div>
             </div>
@@ -136,8 +136,8 @@ alert('success');
               </div>
               <div className="col-5">
                 <div className="d-flex align-items-end">
-                  <label htmlFor="">Lorry&nbsp;No.</label>
-                  <input type="text" className="form-control border-bottoms" defaultValue={Data && Data.vehicle_no} name="vehicle_no"  />
+                  <label htmlFor="">Lorry/WagonNo.</label>
+                  <input type="text" className="form-control border-bottoms" defaultValue={Data && (Data.vehicle_no ?? Data.wagon_no)} name="vehicle_no"  />
                 </div>
               </div>
             </div>
@@ -147,7 +147,7 @@ alert('success');
               <div className="col-5">
                 <div className="d-flex align-items-end">
                   <label htmlFor="">Status</label>
-                  <input type="text" className="form-control border-bottoms"  defaultValue={Data && Data.containerStatus} name="containerStatus" />
+                  <input type="text" className="form-control border-bottoms"  defaultValue={Data && Data.is_container_damage} name="containerStatus" />
                 </div>
               </div>
               <div className="col-4">
@@ -165,6 +165,13 @@ alert('success');
             </div>
           </div>
           <div className="col-12 mb-3">
+            <div className="d-flex align-items-end">
+              <label htmlFor="">Remark</label>
+              <input type="text" className="form-control border-bottoms" defaultValue={Data && Data.remark} name="damage_remark" />
+            </div>
+          </div>
+
+          {/* <div className="col-12 mb-3">
             <div className="d-flex align-items-end">
               <label htmlFor="">Rear</label>
               <input type="text" className="form-control border-bottoms" name="rear" />
@@ -205,7 +212,7 @@ alert('success');
               <label htmlFor="">Floor</label>
               <input type="text" className="form-control border-bottoms" name="floor" />
             </div>
-          </div>
+          </div> */}
           <div className="col-12 mb-4">
             <div className="d-flex align-items-end">
               <label htmlFor="">
