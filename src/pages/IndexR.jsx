@@ -74,7 +74,7 @@ export default function IndexR() {
   
   const handleSetModelData = (modelData) => {
     setModelData(modelData);
-    setEIRshow(true)
+    // setEIRshow(true)
 
     setContainerType(modelData.lddmtflg == 'L' ? "Laden" : 'Empty');
   };
@@ -106,6 +106,9 @@ export default function IndexR() {
           timer: 1900,
           showConfirmButton: false,
         }).then(() => {
+          if(DamageStatus != 'N'){
+            setEIRshow(true);
+          }
           fetchData();
         });
       } else {
