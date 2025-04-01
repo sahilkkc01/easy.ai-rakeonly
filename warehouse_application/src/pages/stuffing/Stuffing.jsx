@@ -11,6 +11,9 @@ export default function Stuffing() {
   const containerModalRef = useRef(null);
   const navigate = useNavigate();
   const [loading,setLoading]=useState(false);
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
+
 
   useEffect(() => {
     const containerModalEl = document.getElementById("containerModal");
@@ -27,6 +30,24 @@ export default function Stuffing() {
       console.error("Container modal instance is not available.");
     }
   };
+
+    // table data fetch from api
+
+
+const fetchData = async () => {
+  try {
+    const response = await axios.get("https://ctas.live/backend/api/stuffing/live/data");
+    setData(response.data); // Assuming API returns an array of objects
+    setLoading(false);
+  } catch (err) {
+    setError("Failed to fetch data.");
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  fetchData();
+}, []);
 
 
   const GetFormData = async(e)=>{
@@ -99,7 +120,7 @@ export default function Stuffing() {
                   </div>
                   <div className="card-body">
                     <div className="table-responsive">
-                      <table className="table table-striped table-sm table-hover">
+                      {/* <table className="table table-striped table-sm table-hover">
                         <thead className="table-primary">
                           <tr>
                             <th>#</th>
@@ -116,7 +137,36 @@ export default function Stuffing() {
                             <td>25/09/24</td>
                           </tr>
                         </tbody>
-                      </table>
+                      </table> */}
+
+                      <table className="table table-striped table-sm table-hover">
+          <thead className="table-primary">
+            <tr>
+              <th>#</th>
+              <th>Truck No</th>
+              <th>CRN</th>
+              <th>Created On</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.length > 0 ? (
+              data.map((item, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{item.truck_no}</td>
+                  <td>{item.crn}</td>
+                  <td>{item.created_on}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="text-center">
+                  No data available
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
                     </div>
                   </div>
                 </div>
