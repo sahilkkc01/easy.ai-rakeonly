@@ -104,9 +104,9 @@ export default function IndexROut() {
           timer: 1500,
           showConfirmButton: false,
         }).then(() => {
-          if(DamageStatus != 'N'){
-            setEIRshow(true);
-          }
+          // if(DamageStatus != 'N'){
+          //   setEIRshow(true);
+          // }
           fetchData();
           
         });

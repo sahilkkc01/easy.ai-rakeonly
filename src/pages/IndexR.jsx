@@ -106,9 +106,9 @@ export default function IndexR() {
           timer: 1900,
           showConfirmButton: false,
         }).then(() => {
-          if(DamageStatus != 'N'){
-            setEIRshow(true);
-          }
+          // if(DamageStatus != 'N'){
+          //   setEIRshow(true);
+          // }
           fetchData();
         });
       } else {
