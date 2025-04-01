@@ -167,7 +167,7 @@ export default function IndexR() {
 
     console.log(formValues);
 
-    // submitData(formValues);
+    submitData(formValues);
   };
 
   const [Photos, setPhotos] = useState({
