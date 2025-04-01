@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import "../Pages.css";
 import { compressImage } from "./main/formatToDateTime";
 import EIRMain from "./EIRMain";
+import { useReactToPrint } from "react-to-print";
 
 export default function IndexROut() {
   const NewUser = localStorage.getItem("user");
@@ -26,6 +27,12 @@ export default function IndexROut() {
   const [container, setContainer] = useState(null);
   const [Seal_1_no, setSeal_1_no] = useState("");
   const [Seal_2_no, setSeal_2_no] = useState("");
+
+
+  const printRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
 
   const fetchData = async () => {
     setLoading(true);
@@ -264,8 +271,6 @@ export default function IndexROut() {
       ) : (
         ""
       )}
-      {EIRshow == false ? (
-        <>
           <div className="layout-wrapper layout-content-navbar">
             <div className="layout-container">
               <Header />
@@ -530,9 +535,10 @@ export default function IndexROut() {
                                     id="is_container_damage"
                                     className="form-control"
                                     value={DamageStatus}
-                                    onChange={(e) =>
-                                      setDamageStatus(e.target.value)
-                                    }
+                                    onChange={(e) => {
+                                      setDamageStatus(e.target.value);
+                                        setEIRshow(e.target.value === "N"?false:true);
+                                    }}
                                   >
                                     <option value="N">NO</option>
                                     <option value="contianer_damage">Container Damage</option>
@@ -722,6 +728,19 @@ export default function IndexROut() {
                                 )}
                               </div>
                             </div>
+
+                            {EIRshow && (
+                              <div className="row">
+                                <div className="col-md-12 text-end">
+                                <button className="btn btn-sm btn-label" onClick={handlePrint}>Print EIR</button>
+                                </div>
+                                <EIRMain ref={printRef} data={ModelData} />
+                              </div>
+                            )}
+
+
+
+
                           </div>
                           <div className="modal-footer border-top py-3">
                             <button
@@ -753,15 +772,6 @@ export default function IndexROut() {
             <div className="layout-overlay layout-menu-toggle"></div>
             <div className="drag-target"></div>
           </div>
-        </>
-      ) : (
-        <>
-          <EIRMain data={ModelData}/>
-        </>
-      ) 
-      // EIR Form is
-
-      }
     </>
   );
 }

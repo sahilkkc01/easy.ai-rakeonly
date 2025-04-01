@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import "../Pages.css";
 import { compressImage } from "./main/formatToDateTime";
 import EIRMain from "./EIRMain";
+import { useReactToPrint } from "react-to-print";
 
 export default function IndexR() {
   const NewUser = localStorage.getItem("user");
@@ -24,11 +25,14 @@ export default function IndexR() {
   const [container, setContainer] = useState(null);
   const [EIRshow, setEIRshow] = useState(false);
 
-
   const [Seal_1_no, setSeal_1_no] = useState("");
   const [Seal_2_no, setSeal_2_no] = useState("");
 
-  
+  const printRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
+
   const fetchData = async () => {
     setLoading(true);
     let url;
@@ -71,12 +75,11 @@ export default function IndexR() {
     fetchData();
   }, []);
 
-  
   const handleSetModelData = (modelData) => {
     setModelData(modelData);
     // setEIRshow(true)
 
-    setContainerType(modelData.lddmtflg == 'L' ? "Laden" : 'Empty');
+    setContainerType(modelData.lddmtflg == "L" ? "Laden" : "Empty");
   };
 
   const handleFilter = (e) => {
@@ -99,7 +102,11 @@ export default function IndexR() {
       });
 
       console.log(response.data);
-      if (response.data && response.data.status && response.data.status == 'success') {
+      if (
+        response.data &&
+        response.data.status &&
+        response.data.status == "success"
+      ) {
         Swal.fire({
           icon: "success",
           text: response.data.message ?? response.data.status,
@@ -160,7 +167,7 @@ export default function IndexR() {
 
     console.log(formValues);
 
-    submitData(formValues);
+    // submitData(formValues);
   };
 
   const [Photos, setPhotos] = useState({
@@ -183,29 +190,26 @@ export default function IndexR() {
     }
   };
 
-
   const handleImageToText = async (e, seal) => {
     e.preventDefault();
     setLoading(true);
     const file = e.target.files[0];
     if (!file) return;
 
-
     const formData = new FormData();
     const targetSize = 20 * 1024; // 50KB
 
-        if (file && file.name) {
-          const compressedFile = await compressImage(file, targetSize);
-          if (compressedFile) {
-            formData.set("image", compressedFile);
-            // formData.set(element, compressedFile);
-            // formEntries = Object.fromEntries(formData.entries());
-          } else {
-            alert("Could not compress this file.");
-            return;
-          }
-        }
-        
+    if (file && file.name) {
+      const compressedFile = await compressImage(file, targetSize);
+      if (compressedFile) {
+        formData.set("image", compressedFile);
+        // formData.set(element, compressedFile);
+        // formEntries = Object.fromEntries(formData.entries());
+      } else {
+        alert("Could not compress this file.");
+        return;
+      }
+    }
 
     const url = `https://ctas.live/backend/api/text/extract/vision`;
 
@@ -241,8 +245,6 @@ export default function IndexR() {
     }
   };
 
-
-
   return (
     <>
       {loading ? (
@@ -262,7 +264,6 @@ export default function IndexR() {
       ) : (
         ""
       )}
-      {EIRshow == false ? (
         <>
           <div className="layout-wrapper layout-content-navbar">
             <div className="layout-container">
@@ -353,7 +354,8 @@ export default function IndexR() {
                                                     </td>
                                                     <td>
                                                       <span>
-                                                        C : {summery.container_no}
+                                                        C :{" "}
+                                                        {summery.container_no}
                                                       </span>
                                                       <br />
                                                       <span>
@@ -373,7 +375,9 @@ export default function IndexR() {
                                                     <td>
                                                       <button
                                                         onClick={() =>
-                                                          handleSetModelData(summery)
+                                                          handleSetModelData(
+                                                            summery
+                                                          )
                                                         }
                                                         className="btn btn-sm btn-label-primary"
                                                         data-bs-toggle="modal"
@@ -416,7 +420,10 @@ export default function IndexR() {
                       <div className="modal-content">
                         <form action="#" onSubmit={handleFormSubmit}>
                           <div className="modal-header bg-label-primary py-3">
-                            <h1 className="modal-title fs-5" id="exampleModalLabel">
+                            <h1
+                              className="modal-title fs-5"
+                              id="exampleModalLabel"
+                            >
                               Container No : {ModelData?.container_no}
                             </h1>
                             <button
@@ -527,15 +534,25 @@ export default function IndexR() {
                                     className="form-control"
                                     value={DamageStatus}
                                     required
-                                    onChange={(e) =>
-                                      setDamageStatus(e.target.value)
-                                    }
+                                    onChange={(e) => {
+                                      setDamageStatus(e.target.value);
+                                     
+                                        setEIRshow(e.target.value === "N"?false:true);
+                                    }}
                                   >
                                     <option value="N">NO</option>
-                                    <option value="contianer_damage">Container Damage</option>
-                                    <option value="seal_damage">Seal Damage</option>
-                                    <option value="seal_mismatch">Seal Mismatch</option>
-                                    <option value="seal_missing">Seal Missing</option>
+                                    <option value="contianer_damage">
+                                      Container Damage
+                                    </option>
+                                    <option value="seal_damage">
+                                      Seal Damage
+                                    </option>
+                                    <option value="seal_mismatch">
+                                      Seal Mismatch
+                                    </option>
+                                    <option value="seal_missing">
+                                      Seal Missing
+                                    </option>
                                   </select>
                                   <label htmlFor="damage_status">
                                     Damage Status
@@ -569,7 +586,9 @@ export default function IndexR() {
                                         name="seal_1_no"
                                         id="seal_1_no"
                                         placeholder="Seal 1"
-                                        defaultValue={Seal_1_no ?? ModelData?.seal_1_no}
+                                        defaultValue={
+                                          Seal_1_no ?? ModelData?.seal_1_no
+                                        }
                                       />
                                       <label htmlFor="seal_1_no">Seal 1</label>
                                     </div>
@@ -582,14 +601,18 @@ export default function IndexR() {
                                         name="seal_2_no"
                                         id="seal_2_no"
                                         placeholder="Seal 2"
-                                        defaultValue={Seal_2_no ?? ModelData?.seal_2_no}
+                                        defaultValue={
+                                          Seal_2_no ?? ModelData?.seal_2_no
+                                        }
                                       />
                                       <label htmlFor="seal_2_no">Seal 2</label>
                                     </div>
                                   </div>
                                   <div className="col-md-6">
-                                      <p>CCLS Seal No : </p>
-                                      <p><b>{ModelData?.ccls_seal_no}</b></p>
+                                    <p>CCLS Seal No : </p>
+                                    <p>
+                                      <b>{ModelData?.ccls_seal_no}</b>
+                                    </p>
                                   </div>
                                 </>
                               )}
@@ -597,38 +620,38 @@ export default function IndexR() {
                               <div className="col-md-12 my-3">
                                 {ContainerType == "Empty" ? (
                                   <>
-                                  <label
-                                    htmlFor="container_image"
-                                    className="btn btn-outline-info btn-sm me-2"
-                                  >
-                                    <i className="ri-camera-fill me-1"></i>
-                                    Container Image
-                                    <input
-                                      type="file"
-                                      id="container_image"
-                                      name="container_image"
-                                      className="d-none"
-                                      accept="image/*"
-                                      capture="environment"
-                                      onChange={(e) =>
-                                        handleImageChange(e, "container")
-                                      }
-                                    />
-                                  </label>
-                                  {Photos?.container && (
-                                    <div className="mt-2">
-                                      <img
-                                        src={Photos.container}
-                                        alt="ContainerImg"
-                                        className="img-thumbnail rounded-3"
-                                        style={{
-                                          width: "100px",
-                                          height: "100px",
-                                          objectFit: "cover",
-                                        }}
+                                    <label
+                                      htmlFor="container_image"
+                                      className="btn btn-outline-info btn-sm me-2"
+                                    >
+                                      <i className="ri-camera-fill me-1"></i>
+                                      Container Image
+                                      <input
+                                        type="file"
+                                        id="container_image"
+                                        name="container_image"
+                                        className="d-none"
+                                        accept="image/*"
+                                        capture="environment"
+                                        onChange={(e) =>
+                                          handleImageChange(e, "container")
+                                        }
                                       />
-                                    </div>
-                                  )}
+                                    </label>
+                                    {Photos?.container && (
+                                      <div className="mt-2">
+                                        <img
+                                          src={Photos.container}
+                                          alt="ContainerImg"
+                                          className="img-thumbnail rounded-3"
+                                          style={{
+                                            width: "100px",
+                                            height: "100px",
+                                            objectFit: "cover",
+                                          }}
+                                        />
+                                      </div>
+                                    )}
                                   </>
                                 ) : (
                                   ContainerType == "Laden" && (
@@ -648,9 +671,10 @@ export default function IndexR() {
                                               className="d-none"
                                               accept="image/*"
                                               capture="environment"
-                                              onChange={(e) =>
-                                                {handleImageChange(e, "seal1");  handleImageToText(e, 1)}
-                                              }
+                                              onChange={(e) => {
+                                                handleImageChange(e, "seal1");
+                                                handleImageToText(e, 1);
+                                              }}
                                             />
                                           </label>
                                           {Photos?.seal1 && (
@@ -682,9 +706,10 @@ export default function IndexR() {
                                               className="d-none"
                                               accept="image/*"
                                               capture="environment"
-                                              onChange={(e) =>
-                                              { handleImageChange(e, "seal2"); handleImageToText(e, 2) }
-                                              }
+                                              onChange={(e) => {
+                                                handleImageChange(e, "seal2");
+                                                handleImageToText(e, 2);
+                                              }}
                                             />
                                           </label>
                                           {Photos?.seal2 && (
@@ -708,6 +733,15 @@ export default function IndexR() {
                                 )}
                               </div>
                             </div>
+
+                            {EIRshow && (
+                              <div className="row">
+                                <div className="col-md-12 text-end">
+                                <button className="btn btn-sm btn-label" onClick={handlePrint}>Print EIR</button>
+                                </div>
+                                <EIRMain ref={printRef} data={ModelData} />
+                              </div>
+                            )}
                           </div>
                           <div className="modal-footer border-top py-3">
                             <button
@@ -716,14 +750,14 @@ export default function IndexR() {
                               data-bs-dismiss="modal"
                               onClick={() => setModelData(null)}
                             >
-                              Cancel 
+                              Cancel
                             </button>
                             <button
                               type="submit"
                               data-bs-dismiss="modal"
                               className="btn btn-label-primary btn-sm"
                             >
-                              Submit 
+                              Submit
                             </button>
                           </div>
                         </form>
@@ -732,22 +766,11 @@ export default function IndexR() {
                   </div>
 
                   <Footer />
-                  <div className="content-backdrop fade"></div>
                 </div>
               </div>
             </div>
-            <div className="layout-overlay layout-menu-toggle"></div>
-            <div className="drag-target"></div>
           </div>
         </>
-        ) : (
-          <>
-            <EIRMain data={ModelData}/>
-          </>
-        ) 
-      }
-
-
     </>
   );
 }
