@@ -34,11 +34,27 @@ export default function DeStuffing() {
 
 const fetchData = async () => {
   try {
+    setLoading(true);
     const response = await axios.get("https://ctas.live/backend/api/de_stuffing/live/data");
-    setData(response.data); // Assuming API returns an array of objects
-    setLoading(false);
+    console.log("API Response:", response.data); // Debugging
+
+    if (response.data && Array.isArray(response.data.data)) {
+      setData(response.data.data); // Ensure we're setting an array
+    } else {
+      setError("Invalid data format received.");
+      setData([]);
+    }
+
   } catch (err) {
+    console.error("Fetch error:", err);
     setError("Failed to fetch data.");
+    Swal.fire({
+      title: "Error!",
+      text: "Failed to fetch data.",
+      icon: "error",
+      confirmButtonText: "Retry",
+    });
+  } finally {
     setLoading(false);
   }
 };
@@ -46,7 +62,6 @@ const fetchData = async () => {
 useEffect(() => {
   fetchData();
 }, []);
- 
 
 
 
@@ -150,43 +165,48 @@ useEffect(() => {
                       </table> */}
 
                       <table className="table table-striped table-sm table-hover">
-          <thead>
-            <tr>
-              <th>Type</th>
-              <th>Container No</th>
-              <th>Container Size</th>
-              <th>Seal No</th>
-              <th>Bills No</th>
-              <th>Start Date Time</th>
-              <th>End Date Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.length > 0 ? (
-              data.map((item, index) => (
-                <tr key={index}>
-                  <td>{item.type}</td>
-                  <td>{item.container_no}</td>
-                  <td>{item.container_size}</td>
-                  <td>{item.seal_no}</td>
-                  <td>
-                    {item.bills_no.split(",").map((bill, i) => (
-                      <div key={i}>{bill}</div>
-                    ))}
-                  </td>
-                  <td>{item.start_datetime}</td>
-                  <td>{item.end_datetime}</td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="text-center">
-                  No data available
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+  <thead>
+    <tr>
+    <th>Sr no</th>
+      <th>Type</th>
+      <th>Container No</th>
+      <th>Container Size</th>
+      <th>Seal No</th>
+      <th>Start Date Time</th>
+      <th>End Date Time</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {data && data.length > 0 ? (
+      data.map((item, index) => (
+        <tr key={index}>
+        <td>{index + 1}</td>
+          <td>{item.type}</td>
+          <td>{item.container_number}</td>
+          <td>{item.container_size}</td>
+          <td>{item.seal_number}</td>
+          <td>{item.start_time ? new Date(item.start_time).toLocaleString() : "N/A"}</td>
+          <td>{item.end_time ? new Date(item.end_time).toLocaleString() : "N/A"}</td>
+          <td> <button type="button"
+                        //  href={`?isFinalSubmit=1&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`}
+                          className="btn btn-primary mb-2"
+                          // onClick={handleFinalSubmit}
+                        >
+                          Final Submit
+                        </button></td>
+        </tr>
+      ))
+    ) : (
+      <tr>
+        <td colSpan="6" className="text-center">
+          No data available
+        </td>
+      </tr>
+    )}
+  </tbody>
+</table>
+
                     </div>
                   </div>
                 </div>

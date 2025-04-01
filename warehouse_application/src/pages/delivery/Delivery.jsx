@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
+import { set } from "date-fns";
 
 export default function Delivery() {
   const containerModalRef = useRef(null);
@@ -35,11 +36,36 @@ export default function Delivery() {
 
 const fetchData = async () => {
   try {
+    setLoading(true);
     const response = await axios.get("https://ctas.live/backend/api/delivery/live/data");
-    setData(response.data); // Assuming API returns an array of objects
-    setLoading(false);
+
+    if(response.data.data && Array.isArray(response.data.data)){
+      setData(response.data.data);
+    }else{  
+      setError("Invalid data format received.");
+      setData([]);  
+    }
+
+
+    
+    // Success Alert
+    // Swal.fire({
+    //   title: "Success!",
+    //   text: "Data fetched successfully.",
+    //   icon: "success",
+    //   confirmButtonText: "OK",
+    // });
   } catch (err) {
     setError("Failed to fetch data.");
+
+       // Error Alert
+       Swal.fire({
+        title: "Error!",
+        text: "Failed to fetch data.",
+        icon: "error",
+        confirmButtonText: "Retry",
+      });
+  }finally{
     setLoading(false);
   }
 };
@@ -151,30 +177,32 @@ useEffect(() => {
                             <table className="table table-striped table-sm table-hover">
           <thead>
             <tr>
-              <th>Type</th>
+            <th>Sr no</th>
               <th>GPM Number</th>
+              <th>Container No</th>
               <th>Container Size</th>
-              <th>Seal No</th>
-              <th>Bills No</th>
               <th>Start Date Time</th>
               <th>End Date Time</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
             {data.length > 0 ? (
               data.map((item, index) => (
                 <tr key={index}>
-                  <td>{item.type}</td>
-                  <td>{item.container_no}</td>
+                <td>{index + 1}</td>
+                  <td>{item.gpm_number}</td>
+                  <td>{item.container_number}</td>
                   <td>{item.container_size}</td>
-                  <td>{item.seal_no}</td>
-                  <td>
-                    {item.bills_no.split(",").map((bill, i) => (
-                      <div key={i}>{bill}</div>
-                    ))}
-                  </td>
-                  <td>{item.start_datetime}</td>
-                  <td>{item.end_datetime}</td>
+                  <td>{item.start_time}</td>
+                  <td>{item.end_time}</td>
+                  <td><button type="button"
+                        //  href={`?isFinalSubmit=1&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`}
+                          className="btn btn-primary mb-2"
+                          // onClick={handleFinalSubmit}
+                        >
+                          Final Submit
+                        </button></td>
                 </tr>
               ))
             ) : (
