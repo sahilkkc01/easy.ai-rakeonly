@@ -1297,7 +1297,7 @@ export default function CartingBillDetails() {
                             <button
                               type="button"
                               className="btn btn-sm btn-primary"
-                              onClick={() => setTotalTrucks(TotalTruck + 1)}
+                              onClick={() => setTotalTrucks(TotalTruck + 10)}
                             >
                               Add Truck
                             </button>

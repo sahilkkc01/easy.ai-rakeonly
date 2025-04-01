@@ -9,8 +9,8 @@ import Footer from "../main/footer";
 import { formatToDateTimeLocal } from "../main/formatToDateTime";
 
 export default function DeStuffingBillDetails() {
-  const [isFinalSubmit,setIsFinalSubmit]=useState(false);
-  const [ID,setID]=useState(false);
+  const [isFinalSubmit, setIsFinalSubmit] = useState(false);
+  const [ID, setID] = useState(false);
   const iframeRef = useRef(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -91,10 +91,10 @@ export default function DeStuffingBillDetails() {
     const tallySheet = searchParams.get("tally_sheet");
     const FinalSubmit = searchParams.get("isFinalSubmit");
     const id = searchParams.get("id");
-    if(FinalSubmit){
-      setIsFinalSubmit(FinalSubmit=='1'?true:false);
+    if (FinalSubmit) {
+      setIsFinalSubmit(FinalSubmit == "1" ? true : false);
     }
-    if(id){
+    if (id) {
       setID(id);
     }
     if (container_no && type) {
@@ -112,8 +112,10 @@ export default function DeStuffingBillDetails() {
     if (Data) {
       setID(Data?.id);
       fetchLocations();
-      if(Data.status==='1' ||Data.status==='2'){
-        navigate(`?isFinalSubmit=1&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`);
+      if (Data.status === "1" || Data.status === "2") {
+        navigate(
+          `?isFinalSubmit=1&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`
+        );
       }
     }
   }, [Data]);
@@ -134,7 +136,9 @@ export default function DeStuffingBillDetails() {
           text: response?.data?.message,
           timer: 2000,
         }).then(() => {
-          navigate(`?isFinalSubmit=0&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`);
+          navigate(
+            `?isFinalSubmit=0&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`
+          );
         });
       } else {
         Swal.fire({
@@ -165,60 +169,67 @@ export default function DeStuffingBillDetails() {
           }))
         : [{ id: 1, grid_location: "", area: "" }]
     );
-  
+
     // Function to add a new grid input
     const addGridInput = () => {
-      setGridInputs([...gridInputs, { id: gridInputs.length + 1, grid_location: "", area: "" }]);
+      setGridInputs([
+        ...gridInputs,
+        { id: gridInputs.length + 1, grid_location: "", area: "" },
+      ]);
     };
-  
+
     // Function to remove a grid input
     const removeGridInput = (id) => {
       setGridInputs(gridInputs.filter((input) => input.id !== id));
     };
-  
+
     return (
       <div className="col-md-3 col-5">
         <label className="form-label">Grid Location & Area (SQM)</label>
         {gridInputs.map((input, i) => (
           <div key={input.id} className="mb-2">
             <div className="d-flex align-items-center gap-3 ">
-            <select
-              className="form-select p-2"
-              name={`grid_locations[${details.id}][${i}]`}
-              defaultValue={input.grid_location}
-              onChange={(e) => GridAreaHandle(e.target.value, details.id, i)}
-            >
-              <option value="">Select Grid</option>
-              {Locations?.map((location, j) => (
-                <option key={j} value={location.camera_locations}>
-                  {location.camera_locations}
-                </option>
-              ))}
-            </select>
-            <input
-              type="text"
-              className="form-control p-2"
-              placeholder="Area (SQM)"
-              name={`area[${details.id}][${i}]`}
-              id={`area_${details.id}_${i}`}
-              defaultValue={input.area}
-              onChange={(e) => AreaHandle(details.id, i)}
-            />
-            {/* Add button */}
-            <button type="button" className="btn btn-success btn-sm px-2 py-1" onClick={addGridInput}>
-              +
-            </button>
-            {gridInputs.length > 1 && (
+              <select
+                className="form-select p-2"
+                name={`grid_locations[${details.id}][${i}]`}
+                defaultValue={input.grid_location}
+                onChange={(e) => GridAreaHandle(e.target.value, details.id, i)}
+              >
+                <option value="">Select Grid</option>
+                {Locations?.map((location, j) => (
+                  <option key={j} value={location.camera_locations}>
+                    {location.camera_locations}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                className="form-control p-2"
+                placeholder="Area (SQM)"
+                name={`area[${details.id}][${i}]`}
+                id={`area_${details.id}_${i}`}
+                defaultValue={input.area}
+                onChange={(e) => AreaHandle(details.id, i)}
+              />
+              {/* Add button */}
               <button
                 type="button"
-                className="btn btn-danger btn-sm px-2 py-1"
-                onClick={() => removeGridInput(input.id)}
+                className="btn btn-success btn-sm px-2 py-1"
+                onClick={addGridInput}
               >
-                -
+                +
               </button>
-            )}
-          </div>
-          <small id={`error_area_${details.id}_${i}`}></small>
+              {gridInputs.length > 1 && (
+                <button
+                  type="button"
+                  className="btn btn-danger btn-sm px-2 py-1"
+                  onClick={() => removeGridInput(input.id)}
+                >
+                  -
+                </button>
+              )}
+            </div>
+            <small id={`error_area_${details.id}_${i}`}></small>
           </div>
         ))}
       </div>
@@ -228,7 +239,7 @@ export default function DeStuffingBillDetails() {
   const GridAreaHandle = (grid, id, key) => {
     let totalArea = 0;
     let occupied = 0;
-  
+
     Locations?.forEach((location) => {
       if (location.camera_locations === grid) {
         totalArea += parseInt(location.total_area) || 0;
@@ -238,23 +249,23 @@ export default function DeStuffingBillDetails() {
 
     let available = totalArea - occupied;
     let areaInput = document.getElementById(`area_${id}_${key}`);
-  
+
     if (areaInput) {
       areaInput.value = available >= 0 ? available : 0;
-      areaInput.max = available >= 0 ? available : 0; 
+      areaInput.max = available >= 0 ? available : 0;
     }
   };
 
   const AreaHandle = (id, key) => {
     let areaInput = document.getElementById(`area_${id}_${key}`);
     let errorMsg = document.getElementById(`error_area_${id}_${key}`);
-  
+
     if (areaInput) {
       let myValue = parseFloat(areaInput.value) || 0;
-      let myMaxValue = parseFloat(areaInput.getAttribute("max")) || 20; 
-  
+      let myMaxValue = parseFloat(areaInput.getAttribute("max")) || 20;
+
       if (myValue > myMaxValue) {
-        areaInput.classList.add("border", "border-danger"); 
+        areaInput.classList.add("border", "border-danger");
         if (errorMsg) {
           errorMsg.className = "text-danger d-block mt-1";
           errorMsg.innerText = `Grid Maximum Area Available ${myMaxValue}`;
@@ -262,14 +273,13 @@ export default function DeStuffingBillDetails() {
       } else {
         areaInput.classList.remove("border", "border-danger");
         if (errorMsg) {
-          errorMsg.className='';
-          errorMsg.innerText = '';
+          errorMsg.className = "";
+          errorMsg.innerText = "";
         }
       }
     }
   };
-  
-  
+
   const handleBillPkgW = (id, pkg) => {
     let no_of_pkgs = 0;
     let package_weight = 0;
@@ -303,44 +313,44 @@ export default function DeStuffingBillDetails() {
     }
   };
 
-const handleFinalSubmit = async()=>{
+  const handleFinalSubmit = async () => {
+    setLoading(true);
 
-  setLoading(true);
-
-  const url = `https://ctas.live/backend/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}`;
-  // const url = `http://127.0.0.1:8000/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}`;
-  try {
-    const response = await axios.get(url, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    console.log(response.data);
-    if (response?.data?.status === "success") {
-      Swal.fire({
-        icon: response?.data?.status,
-        text: response?.data?.message,
-        timer: 2000,
-      }).then(() => {
-        navigate(`?isFinalSubmit=1&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`);
+    const url = `https://ctas.live/backend/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}`;
+    // const url = `http://127.0.0.1:8000/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}`;
+    try {
+      const response = await axios.get(url, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-    } else {
+      console.log(response.data);
+      if (response?.data?.status === "success") {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 2000,
+        }).then(() => {
+          navigate(
+            `?isFinalSubmit=1&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`
+          );
+        });
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
       Swal.fire({
-        icon: response?.data?.status,
-        text: response?.data?.message,
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
         timer: 3000,
+        showConfirmButton: false,
       });
+    } finally {
+      setLoading(false);
     }
-  } catch (error) {
-    Swal.fire({
-      icon: "error",
-      text: `Error Fetching Data: ${error.message}`,
-      timer: 3000,
-      showConfirmButton: false,
-    });
-  } finally {
-    setLoading(false);
-  }
-
-}
+  };
 
   return (
     <>
@@ -368,39 +378,39 @@ const handleFinalSubmit = async()=>{
                   <div className="row justify-content-center">
                     <div className="col-lg-10 col-md-11">
                       <div className="text-end">
-                        {isFinalSubmit ?(
+                        {isFinalSubmit ? (
                           <button
-                          onClick={() => {
-                            if (iframeRef.current) {
-                              iframeRef.current.contentWindow.print();
-                            }
-                          }}
-                          className="btn btn-label-primary mb-2"
-                        >
-                          Print
-                        </button>
-                        ):(
+                            onClick={() => {
+                              if (iframeRef.current) {
+                                iframeRef.current.contentWindow.print();
+                              }
+                            }}
+                            className="btn btn-label-primary mb-2"
+                          >
+                            Print
+                          </button>
+                        ) : (
                           <>
-                           <button type="button"
-                        //  href={`?isFinalSubmit=1&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`}
-                          className="btn btn-primary mb-2"
-                          onClick={handleFinalSubmit}
-                        >
-                          Final Submit
-                        </button>
-                            <a  
-                          href={`?isFinalSubmit=0&id=${ID}&type=${Type}&container_no=${ContainerNo}`}
-                          className="btn btn-primary mb-2 ms-2"
-                        >
-                          Edit
-                        </a>
+                            <button
+                              type="button"
+                              //  href={`?isFinalSubmit=1&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`}
+                              className="btn btn-primary mb-2"
+                              onClick={handleFinalSubmit}
+                            >
+                              Final Submit
+                            </button>
+                            <a
+                              href={`?isFinalSubmit=0&id=${ID}&type=${Type}&container_no=${ContainerNo}`}
+                              className="btn btn-primary mb-2 ms-2"
+                            >
+                              Edit
+                            </a>
                           </>
                         )}
-                        
+
                         <a href="?" className="btn btn-primary mb-2 ms-2">
                           Search Another
                         </a>
-                      
                       </div>
                       <div className="" style={{ width: 789, height: 1099 }}>
                         <iframe
@@ -500,8 +510,13 @@ const handleFinalSubmit = async()=>{
                         </div>
 
                         <div className="d-flex justify-content-between align-items-center my-2">
-                        <h4 className="text-primary m-0">Bill Details</h4>
-                        <button type="button" className="btn btn-sm btn-primary">Select Grid</button>
+                          <h4 className="text-primary m-0">Bill Details</h4>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-primary"
+                          >
+                            Select Grid
+                          </button>
                         </div>
                         {Data?.de_stuffing_bill_details?.map((details, i) => (
                           <div key={i} className="card card-body my-3">
@@ -573,12 +588,15 @@ const handleFinalSubmit = async()=>{
                                   name={`package_weight[${details.id}]`}
                                 />
                               </div>
-                              <GridComponent details={details} index={i}/>
+                              <GridComponent details={details} index={i} />
                             </div>
                           </div>
                         ))}
 
-                        <button  type="submit" className="btn btn-primary w-25 mt-3">
+                        <button
+                          type="submit"
+                          className="btn btn-primary w-25 mt-3"
+                        >
                           Save Job
                         </button>
                       </div>
@@ -589,9 +607,17 @@ const handleFinalSubmit = async()=>{
                     <div className="col-md-6 col-8">
                       <div className="card my-3">
                         <div className="card-body">
-                          <h4 className="text-center text-primary">
-                            DeStuffing
-                          </h4>
+                          <div className="d-flex align-items-center justify-content-between mb-3">
+                            <h4 className="text-primary">DeStuffing</h4>
+                            <div className="text-end">
+                              <Link
+                                to={"/de-stuffing"}
+                                className="btn btn-label-danger btn-sm"
+                              >
+                                Back
+                              </Link>
+                            </div>
+                          </div>
                           <form action="" onSubmit={GetFormData}>
                             <p>Please Enter Container Number to Fetch Data</p>
                             <div className="form-floating form-floating-outline mb-6">

@@ -1323,7 +1323,17 @@ const [ID, setID] = useState(false);
                     <div className="col-6">
                       <div className="card my-3">
                         <div className="card-body">
-                          <h4 className="text-center text-primary">Delivery</h4>
+                        <div className="d-flex align-items-center justify-content-between mb-3">
+                            <h4 className="text-primary">Delivery</h4>
+                            <div className="text-end">
+                              <Link
+                                to={"/delivery"}
+                                className="btn btn-label-danger btn-sm"
+                              >
+                                Back
+                              </Link>
+                            </div>
+                          </div>
                           <form action="" onSubmit={GetFormData}>
                             <p>Please Enter GPM Number to Fetch Data</p>
                             <div className="form-floating form-floating-outline mb-6">

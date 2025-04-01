@@ -8,86 +8,37 @@ import Nav from "../main/nav";
 import Footer from "../main/footer";
 
 export default function Carting() {
-  const containerModalRef = useRef(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const containerModalEl = document.getElementById("containerModal");
-    if (containerModalEl) {
-      containerModalRef.current = new Modal(containerModalEl);
-    }
-  }, []);
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        "https://ctas.live/backend/api/carting/live/data"
+      );
+      if (response.data.data && Array.isArray(response.data.data)) {
+        setData(response.data.data);
+      }
+    } catch (err) {
+      setError("Failed to fetch data.");
 
-  // Open the Container Modal
-  const openContainerModal = () => {
-    if (containerModalRef.current) {
-      containerModalRef.current.show();
-    } else {
-      console.error("Container modal instance is not available.");
-    }
-  };
-
-  // table data fetch from api
-
-
-const fetchData = async () => {
-  try {
-    setLoading(true);
-    const response = await axios.get("https://ctas.live/backend/api/carting/live/data");
-  if(response.data.data && Array.isArray(response.data.data)){
-    setData(response.data.data);
-  }
-  } catch (err) {
-    setError("Failed to fetch data.");
-
-
-       // Error Alert
-       Swal.fire({
+      Swal.fire({
         title: "Error!",
         text: "Failed to fetch data.",
         icon: "error",
         confirmButtonText: "Retry",
       });
-  }finally{
-    setLoading(false);
-  } 
-};
-
-useEffect(() => {
-  fetchData();
-}, []);
-
-  const GetFormData = async (e) => {
-    e.preventDefault();
-
-    const url = `https://ctas.live/backend/api/get/de_stuffing_data/LCL/${e.target.container_no.value}`;
-    try {
-      const response = await axios.post(url);
-      if (response?.data?.status == "success") {
-        navigate(
-          `/de-stuffing/bill-details?container_no=${e.target.container_no.value}`
-        );
-      } else {
-        Swal.fire({
-          icon: response?.data?.status,
-          text: response?.data?.message,
-          timer: 3000,
-        });
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        text: `Error Fetch Data: ${error.message}`,
-        timer: 3000,
-        showConfirmButton: false,
-      });
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -151,45 +102,50 @@ useEffect(() => {
                         </tbody>
                       </table> */}
                       <table className="table table-striped table-sm table-hover">
-          <thead className="table-primary">
-            <tr>
-              <th>#</th>
-              
-              <th>CRN</th>
-              <th>Gw Port</th>
-              <th>Start time</th>
-              <th>End time</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.length > 0 ? (
-              data.map((item, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  
-                  <td>{item.crn_number}</td>
-                  <td>{item.gw_port_code}</td>
-                  <td>{item.start_time}</td>
-                  <td>{item.end_time}</td>
-                  <td><button type="button"
-                        //  href={`?isFinalSubmit=1&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`}
-                          className="btn btn-primary mb-2"
-                          // onClick={handleFinalSubmit}
-                        >
-                          Final Submit
-                        </button></td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="text-center">
-                  No data available
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                        <thead className="table-primary">
+                          <tr>
+                            <th>#</th>
+
+                            <th>Type</th>
+                            <th>CRN</th>
+                            <th>Gw Port</th>
+                            <th>Start time</th>
+                            <th>End time</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {data.length > 0 ? (
+                            data.map((item, index) => (
+                              <tr key={index}>
+                                <td>{index + 1}</td>
+
+                                <td>{item.type}</td>
+                                <td>{item.crn_number}</td>
+                                <td>{item.gw_port_code}</td>
+                                <td>{item.start_time}</td>
+                                <td>{item.end_time}</td>
+                                <td>
+                                  <button
+                                    type="button"
+                                    //  href={`?isFinalSubmit=1&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`}
+                                    className="btn btn-primary mb-2"
+                                    // onClick={handleFinalSubmit}
+                                  >
+                                    Final Submit
+                                  </button>
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan="4" className="text-center">
+                                No data available
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
