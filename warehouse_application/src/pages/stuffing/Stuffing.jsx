@@ -7,6 +7,7 @@ import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { set } from "date-fns";
+import { formatToDateTime, formatToDateTimeLocal } from "../main/formatToDateTime";
 
 export default function Stuffing() {
   const containerModalRef = useRef(null);
@@ -14,6 +15,8 @@ export default function Stuffing() {
   const [loading,setLoading]=useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
+  const [modalData, setModalData] = useState("")
+  
 
 
   useEffect(() => {
@@ -91,6 +94,63 @@ useEffect(() => {
       setLoading(false);
     }
   }
+
+  const handleFinalSubmit = async (
+    ID,
+    container_number,
+    start_time,
+    end_time
+  ) => {
+    setLoading(true);
+
+    const url = `https://ctas.live/backend/api/stuffing/final/submit?id=${ID}&container_number=${container_number}&start_time=${start_time}&end_time=${end_time}`;
+    try {
+      const response = await axios.get(url, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log(response.data);
+      if (response?.data?.status === "success") {
+        fetchData();
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 2000,
+        }).then(() => {
+          navigate(
+            `/stuffing/bill-details?isFinalSubmit=1&id=${ID}&tally_sheet=1&container_number=${container_number}`
+          );
+        });
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmitForm = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(e.target);
+    let ID = formData.get("id");
+    let container_number = formData.get("container_number");
+    let start_time = formData.get("start_time");
+    let end_time = formData.get("end_time");
+
+    handleFinalSubmit(ID,container_number, start_time, end_time);
+  };
 
   return (
     <>
@@ -176,13 +236,22 @@ useEffect(() => {
                   <td>{item.crn_number}</td>
                   <td>{item.start_time}</td>
                   <td>{item.end_time}</td>
-                  <td><button type="button"
-                        //  href={`?isFinalSubmit=1&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`}
-                          className="btn btn-primary mb-2"
-                          // onClick={handleFinalSubmit}
-                        >
-                          Final Submit
-                        </button></td>
+                  <td>
+                                <Link to={`/stuffing/bill-details?container_number=${item.container_number}`}
+                                    className="btn btn-label-primary btn-sm mx-1"
+                                  >
+                                   Edit
+                                  </Link>
+
+                                  <button
+                                    type="button"
+                                    className="btn btn-label-info btn-sm mx-1"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#myModal"
+                                    onClick={() => setModalData(item)}
+                                  >
+                                    Final Submit
+                                  </button></td>
                 </tr>
               ))
             ) : (
@@ -194,6 +263,83 @@ useEffect(() => {
             )}
           </tbody>
         </table>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  className="modal fade"
+                  id="myModal"
+                  tabIndex="-1"
+                  aria-hidden="true"
+                >
+                  <div className="modal-dialog">
+                    <div className="modal-content">
+                      <div className="modal-header">
+                        <h5 className="modal-title">Final Submit Data</h5>
+                        <button
+                          type="button"
+                          className="btn-close"
+                          data-bs-dismiss="modal"
+                          aria-label="Close"
+                        ></button>
+                      </div>
+                      <div className="modal-body">
+                        {/* Form inside the modal */}
+                        <form onSubmit={handleSubmitForm}>
+                            <input
+                              type="hidden"
+                              name="id"
+                              className="form-control"
+                              value={modalData?.id}
+                            />
+                          <div className="mb-3">
+                            <label className="form-label">Container Number </label>
+                            <input
+                              type="text"
+                              name="container_number"
+                              className="form-control"
+                              readOnly
+                              value={modalData?.container_number}
+
+                            />
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">Start Time</label>
+                            <input
+                              type="datetime-local"
+                              name="start_time"
+                              className="form-control"
+                              defaultValue={formatToDateTimeLocal(modalData?.start_time)}
+                            />
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">End Time</label>
+                            <input
+                              type="datetime-local"
+                              name="end_time"
+                              className="form-control"
+                              defaultValue={formatToDateTimeLocal(modalData?.end_time)}
+                            />
+                          </div>
+
+                          <div className="modal-footer">
+                            <button
+                              type="button"
+                              className="btn btn-secondary"
+                              data-bs-dismiss="modal"
+                            >
+                              Close
+                            </button>
+                            <button
+                              type="submit"
+                              className="btn btn-primary"
+                                 data-bs-dismiss="modal"
+                            >Final Submit
+                            </button>
+                          </div>
+                        </form>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -243,8 +243,7 @@ export default function StuffingTallySheet() {
                     </td> 
 
                     <td>
-                     {Details.commodity_description} (
-                          {Details.commodity_code})
+                     {Details.commodity_description} 
                     </td>
                     <td>
                      { Details.no_of_packages_declared}

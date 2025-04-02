@@ -224,7 +224,7 @@ export default function CartingTallySheet() {
               <thead className="">
                 <tr>
                   <th>Truck Number</th>
-                  <th>Truck Arrival Date</th>
+                  {/* <th>Truck Arrival Date</th> */}
                   <th>SBill</th>
                   <th>Pkg Code</th>
                   <th>Cargo Description (Code)</th>
@@ -240,7 +240,7 @@ export default function CartingTallySheet() {
                     return (
                       <tr key={index}>
                         <td>{Trucks.truck_number}</td>
-                        <td>{formatToDateTime(Trucks.truck_arrival_date)}</td>
+                        {/* <td>{formatToDateTime(Trucks.truck_arrival_date)}</td> */}
                         <td>{Trucks.sbill}</td>
                         <td>{Trucks.pkg_code}</td>
                         <td>{Trucks.cargo_description}</td>
@@ -268,7 +268,7 @@ export default function CartingTallySheet() {
                       (_, i) => (
                         <tr key={i}>
                           <td></td>
-                          <td></td>
+                          {/* <td></td> */}
                           <td></td>
                           <td></td>
                           <td></td>
@@ -282,7 +282,7 @@ export default function CartingTallySheet() {
                   : Array.from({ length: 10 }, (_, i) => (
                       <tr key={i}>
                         <td></td>
-                        <td></td>
+                        {/* <td></td> */}
                         <td></td>
                         <td></td>
                         <td></td>
@@ -295,7 +295,7 @@ export default function CartingTallySheet() {
 
                 <tr>
                   <td>Total</td>
-                  <td></td>
+                  {/* <td></td> */}
                   <td></td>
                   <td></td>
                   <td></td>

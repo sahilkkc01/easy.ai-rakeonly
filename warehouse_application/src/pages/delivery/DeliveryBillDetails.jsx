@@ -931,9 +931,11 @@ const [ID, setID] = useState(false);
   const GridAreaHandle = (grid, id, key) => {
     let totalArea = 0;
     let occupied = 0;
+    let loc_i =1;
   
     Locations?.forEach((location) => {
-      if (location.camera_locations === grid) {
+      if (location.camera_locations === grid && loc_i == 1) {
+        loc_i++;
         totalArea += parseInt(location.total_area) || 0;
         occupied += parseInt(location.occupied_area) || 0;
       }
@@ -954,7 +956,8 @@ const [ID, setID] = useState(false);
   
     if (areaInput) {
       let myValue = parseFloat(areaInput.value) || 0;
-      let myMaxValue = parseFloat(areaInput.getAttribute("max")) || 20; 
+      let maxAttr = parseFloat(areaInput.getAttribute("max"));
+      let myMaxValue = maxAttr|| maxAttr == 0 ? maxAttr : 20;
   
       if (myValue > myMaxValue) {
         areaInput.classList.add("border", "border-danger"); 

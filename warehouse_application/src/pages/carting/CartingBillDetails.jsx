@@ -607,7 +607,7 @@ export default function CartingBillDetails() {
 
   const fetchLocations = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/warehouse/empty/locations?type=Export`;
+    const url = `https://ctas.live/backend/api/warehouse/locations?type=Export`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -681,6 +681,9 @@ export default function CartingBillDetails() {
 
       if (Data.status === '1' || Data.status === '2') {
         navigate(`?isFinalSubmit=1&id=${Data.id}&tally_sheet=1&crn_number=${CrnNo}`);
+      }
+      if (Data?.carting_trucks) {
+        setTotalTrucks(Data?.carting_trucks.length);
       }
     }
   }, [Data]);
@@ -861,7 +864,7 @@ export default function CartingBillDetails() {
                 id={`area_${index}_${i}`}
                 defaultValue={input.area}
                 onChange={(e) => AreaHandle(index, i)}
-                readOnly
+                // readOnly
               />
               {/* Add button */}
               <button type="button" className="btn btn-success btn-sm px-2 py-1" onClick={addGridInput}>
@@ -888,9 +891,11 @@ export default function CartingBillDetails() {
   const GridAreaHandle = (grid, id, key) => {
     let totalArea = 0;
     let occupied = 0;
+    let loc_i =1;
 
     Locations?.forEach((location) => {
-      if (location.camera_locations === grid) {
+      if (location.camera_locations === grid && loc_i == 1) {
+        loc_i++;
         totalArea += parseInt(location.total_area) || 0;
         occupied += parseInt(location.occupied_area) || 0;
       }
@@ -911,7 +916,8 @@ export default function CartingBillDetails() {
 
     if (areaInput) {
       let myValue = parseFloat(areaInput.value) || 0;
-      let myMaxValue = parseFloat(areaInput.getAttribute("max")) || 20;
+      let maxAttr = parseFloat(areaInput.getAttribute("max"));
+      let myMaxValue = maxAttr|| maxAttr == 0 ? maxAttr : 20;
 
       if (myValue > myMaxValue) {
         areaInput.classList.add("border", "border-danger");
@@ -1214,33 +1220,25 @@ export default function CartingBillDetails() {
                                   />
                                 </div>
                                 <div className="col-md-2 col-3">
-                                  <label htmlFor="billNo" className="form-label">
-                                    Bill Number
-                                  </label>
+                                  <label htmlFor="billNo" className="form-label">Bill Number</label>
                                   <select
                                     name={`boe[${i}]`}
                                     className="form-select p-2"
-                                    onChange={(e) =>
-                                      handleBillDetails(i, e.target.value)
-                                    }
+                                    onChange={(e) => handleBillDetails(i, e.target.value)}
                                     id={`boe_${i}`}
-                                    defaultValue={Data?.carting_trucks[i]?.boe ?? null}
+                                    defaultValue={Data?.carting_trucks[i]?.sbill || ""}
                                   >
-                                    <option value="" selected disabled>
-                                      Select Bill
-                                    </option>
-                                    {Data?.carting_trucks?.map(
-                                      (details, k) => (
-                                        <option
-                                          key={k}
-                                          value={details?.sbill}
-                                        >
-                                          {details?.sbill}
+                                    <option value="" disabled>Select Bill</option>
+                                    {Data?.carting_trucks
+                                      ?.filter((truck) => truck.sbill) // Only include trucks with valid sbill
+                                      .map((truck, k) => (
+                                        <option key={k} value={truck.sbill}>
+                                          {truck.sbill}
                                         </option>
-                                      )
-                                    )}
+                                      ))}
                                   </select>
                                 </div>
+
                                 <div className="col-md-3 col-4">
                                   <label className="form-label">
                                     Cargo Description (Code)
@@ -1295,9 +1293,9 @@ export default function CartingBillDetails() {
 
                           <div className="col-12 my-2 text-end">
                             <button
-                              type="button"
+                              type="button"x
                               className="btn btn-sm btn-primary"
-                              onClick={() => setTotalTrucks(TotalTruck + 10)}
+                              onClick={() => setTotalTrucks(TotalTruck + 1)}
                             >
                               Add Truck
                             </button>
