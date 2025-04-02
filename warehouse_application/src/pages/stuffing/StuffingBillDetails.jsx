@@ -1168,7 +1168,18 @@ let loc_i =1;
                     <div className="col-6">
                       <div className="card my-3">
                         <div className="card-body">
-                          <h4 className="text-center text-primary">Stuffing</h4>
+                        <div className="d-flex justify-content-between align-items-center">
+                          <h4 className="text-left text-primary">Stuffing</h4>
+                            <div className="text-end">
+                              <Link
+                                to={"/stuffing"}
+                                className="btn btn-label-danger btn-sm"
+                              >
+                                Back
+                              </Link>
+                          </div>
+                            
+                            </div>
                           <form action="" onSubmit={GetFormData}>
                             <p>Please Enter Container Number to Fetch Data</p>
                             <div className="form-floating form-floating-outline mb-6">

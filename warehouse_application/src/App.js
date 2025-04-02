@@ -29,6 +29,8 @@ import Stuffing from "./pages/stuffing/Stuffing";
 import StuffingBillDetails from "./pages/stuffing/StuffingBillDetails";
 import StuffingTallySheet from "./pages/stuffing/StuffingTallySheet";
 import PrivateRoute from "./PrivateRoute";
+import Login from "./Login";
+import Logout from "./Logout";
 
 
 
@@ -61,7 +63,9 @@ export default function App() {
   return (
     <Router>
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="/" element={<PrivateRoute><Index /></PrivateRoute>} />
 
           <Route path="/de-stuffing" element={<PrivateRoute><DeStuffing/></PrivateRoute>} />
           <Route path="/de-stuffing/bill-details" element={<PrivateRoute><DeStuffingBillDetails/></PrivateRoute>} />

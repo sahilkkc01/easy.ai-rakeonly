@@ -1312,7 +1312,19 @@ export default function CartingBillDetails() {
                       <div className="col-md-6 col-8">
                         <div className="card my-3">
                           <div className="card-body">
-                            <h4 className="text-center text-primary">Carting</h4>
+                          <div className="d-flex justify-content-between align-items-center">
+                          <h4 className="text-left text-primary">Carting</h4>
+                            <div className="text-end">
+                              <Link
+                                to={"/carting"}
+                                className="btn btn-label-danger btn-sm"
+                              >
+                                Back
+                              </Link>
+                          </div>
+                            
+                            </div>
+                        
                             <form action="" onSubmit={GetFormData}>
                               <p>Please Enter CRN Number to Fetch Data</p>
                               <div className="form-floating form-floating-outline mb-6">
