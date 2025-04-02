@@ -57,13 +57,13 @@ export default function Login() {
     // console.log(formValues);
     if (formValues.user_name && formValues.password) {
       try {
-        const response = await axios.post(`https://ctas.live/backend/api/user/login`, formValues );
+        const response = await axios.post(`https://ctas.live/backend/api/user/login`, formValues);
 
         if (response?.data?.status == "success") {
 
-          localStorage.setItem("access_token",JSON.stringify(response.data.access_token));
+          localStorage.setItem("access_token", JSON.stringify(response.data.access_token));
           localStorage.setItem("user", JSON.stringify(response.data.data));
-          localStorage.setItem("user_permissions",JSON.stringify(response.data.data.permissions));
+          localStorage.setItem("user_permissions", JSON.stringify(response.data.data.permissions));
 
           Swal.fire({
             icon: response.data.status,
@@ -114,92 +114,93 @@ export default function Login() {
           </div>
         </div>
       )}
-      <div className="position-relative">
+      <div className="position-relative" >
         <div className="authentication-wrapper authentication-basic container-p-y">
           <div className="authentication-inner py-6 mx-4">
-            <div className="card p-7">
-              <div className="app-brand justify-content-center mt-5">
-                <h3> Welcome to Dashboard 👋🏻</h3>
-              </div>
-              <div className="card-body">
-                <p className="mb-5">
-                  Please sign-in to your account and start the adventure
-                </p>
-                <form
-                  id="formAuthentication"
-                  className="mb-5 fv-plugins-bootstrap5 fv-plugins-framework login"
-                  onSubmit={formHandel}
-                >
-                  <div className="form-floating form-floating-outline mb-5 fv-plugins-icon-container">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="user_name"
-                      name="user_name"
-                      placeholder="USERNAME"
-                      required
-                    />
-                    <label htmlFor="user_name">USERNAME</label>
-                    <div className="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback" />
-                  </div>
-                  <div className="mb-5 fv-plugins-icon-container">
-                    <div className="form-password-toggle">
-                      <div className="input-group input-group-merge">
-                        <div className="form-floating form-floating-outline">
-                          <input
-                            type={`${passwordShow ? "text" : "password"}`}
-                            id="password"
-                            className="form-control"
-                            name="password"
-                            placeholder="············"
-                            required
-                          />
-                          <label htmlFor="password">Password</label>
-                        </div>
-                        <span className="input-group-text cursor-pointer">
-                          <i
-                            className={`${passwordShow ? "ri-eye-line" : "ri-eye-off-line"
-                              }  ri-20px`}
-                            onClick={() => setPasswordShow(!passwordShow)}
-                          />
-                        </span>
-                      </div>
-                    </div>
-                    <div className="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback" />
-                  </div>
-                  {error && (
-                    <div className="alert alert-danger mt-3" role="alert">
-                      {error}
-                    </div>
-                  )}
-                  <div className="mb-5 pb-2 d-flex justify-content-between pt-2 align-items-center">
-                    <div className="form-check mb-0">
+            <div className="row align-items-center justify-content-center ">
+              <div className="card p-7 col-md-7" >
+                <div className="app-brand justify-content-center mt-5">
+                  <h3> Welcome to Dashboard 👋🏻</h3>
+                </div>
+                <div className="card-body">
+                  <p className="mb-5">
+                    Please sign-in to your account and start the adventure
+                  </p>
+                  <form
+                    id="formAuthentication"
+                    className="mb-5 fv-plugins-bootstrap5 fv-plugins-framework login"
+                    onSubmit={formHandel}
+                  >
+                    <div className="form-floating form-floating-outline mb-5 fv-plugins-icon-container">
                       <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="remember-me"
+                        type="text"
+                        className="form-control"
+                        id="user_name"
+                        name="user_name"
+                        placeholder="USERNAME"
+                        required
                       />
-                      <label className="form-check-label" htmlFor="remember-me">
-                        {" "}
-                        Remember Me{" "}
-                      </label>
+                      <label htmlFor="user_name">USERNAME</label>
+                      <div className="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback" />
                     </div>
-                    <a className="float-end mb-1">
-                      <span>Forgot Password?</span>
-                    </a>
-                  </div>
-                  <div className="mb-5">
-                    <button
-                      className="btn btn-primary d-grid w-100 waves-effect waves-light"
-                      type="submit"
-                    >
-                      login
-                    </button>
-                  </div>
-                </form>
+                    <div className="mb-5 fv-plugins-icon-container">
+                      <div className="form-password-toggle">
+                        <div className="input-group input-group-merge">
+                          <div className="form-floating form-floating-outline">
+                            <input
+                              type={`${passwordShow ? "text" : "password"}`}
+                              id="password"
+                              className="form-control"
+                              name="password"
+                              placeholder="············"
+                              required
+                            />
+                            <label htmlFor="password">Password</label>
+                          </div>
+                          <span className="input-group-text cursor-pointer">
+                            <i
+                              className={`${passwordShow ? "ri-eye-line" : "ri-eye-off-line"
+                                }  ri-20px`}
+                              onClick={() => setPasswordShow(!passwordShow)}
+                            />
+                          </span>
+                        </div>
+                      </div>
+                      <div className="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback" />
+                    </div>
+                    {error && (
+                      <div className="alert alert-danger mt-3" role="alert">
+                        {error}
+                      </div>
+                    )}
+                    <div className="mb-5 pb-2 d-flex justify-content-between pt-2 align-items-center">
+                      <div className="form-check mb-0">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="remember-me"
+                        />
+                        <label className="form-check-label" htmlFor="remember-me">
+                          {" "}
+                          Remember Me{" "}
+                        </label>
+                      </div>
+                      <a className="float-end mb-1">
+                        <span>Forgot Password?</span>
+                      </a>
+                    </div>
+                    <div className="mb-5">
+                      <button
+                        className="btn btn-primary d-grid w-100 waves-effect waves-light"
+                        type="submit"
+                      >
+                        login
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
-
             <img
               src="/assets/img/illustrations/tree-3.png"
               alt="auth-tree"
@@ -221,6 +222,52 @@ export default function Login() {
           </div>
         </div>
       </div>
+
+      {/* <div className="position-relative d-flex justify-content-center align-items-center vh-100">
+  <div className="authentication-wrapper authentication-basic container-p-y">
+    <div className="authentication-inner py-6 mx-4">
+      <div className="card p-7 mx-auto" style={{ width: "500px" }}>
+        <div className="app-brand justify-content-center mt-5">
+          <h3> Welcome to Dashboard 👋🏻</h3>
+        </div>
+        <div className="card-body">
+          <p className="mb-5">Please sign-in to your account and start the adventure</p>
+          <form id="formAuthentication" className="mb-5 fv-plugins-bootstrap5 fv-plugins-framework login" onSubmit={formHandel}>
+            <div className="form-floating form-floating-outline mb-5 fv-plugins-icon-container">
+              <input type="text" className="form-control" id="user_name" name="user_name" placeholder="USERNAME" required />
+              <label htmlFor="user_name">USERNAME</label>
+            </div>
+            <div className="mb-5 fv-plugins-icon-container">
+              <div className="form-password-toggle">
+                <div className="input-group input-group-merge">
+                  <div className="form-floating form-floating-outline">
+                    <input type={passwordShow ? "text" : "password"} id="password" className="form-control" name="password" placeholder="············" required />
+                    <label htmlFor="password">Password</label>
+                  </div>
+                  <span className="input-group-text cursor-pointer">
+                    <i className={`${passwordShow ? "ri-eye-line" : "ri-eye-off-line"} ri-20px`} onClick={() => setPasswordShow(!passwordShow)} />
+                  </span>
+                </div>
+              </div>
+            </div>
+            {error && <div className="alert alert-danger mt-3" role="alert">{error}</div>}
+            <div className="mb-5 pb-2 d-flex justify-content-between pt-2 align-items-center">
+              <div className="form-check mb-0">
+                <input className="form-check-input" type="checkbox" id="remember-me" />
+                <label className="form-check-label" htmlFor="remember-me">Remember Me</label>
+              </div>
+              <a className="float-end mb-1"><span>Forgot Password?</span></a>
+            </div>
+            <div className="mb-5">
+              <button className="btn btn-primary d-grid w-100 waves-effect waves-light" type="submit">Login</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> */}
+
     </>
   );
 }
