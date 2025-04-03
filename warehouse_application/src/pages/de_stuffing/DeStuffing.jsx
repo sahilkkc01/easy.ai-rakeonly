@@ -148,34 +148,7 @@ export default function DeStuffing() {
                     </div>
                   </div>
                   <div className="card-body">
-                    <div className="table-responsive">
-                      {/* <table className="table table-striped table-sm table-hover">
-                        <thead>
-                          <tr>
-                            <th>Type</th>
-                            <th>Container No</th>
-                            <th>Container Size</th>
-                            <th>Seal No</th>
-                            <th>Bills No</th>
-                            <th>Start Date Time</th>
-                            <th>End Date Time</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>FCL</td>
-                            <td>F240925032</td>
-                            <td>40</td>
-                            <td>BOL7864</td>
-                            <td>
-                              4100606 <br /> 2402099 <br /> 2402122
-                            </td>
-                            <td>25/09/24 13:56</td>
-                            <td>25/09/24 13:56</td>
-                          </tr>
-                        </tbody>
-                      </table> */}
-
+                    <div className="table-responsive">                    
                       <table className="table table-striped table-sm table-hover">
                         <thead>
                           <tr>
@@ -202,11 +175,9 @@ export default function DeStuffing() {
                                 <td>{formatToDateTime(item.end_time)}</td>
                                 <td>
                                   <Link to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
-                                    className="btn btn-label-primary btn-sm mx-1"
-                                  >
+                                    className="btn btn-label-primary btn-sm mx-1" >
                                    Edit
                                   </Link>
-
                                   <button
                                     type="button"
                                     className="btn btn-label-info btn-sm mx-1"

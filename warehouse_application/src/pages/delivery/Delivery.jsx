@@ -150,34 +150,6 @@ export default function Delivery() {
                   </div>
                   <div className="card-body">
                     <div className="table-responsive">
-                      {/* <table className="table table-striped table-sm table-hover">
-                              <thead>
-                                <tr>
-                                  <th>Type</th>
-                                  <th>GPM Number</th>
-                                  <th>Container No</th>
-                                  <th>Container Size</th>
-                                  <th>Seal No</th>
-                                  <th>Bills No</th>
-                                  <th>Start Date Time</th>
-                                  <th>End Date Time</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td>FCL</td>
-                                  <td>GPM0925032</td>
-                                  <td>F240925032</td>
-                                  <td>40</td>
-                                  <td>BOL7864</td>
-                                  <td>
-                                    4100606 <br /> 2402099 <br /> 2402122
-                                  </td>
-                                  <td>25/09/24 13:56</td>
-                                  <td>25/09/24 13:56</td>
-                                </tr>
-                              </tbody>
-                            </table> */}
                       <table className="table table-striped table-sm table-hover">
                         <thead>
                           <tr>
