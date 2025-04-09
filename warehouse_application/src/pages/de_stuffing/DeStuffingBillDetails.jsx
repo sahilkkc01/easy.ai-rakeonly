@@ -11,6 +11,7 @@ import { formatToDateTimeLocal } from "../main/formatToDateTime";
 export default function DeStuffingBillDetails() {
   const [isFinalSubmit, setIsFinalSubmit] = useState(false);
   const [ID, setID] = useState(false);
+  const [MapName, setMapName] = useState("Import");
   const iframeRef = useRef(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -51,7 +52,10 @@ export default function DeStuffingBillDetails() {
 
   const fetchLocations = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/warehouse/locations?warehouse_type=Import`;
+    let url = `https://ctas.live/backend/api/warehouse/locations?warehouse_type=Import`;
+    if (MapName) {
+      url += `&warehouse_name=${MapName}`; 
+    }
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -118,7 +122,7 @@ export default function DeStuffingBillDetails() {
         );
       }
     }
-  }, [Data]);
+  }, [Data, MapName]);
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
@@ -239,7 +243,7 @@ export default function DeStuffingBillDetails() {
   const GridAreaHandle = (grid, id, key) => {
     let totalArea = 0;
     let occupied = 0;
-    let loc_i =1;
+    let loc_i = 1;
 
     Locations?.forEach((location) => {
       if (location.camera_locations === grid && loc_i == 1) {
@@ -265,8 +269,7 @@ export default function DeStuffingBillDetails() {
     if (areaInput) {
       let myValue = parseFloat(areaInput.value) || 0;
       let maxAttr = parseFloat(areaInput.getAttribute("max"));
-      let myMaxValue = maxAttr|| maxAttr == 0 ? maxAttr : 20;
-      
+      let myMaxValue = maxAttr || maxAttr == 0 ? maxAttr : 20;
 
       if (myValue > myMaxValue) {
         areaInput.classList.add("border", "border-danger");
@@ -509,18 +512,34 @@ export default function DeStuffingBillDetails() {
                                   defaultValue={formatToDateTimeLocal(today)}
                                 />
                               </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  Handling Type
+                                </label>
+                                <select
+                                  className="form-select p-2"
+                                  name="handling_type"
+                                >
+                                  <option value="LCH">LCH</option>
+                                  <option value="MCH">MCH</option>
+                                </select>
+                              </div>
                             </div>
                           </div>
                         </div>
 
                         <div className="d-flex justify-content-between align-items-center my-2">
                           <h4 className="text-primary m-0">Bill Details</h4>
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-primary"
-                          >
-                            Select Grid
-                          </button>
+                          <div className="w-25">
+                            <select
+                              className="form-select p-2"
+                              value={MapName}
+                              onChange={(e) => setMapName(e.target.value)}
+                            >
+                              <option value="Import">Import</option>
+                              {/* <option value="OpenYard">Open Yard</option> */}
+                            </select>
+                          </div>
                         </div>
                         {Data?.de_stuffing_bill_details?.map((details, i) => (
                           <div key={i} className="card card-body my-3">

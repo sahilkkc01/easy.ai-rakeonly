@@ -12,6 +12,7 @@ import { formatToDateTime, formatToDateTimeLocal } from "../main/formatToDateTim
 export default function Delivery() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [view, setView] = useState("Table");
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [modalData, setModalData] = useState("");
@@ -53,11 +54,12 @@ export default function Delivery() {
     ID,
     GpmNo,
     start_time,
-    end_time
+    end_time,
+    handling_type
   ) => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/delivery/final/submit?id=${ID}&gpm_number=${GpmNo}&start_time=${start_time}&end_time=${end_time}`;
+    const url = `https://ctas.live/backend/api/delivery/final/submit?id=${ID}&gpm_number=${GpmNo}&start_time=${start_time}&end_time=${end_time}&handling_type=${handling_type}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -102,8 +104,8 @@ export default function Delivery() {
     let GpmNo = formData.get("gpm_number");
     let start_time = formData.get("start_time");
     let end_time = formData.get("end_time");
-
-    handleFinalSubmit(ID,GpmNo, start_time, end_time);
+    let handling_type = formData.get("handling_type");
+    handleFinalSubmit(ID,GpmNo, start_time, end_time,handling_type);
   };
 
   return (
@@ -147,8 +149,33 @@ export default function Delivery() {
                         </Link>
                       </div>
                     </div>
+                    <div className="col-md-12 px-4">
+                    <div className="d-flex gap-2 align-items-center">
+                      <button
+                        className={`btn ${
+                          view === "Table"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() => setView("Table")}
+                      >
+                        Table
+                      </button>
+                      <button
+                        className={`btn ${
+                          view === "Grid"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() => setView("Grid")}
+                      >
+                        Grid
+                      </button>
+                    </div>
+                  </div>
                   </div>
                   <div className="card-body">
+                  {view === "Table" ? (
                     <div className="table-responsive">
                       <table className="table table-striped table-sm table-hover">
                         <thead>
@@ -201,6 +228,71 @@ export default function Delivery() {
                         </tbody>
                       </table>
                     </div>
+                     ) : (
+                      <div className="row align-items-center justify-content-between">
+                        {data && data.length > 0 ? (
+                          data.map((item, index) => (
+                            <div className="col-md-4 col-sm-6">
+                              <div className="card border-primary border-1">
+                                <div className="card-body ">
+                                  <table className="table table-sm mb-0">
+                                    <tbody>
+                                      <tr>
+                                        <td>GPM NO</td>
+                                        <td>
+                                          <strong>{item.gpm_number}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>C.NO.</td>
+                                        <td>
+                                          <strong>{item.container_number}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>SIZE</td>
+                                        <td>
+                                          <strong>{item.container_size}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>Start Time</td>
+                                        <td>
+                                          <strong>{formatToDateTime(item.start_time)}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                        <Link
+                                      to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
+                                      className="btn btn-label-primary btn-sm mx-1"
+                                    >
+                                      Edit
+                                    </Link>
+                                    </td>
+                                    <td>
+                                    <button
+                                      type="button"
+                                      className="btn btn-label-info btn-sm mx-1"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#myModal"
+                                      onClick={() => setModalData(item)}
+                                    >
+                                      Final Submit
+                                    </button>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <h6 className="text-center">No data available</h6>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 

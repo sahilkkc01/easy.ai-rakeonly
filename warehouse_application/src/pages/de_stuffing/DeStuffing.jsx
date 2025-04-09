@@ -6,10 +6,14 @@ import Swal from "sweetalert2";
 import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
-import { formatToDateTime, formatToDateTimeLocal } from "../main/formatToDateTime";
+import {
+  formatToDateTime,
+  formatToDateTimeLocal,
+} from "../main/formatToDateTime";
 
 export default function DeStuffing() {
   const navigate = useNavigate();
+  const [view, setView] = useState("Table");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [modalData, setModalData] = useState("");
@@ -52,11 +56,12 @@ export default function DeStuffing() {
     Type,
     ContainerNo,
     start_time,
-    end_time
+    end_time,
+    handling_type
   ) => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}&start_time=${start_time}&end_time=${end_time}`;
+    const url = `https://ctas.live/backend/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}&start_time=${start_time}&end_time=${end_time}&handling_type=${handling_type}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -102,8 +107,16 @@ export default function DeStuffing() {
     let ContainerNo = formData.get("container_no");
     let start_time = formData.get("start_time");
     let end_time = formData.get("end_time");
+    let handling_type = formData.get("handling_type");
 
-    handleFinalSubmit(ID, Type, ContainerNo, start_time, end_time);
+    handleFinalSubmit(
+      ID,
+      Type,
+      ContainerNo,
+      start_time,
+      end_time,
+      handling_type
+    );
   };
 
   return (
@@ -132,7 +145,7 @@ export default function DeStuffing() {
                   <div className="card-header">
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="">
-                        <h3 className="text-primary">DeStuffing</h3>
+                        <h3 className="text-primary mb-0">DeStuffing</h3>
                       </div>
                       <div className="">
                         <Link
@@ -147,59 +160,152 @@ export default function DeStuffing() {
                       </div>
                     </div>
                   </div>
+                  <div className="col-md-12 px-4">
+                    <div className="d-flex gap-2 align-items-center">
+                      <button
+                        className={`btn ${
+                          view === "Table"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() => setView("Table")}
+                      >
+                        Table
+                      </button>
+                      <button
+                        className={`btn ${
+                          view === "Grid"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() => setView("Grid")}
+                      >
+                        Grid
+                      </button>
+                    </div>
+                  </div>
+
                   <div className="card-body">
-                    <div className="table-responsive">                    
-                      <table className="table table-striped table-sm table-hover">
-                        <thead>
-                          <tr>
-                            <th>Sr no</th>
-                            <th>Type</th>
-                            <th>Container No</th>
-                            <th>Container Size</th>
-                            <th>Seal No</th>
-                            <th>Start Date Time</th>
-                            <th>End Date Time</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {data && data.length > 0 ? (
-                            data.map((item, index) => (
-                              <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{item.type}</td>
-                                <td>{item.container_number}</td>
-                                <td>{item.container_size}</td>
-                                <td>{item.seal_number}</td>
-                                <td>{formatToDateTime(item.start_time)}</td>
-                                <td>{formatToDateTime(item.end_time)}</td>
-                                <td>
-                                  <Link to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
-                                    className="btn btn-label-primary btn-sm mx-1" >
-                                   Edit
-                                  </Link>
-                                  <button
-                                    type="button"
-                                    className="btn btn-label-info btn-sm mx-1"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#myModal"
-                                    onClick={() => setModalData(item)}
-                                  >
-                                    Final Submit
-                                  </button>
+                    {view === "Table" ? (
+                      <div className="table-responsive">
+                        <table className="table table-striped table-sm table-hover">
+                          <thead>
+                            <tr>
+                              <th>Sr no</th>
+                              <th>Type</th>
+                              <th>Container No</th>
+                              <th>Container Size</th>
+                              <th>Seal No</th>
+                              <th>Start Date Time</th>
+                              <th>End Date Time</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {data && data.length > 0 ? (
+                              data.map((item, index) => (
+                                <tr key={index}>
+                                  <td>{index + 1}</td>
+                                  <td>{item.type}</td>
+                                  <td>{item.container_number}</td>
+                                  <td>{item.container_size}</td>
+                                  <td>{item.seal_number}</td>
+                                  <td>{formatToDateTime(item.start_time)}</td>
+                                  <td>{formatToDateTime(item.end_time)}</td>
+                                  <td>
+                                    <Link
+                                      to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
+                                      className="btn btn-label-primary btn-sm mx-1"
+                                    >
+                                      Edit
+                                    </Link>
+                                    <button
+                                      type="button"
+                                      className="btn btn-label-info btn-sm mx-1"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#myModal"
+                                      onClick={() => setModalData(item)}
+                                    >
+                                      Final Submit
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan="8" className="text-center">
+                                  No data available
                                 </td>
                               </tr>
-                            ))
-                          ) : (
-                            <tr>
-                              <td colSpan="8" className="text-center">
-                                No data available
-                              </td>
-                            </tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    ) : (
+                      <div className="row align-items-center justify-content-between">
+                        {data && data.length > 0 ? (
+                          data.map((item, index) => (
+                            <div className="col-md-4 col-sm-6">
+                              <div className="card border-primary border-1">
+                                <div className="card-body ">
+                                  <table className="table table-sm mb-0">
+                                    <tbody>
+                                      <tr>
+                                        <td>Type</td>
+                                        <td>
+                                          <strong>{item.type}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>C.NO.</td>
+                                        <td>
+                                          <strong>{item.container_number}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>SIZE</td>
+                                        <td>
+                                          <strong>{item.container_size}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>Start Time</td>
+                                        <td>
+                                          <strong>{formatToDateTime(item.start_time)}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                        <Link
+                                      to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
+                                      className="btn btn-label-primary btn-sm mx-1"
+                                    >
+                                      Edit
+                                    </Link>
+                                    </td>
+                                    <td>
+                                    <button
+                                      type="button"
+                                      className="btn btn-label-info btn-sm mx-1"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#myModal"
+                                      onClick={() => setModalData(item)}
+                                    >
+                                      Final Submit
+                                    </button>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <h6 className="text-center">No data available</h6>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -223,18 +329,18 @@ export default function DeStuffing() {
                       <div className="modal-body">
                         {/* Form inside the modal */}
                         <form onSubmit={handleSubmitForm}>
-                            <input
-                              type="hidden"
-                              name="id"
-                              className="form-control"
-                              value={modalData?.id}
-                            />
-                            <input
-                              type="hidden"
-                              name="type"
-                              className="form-control"
-                              value={modalData?.type}
-                            />
+                          <input
+                            type="hidden"
+                            name="id"
+                            className="form-control"
+                            value={modalData?.id}
+                          />
+                          <input
+                            type="hidden"
+                            name="type"
+                            className="form-control"
+                            value={modalData?.type}
+                          />
 
                           <div className="mb-3">
                             <label className="form-label">Container No</label>
@@ -244,7 +350,6 @@ export default function DeStuffing() {
                               className="form-control"
                               readOnly
                               value={modalData?.container_number}
-
                             />
                           </div>
                           <div className="mb-3">
@@ -253,7 +358,9 @@ export default function DeStuffing() {
                               type="datetime-local"
                               name="start_time"
                               className="form-control"
-                              defaultValue={formatToDateTimeLocal(modalData?.start_time)}
+                              defaultValue={formatToDateTimeLocal(
+                                modalData?.start_time
+                              )}
                             />
                           </div>
                           <div className="mb-3">
@@ -262,8 +369,21 @@ export default function DeStuffing() {
                               type="datetime-local"
                               name="end_time"
                               className="form-control"
-                              defaultValue={formatToDateTimeLocal(modalData?.end_time)}
+                              defaultValue={formatToDateTimeLocal(
+                                modalData?.end_time
+                              )}
                             />
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">Handing Type</label>
+                            <select
+                              className="form-select p-2"
+                              name="handling_type"
+                              defaultValue={modalData?.handling_type}
+                            >
+                              <option value="LCH">LCH</option>
+                              <option value="MCH">MCH</option>
+                            </select>
                           </div>
 
                           <div className="modal-footer">
@@ -277,8 +397,9 @@ export default function DeStuffing() {
                             <button
                               type="submit"
                               className="btn btn-primary"
-                                 data-bs-dismiss="modal"
-                            >Final Submit
+                              data-bs-dismiss="modal"
+                            >
+                              Final Submit
                             </button>
                           </div>
                         </form>
