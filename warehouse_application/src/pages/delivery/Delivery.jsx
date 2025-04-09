@@ -429,6 +429,17 @@ export default function Delivery() {
                               )}
                             />
                           </div>
+                          <div className="mb-3">
+                            <label className="form-label">Handing Type</label>
+                            <select
+                              className="form-select p-2"
+                              name="handling_type"
+                              defaultValue={modalData?.handling_type}
+                            >
+                              <option value="LCH">LCH</option>
+                              <option value="MCH">MCH</option>
+                            </select>
+                          </div>
 
                           <div className="modal-footer">
                             <button
