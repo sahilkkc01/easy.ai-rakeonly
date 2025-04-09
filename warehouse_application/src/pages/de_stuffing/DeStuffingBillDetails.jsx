@@ -202,7 +202,7 @@ export default function DeStuffingBillDetails() {
                 <option value="">Select Grid</option>
                 {Locations?.map((location, j) => (
                   <option key={j} value={location.camera_locations}>
-                    {location.camera_locations}
+                    {location.location_code??location.camera_locations}
                   </option>
                 ))}
               </select>

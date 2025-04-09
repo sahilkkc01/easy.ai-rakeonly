@@ -14,7 +14,6 @@ export default function DeliveryBillDetails() {
   const [GpmNo, setGpmNo] = useState(null);
   const [TallySheet, setTallySheet] = useState(null);
   const [Data, setData] = useState(null);
-  const [Locations, setLocations] = useState(null);
   const [TotalTrucks, setTotalTrucks] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFinalSubmit, setIsFinalSubmit] = useState(false);
@@ -72,31 +71,6 @@ export default function DeliveryBillDetails() {
     }
   }, [searchParams]);
 
-  const fetchLocations = async () => {
-    setLoading(true);
-    const url = `https://ctas.live/backend/api/warehouse/empty/locations?type=Import`;
-    try {
-      const response = await axios.get(url);
-      if (response?.data?.status === "success") {
-        setLocations(response?.data?.data);
-      } else {
-        Swal.fire({
-          icon: response?.data?.status,
-          text: response?.data?.message,
-          timer: 3000,
-        });
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        text: `Error Fetching Data: ${error.message}`,
-        timer: 3000,
-        showConfirmButton: false,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const GetFormData = async (e) => {
     e.preventDefault();
@@ -122,7 +96,6 @@ export default function DeliveryBillDetails() {
   useEffect(() => {
     if (Data) {
       setID(Data?.id);
-      fetchLocations();
 
       if (Data?.delivery_trucks && Data?.delivery_trucks?.length > 0) {
         setTotalTrucks(Data?.delivery_trucks?.length);
