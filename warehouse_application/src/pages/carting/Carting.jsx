@@ -6,15 +6,17 @@ import Swal from "sweetalert2";
 import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
-import { formatToDateTime, formatToDateTimeLocal } from "../main/formatToDateTime";
-
+import {
+  formatToDateTime,
+  formatToDateTimeLocal,
+} from "../main/formatToDateTime";
 
 export default function Carting() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
-  const [modalData, setModalData] = useState("")
+  const [modalData, setModalData] = useState("");
   const [view, setView] = useState("Table");
 
   const fetchData = async () => {
@@ -48,11 +50,12 @@ export default function Carting() {
     ID,
     crn_number,
     start_time,
-    end_time
+    end_time,
+    handline_type
   ) => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/carting/final/submit?id=${ID}&crn_number=${crn_number}&start_time=${start_time}&end_time=${end_time}`;
+    const url = `https://ctas.live/backend/api/carting/final/submit?id=${ID}&crn_number=${crn_number}&start_time=${start_time}&end_time=${end_time}&handline_type=${handline_type}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -97,8 +100,8 @@ export default function Carting() {
     let crn_number = formData.get("crn_number");
     let start_time = formData.get("start_time");
     let end_time = formData.get("end_time");
-
-    handleFinalSubmit(ID,crn_number, start_time, end_time);
+    let handline_type = formData.get("handline_type");
+    handleFinalSubmit(ID, crn_number, start_time, end_time, handline_type);
   };
 
   return (
@@ -123,146 +126,78 @@ export default function Carting() {
           <div className="layout-page">
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-                <div className="card">
-                  <div className="card-header">
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="">
-                        <h3 className="text-primary">Carting</h3>
-                      </div>
-                      <div className="">
-                        <Link
-                          to={`/carting/bill-details`}
-                          className="btn btn-label-success"
-                        >
-                          + Create Job
-                        </Link>
-                        <Link to={`/`} className="btn btn-label-primary ms-2">
-                          Go Back
-                        </Link>
-                      </div>
-                    </div>
+                <div className="d-flex align-items-center justify-content-between">
+                  <div className="">
+                    <h3 className="text-primary">Carting</h3>
                   </div>
-                  <div className="col-md-12 px-4">
-                    <div className="d-flex gap-2 align-items-center">
-                      <button
-                        className={`btn ${
-                          view === "Table"
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() => setView("Table")}
-                      >
-                        Table
-                      </button>
-                      <button
-                        className={`btn ${
-                          view === "Grid"
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() => setView("Grid")}
-                      >
-                        Grid
-                      </button>
-                    </div>
+                  <div className="">
+                    <Link
+                      to={`/carting/bill-details`}
+                      className="btn btn-label-success"
+                    >
+                      + Create Job
+                    </Link>
+                    <Link to={`/`} className="btn btn-label-primary ms-2">
+                      Go Back
+                    </Link>
                   </div>
+                </div>
+                <div className="col-md-12 px-4 mb-5">
+                  <div className="d-flex gap-2 align-items-center">
+                    <button
+                      className={`btn ${
+                        view === "Table" ? "btn-primary" : "btn-outline-primary"
+                      }`}
+                      onClick={() => setView("Table")}
+                    >
+                      Table
+                    </button>
+                    <button
+                      className={`btn ${
+                        view === "Grid" ? "btn-primary" : "btn-outline-primary"
+                      }`}
+                      onClick={() => setView("Grid")}
+                    >
+                      Grid
+                    </button>
+                  </div>
+                </div>
 
-                  <div className="card-body">
-                    {view === "Table" ? (
-                      <table className="table table-striped table-sm table-hover">
-                        <thead className="table-primary">
-                          <tr>
-                            <th>#</th>
-
-                            <th>Type</th>
-                            <th>CRN</th>
-                            <th>Gw Port</th>
-                            <th>Start time</th>
-                            <th>End time</th>
-                            <th>Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {data.length > 0 ? (
-                            data.map((item, index) => (
-                              <tr key={index}>
-                                <td>{index + 1}</td>
-
-                                <td>{item.type}</td>
-                                <td>{item.crn_number}</td>
-                                <td>{item.gw_port_code}</td>
-                                <td>{item.start_time}</td>
-                                <td>{item.end_time}</td>
-                                <td>
-                                <Link to={`/carting/bill-details?crn_number=${item.crn_number}`}
-                                    className="btn btn-label-primary btn-sm mx-1"
-                                  >
-                                   Edit
-                                  </Link>
-
-                                  <button
-                                    type="button"
-                                    className="btn btn-label-info btn-sm mx-1"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#myModal"
-                                    onClick={() => setModalData(item)}
-                                  >
-                                    Final Submit
-                                  </button>
-                                </td>
-                              </tr>
-                            ))
-                          ) : (
+                {view === "Table" ? (
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="table-responsive">
+                        <table className="table table-striped table-sm table-hover">
+                          <thead className="table-primary">
                             <tr>
-                              <td colSpan="4" className="text-center">
-                                No data available
-                              </td>
+                              <th>#</th>
+                              <th>Type</th>
+                              <th>CRN</th>
+                              <th>Gw Port</th>
+                              <th>Start time</th>
+                              <th>End time</th>
+                              <th>Action</th>
                             </tr>
-                          )}
-                        </tbody>
-                      </table>   ) : (
-                      <div className="row align-items-center justify-content-between">
-                        {data && data.length > 0 ? (
-                          data.map((item, index) => (
-                            <div className="col-md-4 col-sm-6">
-                              <div className="card border-primary border-1">
-                                <div className="card-body ">
-                                  <table className="table table-sm mb-0">
-                                    <tbody>
-                                      <tr>
-                                        <td>Type</td>
-                                        <td>
-                                          <strong>{item.type}</strong>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>CRN.</td>
-                                        <td>
-                                          <strong>{item.crn_number}</strong>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>PORT</td>
-                                        <td>
-                                          <strong>{item.gw_port_code}</strong>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Start Time</td>
-                                        <td>
-                                          <strong>{formatToDateTime(item.start_time)}</strong>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>
-                                        <Link
-                                      to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
+                          </thead>
+                          <tbody>
+                            {data.length > 0 ? (
+                              data.map((item, index) => (
+                                <tr key={index}>
+                                  <td>{index + 1}</td>
+
+                                  <td>{item.type}</td>
+                                  <td>{item.crn_number}</td>
+                                  <td>{item.gw_port_code}</td>
+                                  <td>{item.start_time}</td>
+                                  <td>{item.end_time}</td>
+                                  <td>
+                                    <Link
+                                      to={`/carting/bill-details?crn_number=${item.crn_number}`}
                                       className="btn btn-label-primary btn-sm mx-1"
                                     >
                                       Edit
                                     </Link>
-                                    </td>
-                                    <td>
+
                                     <button
                                       type="button"
                                       className="btn btn-label-info btn-sm mx-1"
@@ -272,21 +207,151 @@ export default function Carting() {
                                     >
                                       Final Submit
                                     </button>
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan="4" className="text-center">
+                                  No data available
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="row align-items-center justify-content-between">
+                    {data && data.length > 0 ? (
+                      data.map((item, index) => (
+                        <div className="col-md-12 mb-6">
+                          <div className="card">
+                            <div className="card-body">
+                              <div className="col-md-12 mb-3">
+                                <div className="card border-primary border-1">
+                                  <div className="card-body">
+                                    <table className="table table-striped table-sm table-hover">
+                                      <thead className="table-primary">
+                                        <tr>
+                                          <th>#</th>
+                                          <th>Type</th>
+                                          <th>CRN</th>
+                                          <th>Gw Port</th>
+                                          <th>Start time</th>
+                                          <th>End time</th>
+                                          <th>Action</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr key={index}>
+                                          <td>{index + 1}</td>
+
+                                          <td>{item.type}</td>
+                                          <td>{item.crn_number}</td>
+                                          <td>{item.gw_port_code}</td>
+                                          <td>{item.start_time}</td>
+                                          <td>{item.end_time}</td>
+                                          <td>
+                                            <Link
+                                              to={`/carting/bill-details?crn_number=${item.crn_number}`}
+                                              className="btn btn-label-primary btn-sm mx-1"
+                                            >
+                                              Edit
+                                            </Link>
+
+                                            <button
+                                              type="button"
+                                              className="btn btn-label-info btn-sm mx-1"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#myModal"
+                                              onClick={() => setModalData(item)}
+                                            >
+                                              Final Submit
+                                            </button>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </div>
                               </div>
+
+                              <div className="row">
+                                {item?.carting_trucks?.map((details, i) => (
+                                  <div className="col-md-4 col-sm-6 mb-3">
+                                    <div className="card border-primary border-1">
+                                      <div className="card-body px-2">
+                                        <table className="table table-sm mb-0">
+                                          <tbody>
+                                            <tr>
+                                              <td>Bill Number</td>
+                                              <td>
+                                                <strong>{details.sbill}</strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>Cargo Description</td>
+                                              <td>
+                                                <strong>
+                                                  {details.cargo_description}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>No of Pkgs</td>
+                                              <td>
+                                                <strong>
+                                                  {details.no_of_pkgs}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>Pkg Weight</td>
+                                              <td>
+                                                <strong>
+                                                  {details.pkgs_weight}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>Grid Location & Area</td>
+                                              <td>
+                                                <strong>
+                                                  {details?.grid_area?.map(
+                                                    (grid, k) => {
+                                                      if (grid.grid_locations) {
+                                                        return (
+                                                          <p className="mb-0">
+                                                            {
+                                                              grid.grid_locations
+                                                            }{" "}
+                                                            / {grid.area}{" "}
+                                                          </p>
+                                                        );
+                                                      }
+                                                    }
+                                                  )}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                          ))
-                        ) : (
-                          <h6 className="text-center">No data available</h6>
-                        )}
-                      </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <h6 className="text-center">No data available</h6>
                     )}
                   </div>
-                </div>
+                )}
 
                 <div
                   className="modal fade"
@@ -308,12 +373,12 @@ export default function Carting() {
                       <div className="modal-body">
                         {/* Form inside the modal */}
                         <form onSubmit={handleSubmitForm}>
-                            <input
-                              type="hidden"
-                              name="id"
-                              className="form-control"
-                              value={modalData?.id}
-                            />
+                          <input
+                            type="hidden"
+                            name="id"
+                            className="form-control"
+                            value={modalData?.id}
+                          />
                           <div className="mb-3">
                             <label className="form-label">Crn Number </label>
                             <input
@@ -322,7 +387,6 @@ export default function Carting() {
                               className="form-control"
                               readOnly
                               value={modalData?.crn_number}
-
                             />
                           </div>
                           <div className="mb-3">
@@ -331,7 +395,9 @@ export default function Carting() {
                               type="datetime-local"
                               name="start_time"
                               className="form-control"
-                              defaultValue={formatToDateTimeLocal(modalData?.start_time)}
+                              defaultValue={formatToDateTimeLocal(
+                                modalData?.start_time
+                              )}
                             />
                           </div>
                           <div className="mb-3">
@@ -340,8 +406,21 @@ export default function Carting() {
                               type="datetime-local"
                               name="end_time"
                               className="form-control"
-                              defaultValue={formatToDateTimeLocal(modalData?.end_time)}
+                              defaultValue={formatToDateTimeLocal(
+                                modalData?.end_time
+                              )}
                             />
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">Handing Type</label>
+                            <select
+                              className="form-select p-2"
+                              name="handline_type"
+                              defaultValue={modalData?.handline_type}
+                            >
+                              <option value="LCH">LCH</option>
+                              <option value="MCH">MCH</option>
+                            </select>
                           </div>
 
                           <div className="modal-footer">
@@ -355,8 +434,9 @@ export default function Carting() {
                             <button
                               type="submit"
                               className="btn btn-primary"
-                                 data-bs-dismiss="modal"
-                            >Final Submit
+                              data-bs-dismiss="modal"
+                            >
+                              Final Submit
                             </button>
                           </div>
                         </form>

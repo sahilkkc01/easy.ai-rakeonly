@@ -531,6 +531,18 @@ const GridComponent = ({ index, data }) => {
                                   defaultValue={formatToDateTimeLocal(today)}
                                 />
                               </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  Handling Type
+                                </label>
+                                <select
+                                  className="form-select p-2"
+                                  name="handline_type"
+                                >
+                                  <option value="LCH">LCH</option>
+                                  <option value="MCH">MCH</option>
+                                </select>
+                              </div>
                             </div>
                           </div>
                         </div>

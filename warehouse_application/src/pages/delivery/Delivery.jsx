@@ -370,7 +370,7 @@ export default function Delivery() {
                       <h6 className="text-center">No data available</h6>
                     )}
                   </div>
-                )}
+                )}               
                 <div
                   className="modal fade"
                   id="myModal"

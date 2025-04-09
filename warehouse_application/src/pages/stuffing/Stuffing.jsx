@@ -7,17 +7,19 @@ import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { set } from "date-fns";
-import { formatToDateTime, formatToDateTimeLocal } from "../main/formatToDateTime";
+import {
+  formatToDateTime,
+  formatToDateTimeLocal,
+} from "../main/formatToDateTime";
 
 export default function Stuffing() {
   const containerModalRef = useRef(null);
   const navigate = useNavigate();
-  const [loading,setLoading]=useState(false);
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
-  const [modalData, setModalData] = useState("")
-  
-
+  const [modalData, setModalData] = useState("");
+  const [view, setView] = useState("Table");
 
   useEffect(() => {
     const containerModalEl = document.getElementById("containerModal");
@@ -35,47 +37,47 @@ export default function Stuffing() {
     }
   };
 
-    // table data fetch from api
+  // table data fetch from api
 
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        "https://ctas.live/backend/api/stuffing/live/data"
+      );
 
-const fetchData = async () => {
-  try {
-    setLoading(true);
-    const response = await axios.get("https://ctas.live/backend/api/stuffing/live/data");
-   
-    if(response.data.data && Array.isArray(response.data.data)){
-      setData(response.data.data);
-    }
+      if (response.data.data && Array.isArray(response.data.data)) {
+        setData(response.data.data);
+      }
+    } catch (err) {
+      setError("Failed to fetch data.");
 
-  } catch (err) {
-    setError("Failed to fetch data.");
-   
-
-       // Error Alert
-       Swal.fire({
+      // Error Alert
+      Swal.fire({
         title: "Error!",
         text: "Failed to fetch data.",
         icon: "error",
         confirmButtonText: "Retry",
       });
-  }finally{
-    setLoading(false);
-  }
-};
+    } finally {
+      setLoading(false);
+    }
+  };
 
-useEffect(() => {
-  fetchData();
-}, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-
-  const GetFormData = async(e)=>{
+  const GetFormData = async (e) => {
     e.preventDefault();
 
     const url = `https://ctas.live/backend/api/get/de_stuffing_data/LCL/${e.target.container_no.value}`;
     try {
       const response = await axios.post(url);
-      if (response?.data?.status=="success") {
-        navigate(`/de-stuffing/bill-details?container_no=${e.target.container_no.value}`);
+      if (response?.data?.status == "success") {
+        navigate(
+          `/de-stuffing/bill-details?container_no=${e.target.container_no.value}`
+        );
       } else {
         Swal.fire({
           icon: response?.data?.status,
@@ -93,7 +95,7 @@ useEffect(() => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const handleFinalSubmit = async (
     ID,
@@ -149,12 +151,12 @@ useEffect(() => {
     let start_time = formData.get("start_time");
     let end_time = formData.get("end_time");
 
-    handleFinalSubmit(ID,container_number, start_time, end_time);
+    handleFinalSubmit(ID, container_number, start_time, end_time);
   };
 
   return (
     <>
-       {loading && (
+      {loading && (
         <div
           className="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100"
           style={{ zIndex: 9999 }}
@@ -174,98 +176,231 @@ useEffect(() => {
           <div className="layout-page">
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-              <div className="card">
-                  <div className="card-header">
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="">
-                        <h3 className="text-primary">Stuffing</h3>
-                      </div>
-                      <div className="">
-                        <Link
-                          to={`/stuffing/bill-details`}
-                          className="btn btn-label-success"
-                        >
-                          + Create Job
-                        </Link>
-                        <Link to={`/`} className="btn btn-label-primary ms-2">
-                          Go Back
-                        </Link>
-                      </div>
-                    </div>
+                <div className="d-flex align-items-center justify-content-between">
+                  <div className="">
+                    <h3 className="text-primary">Stuffing</h3>
                   </div>
-                  <div className="card-body">
-                    <div className="table-responsive">
-                      {/* <table className="table table-striped table-sm table-hover">
-                        <thead className="table-primary">
-                          <tr>
-                            <th>#</th>
-                            <th>Truck No</th>
-                            <th>CRN</th>
-                            <th>Created On</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>1</td>
-                            <td>PB65BD0271</td>
-                            <td>F240925032</td>
-                            <td>25/09/24</td>
-                          </tr>
-                        </tbody>
-                      </table> */}
-
-                      <table className="table table-striped table-sm table-hover">
-          <thead className="table-primary">
-            <tr>
-              <th>Sr no</th>
-              <th>Container no</th>
-              <th>Container size</th>
-              <th>Crn no</th>
-              <th>Start time</th>
-              <th>End time</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.length > 0 ? (
-              data.map((item, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{item.container_number}</td>
-                  <td>{item.container_size}</td>
-                  <td>{item.crn_number}</td>
-                  <td>{item.start_time}</td>
-                  <td>{item.end_time}</td>
-                  <td>
-                                <Link to={`/stuffing/bill-details?container_number=${item.container_number}`}
-                                    className="btn btn-label-primary btn-sm mx-1"
-                                  >
-                                   Edit
-                                  </Link>
-
-                                  <button
-                                    type="button"
-                                    className="btn btn-label-info btn-sm mx-1"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#myModal"
-                                    onClick={() => setModalData(item)}
-                                  >
-                                    Final Submit
-                                  </button></td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" className="text-center">
-                  No data available
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-                    </div>
+                  <div className="">
+                    <Link
+                      to={`/stuffing/bill-details`}
+                      className="btn btn-label-success"
+                    >
+                      + Create Job
+                    </Link>
+                    <Link to={`/`} className="btn btn-label-primary ms-2">
+                      Go Back
+                    </Link>
                   </div>
                 </div>
+                <div className="col-md-12 px-4 mb-5">
+                  <div className="d-flex gap-2 align-items-center">
+                    <button
+                      className={`btn ${
+                        view === "Table" ? "btn-primary" : "btn-outline-primary"
+                      }`}
+                      onClick={() => setView("Table")}
+                    >
+                      Table
+                    </button>
+                    <button
+                      className={`btn ${
+                        view === "Grid" ? "btn-primary" : "btn-outline-primary"
+                      }`}
+                      onClick={() => setView("Grid")}
+                    >
+                      Grid
+                    </button>
+                  </div>
+                </div>
+
+                {view === "Table" ? (
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="table-responsive">
+                        <table className="table table-striped table-sm table-hover">
+                          <thead className="table-primary">
+                            <tr>
+                              <th>Sr no</th>
+                              <th>Container no</th>
+                              <th>Container size</th>
+                              <th>Crn no</th>
+                              <th>Start time</th>
+                              <th>End time</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {data.length > 0 ? (
+                              data.map((item, index) => (
+                                <tr key={index}>
+                                  <td>{index + 1}</td>
+                                  <td>{item.container_number}</td>
+                                  <td>{item.container_size}</td>
+                                  <td>{item.crn_number}</td>
+                                  <td>{item.start_time}</td>
+                                  <td>{item.end_time}</td>
+                                  <td>
+                                    <Link
+                                      to={`/stuffing/bill-details?container_number=${item.container_number}`}
+                                      className="btn btn-label-primary btn-sm mx-1"
+                                    >
+                                      Edit
+                                    </Link>
+
+                                    <button
+                                      type="button"
+                                      className="btn btn-label-info btn-sm mx-1"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#myModal"
+                                      onClick={() => setModalData(item)}
+                                    >
+                                      Final Submit
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))
+                            ) : (
+                              <tr>
+                                <td colSpan="4" className="text-center">
+                                  No data available
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="row align-items-center justify-content-between">
+                    {data && data.length > 0 ? (
+                      data.map((item, index) => (
+                        <div className="col-md-12 mb-6">
+                          <div className="card">
+                            <div className="card-body">
+                              <div className="col-md-12 mb-3">
+                                <div className="card border-primary border-1">
+                                  <div className="card-body">
+                                    <table className="table table-striped table-sm table-hover">
+                                      <thead className="table-primary">
+                                        <tr>
+                                          <th>Sr no</th>
+                                          <th>Container no</th>
+                                          <th>Container size</th>
+                                          <th>Crn no</th>
+                                          <th>Start time</th>
+                                          <th>End time</th>
+                                          <th>Action</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr key={index}>
+                                          <td>{index + 1}</td>
+                                          <td>{item.container_number}</td>
+                                          <td>{item.container_size}</td>
+                                          <td>{item.crn_number}</td>
+                                          <td>{item.start_time}</td>
+                                          <td>{item.end_time}</td>
+                                          <td>
+                                            <Link
+                                              to={`/stuffing/bill-details?container_number=${item.container_number}`}
+                                              className="btn btn-label-primary btn-sm mx-1"
+                                            >
+                                              Edit
+                                            </Link>
+
+                                            <button
+                                              type="button"
+                                              className="btn btn-label-info btn-sm mx-1"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#myModal"
+                                              onClick={() => setModalData(item)}
+                                            >
+                                              Final Submit
+                                            </button>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="row">
+                                {item?.stuffing_shipping_bill_details?.map((details, i) => (
+                                  <div className="col-md-4 col-sm-6 mb-3">
+                                    <div className="card border-primary border-1">
+                                      <div className="card-body px-2">
+                                        <table className="table table-sm mb-0">
+                                          <tbody>
+                                            <tr>
+                                              <td>Bill Number</td>
+                                              <td>
+                                                <strong>{details.shipping_bill_number}</strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>Cargo Description</td>
+                                              <td>
+                                                <strong>
+                                                  {details.commodity_description}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>No of Pkgs</td>
+                                              <td>
+                                                <strong>
+                                                  {details.no_of_packages_declared}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>Pkg Weight</td>
+                                              <td>
+                                                <strong>
+                                                  {details.package_weight}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>Grid Location & Area</td>
+                                              <td>
+                                                <strong>
+                                                  {details?.grid_area?.map(
+                                                    (grid, k) => {
+                                                      if (grid.grid_locations) {
+                                                        return (
+                                                          <p className="mb-0">
+                                                            {
+                                                              grid.grid_locations
+                                                            }{" "}
+                                                            / {grid.area}{" "}
+                                                          </p>
+                                                        );
+                                                      }
+                                                    }
+                                                  )}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <h6 className="text-center">No data available</h6>
+                    )}
+                  </div>
+                )}
+
 
                 <div
                   className="modal fade"
@@ -287,21 +422,22 @@ useEffect(() => {
                       <div className="modal-body">
                         {/* Form inside the modal */}
                         <form onSubmit={handleSubmitForm}>
-                            <input
-                              type="hidden"
-                              name="id"
-                              className="form-control"
-                              value={modalData?.id}
-                            />
+                          <input
+                            type="hidden"
+                            name="id"
+                            className="form-control"
+                            value={modalData?.id}
+                          />
                           <div className="mb-3">
-                            <label className="form-label">Container Number </label>
+                            <label className="form-label">
+                              Container Number{" "}
+                            </label>
                             <input
                               type="text"
                               name="container_number"
                               className="form-control"
                               readOnly
                               value={modalData?.container_number}
-
                             />
                           </div>
                           <div className="mb-3">
@@ -310,7 +446,9 @@ useEffect(() => {
                               type="datetime-local"
                               name="start_time"
                               className="form-control"
-                              defaultValue={formatToDateTimeLocal(modalData?.start_time)}
+                              defaultValue={formatToDateTimeLocal(
+                                modalData?.start_time
+                              )}
                             />
                           </div>
                           <div className="mb-3">
@@ -319,8 +457,21 @@ useEffect(() => {
                               type="datetime-local"
                               name="end_time"
                               className="form-control"
-                              defaultValue={formatToDateTimeLocal(modalData?.end_time)}
+                              defaultValue={formatToDateTimeLocal(
+                                modalData?.end_time
+                              )}
                             />
+                          </div>
+                          <div className="mb-3">
+                            <label className="form-label">Handing Type</label>
+                            <select
+                              className="form-select p-2"
+                              name="handline_type"
+                              defaultValue={modalData?.handline_type}
+                            >
+                              <option value="LCH">LCH</option>
+                              <option value="MCH">MCH</option>
+                            </select>
                           </div>
 
                           <div className="modal-footer">
@@ -334,8 +485,9 @@ useEffect(() => {
                             <button
                               type="submit"
                               className="btn btn-primary"
-                                 data-bs-dismiss="modal"
-                            >Final Submit
+                              data-bs-dismiss="modal"
+                            >
+                              Final Submit
                             </button>
                           </div>
                         </form>
