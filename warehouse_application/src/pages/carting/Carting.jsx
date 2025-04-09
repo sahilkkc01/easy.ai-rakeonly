@@ -15,6 +15,7 @@ export default function Carting() {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [modalData, setModalData] = useState("")
+  const [view, setView] = useState("Table");
 
   const fetchData = async () => {
     try {
@@ -141,26 +142,33 @@ export default function Carting() {
                       </div>
                     </div>
                   </div>
+                  <div className="col-md-12 px-4">
+                    <div className="d-flex gap-2 align-items-center">
+                      <button
+                        className={`btn ${
+                          view === "Table"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() => setView("Table")}
+                      >
+                        Table
+                      </button>
+                      <button
+                        className={`btn ${
+                          view === "Grid"
+                            ? "btn-primary"
+                            : "btn-outline-primary"
+                        }`}
+                        onClick={() => setView("Grid")}
+                      >
+                        Grid
+                      </button>
+                    </div>
+                  </div>
+
                   <div className="card-body">
-                    <div className="table-responsive">
-                      {/* <table className="table table-striped table-sm table-hover">
-                        <thead className="table-primary">
-                          <tr>
-                            <th>#</th>
-                            <th>Truck No</th>
-                            <th>CRN</th>
-                            <th>Created On</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>1</td>
-                            <td>PB65BD0271</td>
-                            <td>F240925032</td>
-                            <td>25/09/24</td>
-                          </tr>
-                        </tbody>
-                      </table> */}
+                    {view === "Table" ? (
                       <table className="table table-striped table-sm table-hover">
                         <thead className="table-primary">
                           <tr>
@@ -212,8 +220,71 @@ export default function Carting() {
                             </tr>
                           )}
                         </tbody>
-                      </table>
-                    </div>
+                      </table>   ) : (
+                      <div className="row align-items-center justify-content-between">
+                        {data && data.length > 0 ? (
+                          data.map((item, index) => (
+                            <div className="col-md-4 col-sm-6">
+                              <div className="card border-primary border-1">
+                                <div className="card-body ">
+                                  <table className="table table-sm mb-0">
+                                    <tbody>
+                                      <tr>
+                                        <td>Type</td>
+                                        <td>
+                                          <strong>{item.type}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>CRN.</td>
+                                        <td>
+                                          <strong>{item.crn_number}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>PORT</td>
+                                        <td>
+                                          <strong>{item.gw_port_code}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>Start Time</td>
+                                        <td>
+                                          <strong>{formatToDateTime(item.start_time)}</strong>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                        <Link
+                                      to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
+                                      className="btn btn-label-primary btn-sm mx-1"
+                                    >
+                                      Edit
+                                    </Link>
+                                    </td>
+                                    <td>
+                                    <button
+                                      type="button"
+                                      className="btn btn-label-info btn-sm mx-1"
+                                      data-bs-toggle="modal"
+                                      data-bs-target="#myModal"
+                                      onClick={() => setModalData(item)}
+                                    >
+                                      Final Submit
+                                    </button>
+                                        </td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <h6 className="text-center">No data available</h6>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -294,12 +365,9 @@ export default function Carting() {
                   </div>
                 </div>
                 <Footer />
-                <div className="content-backdrop fade" />
               </div>
             </div>
           </div>
-          <div className="layout-overlay layout-menu-toggle"></div>
-          <div className="drag-target"></div>
         </div>
       </div>
     </>

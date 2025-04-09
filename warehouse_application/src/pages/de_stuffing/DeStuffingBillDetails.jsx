@@ -201,8 +201,8 @@ export default function DeStuffingBillDetails() {
               >
                 <option value="">Select Grid</option>
                 {Locations?.map((location, j) => (
-                  <option key={j} value={location.camera_locations}>
-                    {location.location_code??location.camera_locations}
+                  <option key={j} value={location.location_code}>
+                    {location.location_code}
                   </option>
                 ))}
               </select>
@@ -246,7 +246,7 @@ export default function DeStuffingBillDetails() {
     let loc_i = 1;
 
     Locations?.forEach((location) => {
-      if (location.camera_locations === grid && loc_i == 1) {
+      if (location.location_code === grid && loc_i == 1) {
         loc_i++;
         totalArea += parseInt(location.total_area) || 0;
         occupied += parseInt(location.occupied_area) || 0;

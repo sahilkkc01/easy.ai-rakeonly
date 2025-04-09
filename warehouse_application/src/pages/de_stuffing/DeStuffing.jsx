@@ -141,52 +141,46 @@ export default function DeStuffing() {
           <div className="layout-page">
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-                <div className="card my-5">
-                  <div className="card-header">
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="">
-                        <h3 className="text-primary mb-0">DeStuffing</h3>
-                      </div>
-                      <div className="">
-                        <Link
-                          to={`/de-stuffing/bill-details`}
-                          className="btn btn-label-success"
-                        >
-                          + Create Job
-                        </Link>
-                        <Link to={`/`} className="btn btn-label-primary ms-2">
-                          Go Back
-                        </Link>
-                      </div>
-                    </div>
+                <div className="d-flex align-items-center justify-content-between my-5">
+                  <div className="">
+                    <h3 className="text-primary mb-0">DeStuffing</h3>
                   </div>
-                  <div className="col-md-12 px-4">
-                    <div className="d-flex gap-2 align-items-center">
-                      <button
-                        className={`btn ${
-                          view === "Table"
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() => setView("Table")}
-                      >
-                        Table
-                      </button>
-                      <button
-                        className={`btn ${
-                          view === "Grid"
-                            ? "btn-primary"
-                            : "btn-outline-primary"
-                        }`}
-                        onClick={() => setView("Grid")}
-                      >
-                        Grid
-                      </button>
-                    </div>
+                  <div className="">
+                    <Link
+                      to={`/de-stuffing/bill-details`}
+                      className="btn btn-label-success"
+                    >
+                      + Create Job
+                    </Link>
+                    <Link to={`/`} className="btn btn-label-primary ms-2">
+                      Go Back
+                    </Link>
                   </div>
+                </div>
+                <div className="col-md-12 px-4 mb-3">
+                  <div className="d-flex gap-2 align-items-center">
+                    <button
+                      className={`btn ${
+                        view === "Table" ? "btn-primary" : "btn-outline-primary"
+                      }`}
+                      onClick={() => setView("Table")}
+                    >
+                      Table
+                    </button>
+                    <button
+                      className={`btn ${
+                        view === "Grid" ? "btn-primary" : "btn-outline-primary"
+                      }`}
+                      onClick={() => setView("Grid")}
+                    >
+                      Grid
+                    </button>
+                  </div>
+                </div>
 
-                  <div className="card-body">
-                    {view === "Table" ? (
+                {view === "Table" ? (
+                  <div className="card">
+                    <div className="card-body">
                       <div className="table-responsive">
                         <table className="table table-striped table-sm table-hover">
                           <thead>
@@ -241,73 +235,151 @@ export default function DeStuffing() {
                           </tbody>
                         </table>
                       </div>
-                    ) : (
-                      <div className="row align-items-center justify-content-between">
-                        {data && data.length > 0 ? (
-                          data.map((item, index) => (
-                            <div className="col-md-4 col-sm-6">
-                              <div className="card border-primary border-1">
-                                <div className="card-body ">
-                                  <table className="table table-sm mb-0">
-                                    <tbody>
-                                      <tr>
-                                        <td>Type</td>
-                                        <td>
-                                          <strong>{item.type}</strong>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>C.NO.</td>
-                                        <td>
-                                          <strong>{item.container_number}</strong>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>SIZE</td>
-                                        <td>
-                                          <strong>{item.container_size}</strong>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Start Time</td>
-                                        <td>
-                                          <strong>{formatToDateTime(item.start_time)}</strong>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>
-                                        <Link
-                                      to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
-                                      className="btn btn-label-primary btn-sm mx-1"
-                                    >
-                                      Edit
-                                    </Link>
-                                    </td>
-                                    <td>
-                                    <button
-                                      type="button"
-                                      className="btn btn-label-info btn-sm mx-1"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#myModal"
-                                      onClick={() => setModalData(item)}
-                                    >
-                                      Final Submit
-                                    </button>
-                                        </td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="row align-items-center justify-content-between">
+                    {data && data.length > 0 ? (
+                      data.map((item, index) => (
+                        <div className="col-md-12 mb-6">
+                          <div className="card">
+                            <div className="card-body">
+                              <div className="col-md-12 mb-3">
+                                <div className="card border-primary border-1">
+                                  <div className="card-body">
+                                    <table className="table table-striped table-sm table-bordered table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th>Sr no</th>
+                                          <th>Type</th>
+                                          <th>Container No</th>
+                                          <th>Container Size</th>
+                                          <th>Seal No</th>
+                                          <th>Start Date Time</th>
+                                          <th>End Date Time</th>
+                                          <th>Action</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr key={index}>
+                                          <td>{index + 1}</td>
+                                          <td>{item.type}</td>
+                                          <td>{item.container_number}</td>
+                                          <td>{item.container_size}</td>
+                                          <td>{item.seal_number}</td>
+                                          <td>
+                                            {formatToDateTime(item.start_time)}
+                                          </td>
+                                          <td>
+                                            {formatToDateTime(item.end_time)}
+                                          </td>
+                                          <td>
+                                            <Link
+                                              to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
+                                              className="btn btn-label-primary btn-sm mx-1"
+                                            >
+                                              Edit
+                                            </Link>
+                                            <button
+                                              type="button"
+                                              className="btn btn-label-info btn-sm mx-1"
+                                              data-bs-toggle="modal"
+                                              data-bs-target="#myModal"
+                                              onClick={() => setModalData(item)}
+                                            >
+                                              Final Submit
+                                            </button>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 </div>
                               </div>
+
+                              <div className="row">
+                                {item?.de_stuffing_bill_details?.map(
+                                  (details, i) => (
+                                    <div className="col-md-4 col-sm-6 mb-3">
+                                      <div className="card border-primary border-1">
+                                        <div className="card-body px-2">
+                                          <table className="table table-sm mb-0">
+                                            <tbody>
+                                              <tr>
+                                                <td>Bill Number</td>
+                                                <td>
+                                                  <strong>
+                                                    {details.bol_number ??
+                                                      details.boe_number}
+                                                  </strong>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>Cargo Description</td>
+                                                <td>
+                                                  <strong>
+                                                    {
+                                                      details.commodity_description
+                                                    }
+                                                  </strong>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>No of Pkgs</td>
+                                                <td>
+                                                  <strong>
+                                                    {
+                                                      details.no_of_packages_declared
+                                                    }
+                                                  </strong>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>Pkg Weight</td>
+                                                <td>
+                                                  <strong>
+                                                    {details.package_weight}
+                                                  </strong>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>Grid Location & Area</td>
+                                                <td>
+                                                  <strong>
+                                                    {details?.grid_area?.map(
+                                                      (grid, k) => {
+                                                        if (
+                                                          grid.grid_locations
+                                                        ) {
+                                                          return (
+                                                            <p className="mb-0">{
+                                                                grid.grid_locations
+                                                              } / {grid.area}{" "}
+                                                            </p>
+                                                          );
+                                                        }
+                                                      }
+                                                    )}
+                                                  </strong>
+                                                </td>
+                                              </tr>
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
                             </div>
-                          ))
-                        ) : (
-                          <h6 className="text-center">No data available</h6>
-                        )}
-                      </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <h6 className="text-center">No data available</h6>
                     )}
                   </div>
-                </div>
+                )}
 
                 <div
                   className="modal fade"
