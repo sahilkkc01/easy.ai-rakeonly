@@ -324,7 +324,6 @@ export default function DeStuffingBillDetails() {
     setLoading(true);
 
     const url = `https://ctas.live/backend/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}`;
-    // const url = `http://127.0.0.1:8000/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },

@@ -25,8 +25,7 @@ export default function StuffingBillDetails() {
 
   const fetchData = async (container_number) => {
     setLoading(true);
-    const url = `http://127.0.0.1:8000/api/get/stuffing?type=FCL&container_number=${container_number}`;
-    // const url = `https://ctas.live/backend/api/get/stuffing?type=FCL&container_number=${container_number}`;
+    const url = `https://ctas.live/backend/api/get/stuffing?type=FCL&container_number=${container_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
