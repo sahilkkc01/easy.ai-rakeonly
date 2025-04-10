@@ -204,11 +204,11 @@ export default function Stuffing() {
                     </button>
                     <button
                       className={`btn ${
-                        view === "Grid" ? "btn-primary" : "btn-outline-primary"
+                        view === "Card" ? "btn-primary" : "btn-outline-primary"
                       }`}
-                      onClick={() => setView("Grid")}
+                      onClick={() => setView("Card")}
                     >
-                      Grid
+                      Card
                     </button>
                   </div>
                 </div>
@@ -261,7 +261,7 @@ export default function Stuffing() {
                               ))
                             ) : (
                               <tr>
-                                <td colSpan="4" className="text-center">
+                                <td colSpan="7" className="text-center">
                                   No data available
                                 </td>
                               </tr>

@@ -16,6 +16,7 @@ export default function StuffingBillDetails() {
   const [Data, setData] = useState(null);
   const [Locations, setLocations] = useState(null);
   const [TotalBills, setTotalBills] = useState(1);
+  const [Bills, setBills] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFinalSubmit, setIsFinalSubmit] = useState(false);
   const [ID, setID] = useState(null);
@@ -103,30 +104,56 @@ export default function StuffingBillDetails() {
   }, [searchParams]);
 
   useEffect(() => {
-    if (Data) {
-      setID(Data?.id);
-      fetchLocations();
-    }
-    if (Data?.stuffing_shipping_bill_details) {
-      setTotalBills(Data?.stuffing_shipping_bill_details.length);
-    }
-  }, [Data]);
-
-  useEffect(() => {
+    if (!Data) return;
+  
+    setID(Data?.id);
+    fetchLocations();
+  
     let defaultGridData = {};
-    Data?.stuffing_shipping_bill_details?.forEach((billDetails, i) => {
-      defaultGridData[i] =
-        billDetails?.grid_area?.length > 0
+  
+    if (Data?.stuffing_shipping_bill_details?.length > 0) {
+      setTotalBills(Data.stuffing_shipping_bill_details.length);
+      setBills(Data.stuffing_shipping_bill_details);
+  
+      Data.stuffing_shipping_bill_details.forEach((billDetails, i) => {
+        defaultGridData[i] = billDetails?.grid_area?.length > 0
           ? billDetails.grid_area.map((item, index) => ({
               id: item.id || index + 1,
               grid_location: item.grid_locations || "NA",
               area: item.area || "NA",
             }))
           : [];
-    });
+      });
+    } else if (
+      Data?.carting_container &&
+      Data.carting_container?.carting_shipping_bill_details?.length > 0
+    ) {
+      setTotalBills(Data.carting_container.carting_shipping_bill_details.length);
+      setBills(Data.carting_container.carting_shipping_bill_details);
+    
+      Data.carting_container.carting_shipping_bill_details.forEach((billDetails, i) => {
+        const matchingTrucks = Data.carting_container.carting_trucks?.filter(
+          (truck) => truck.sbill === billDetails.shipping_bill_number
+        ) || [];
+    
+        const gridItems = matchingTrucks.flatMap((truck) =>
+          truck?.grid_area?.length > 0
+            ? truck.grid_area.map((item, index) => ({
+                id: item.id || index + 1,
+                grid_location: item.grid_locations || "NA",
+                area: item.area || "NA",
+              }))
+            : []
+        );
+    
+        defaultGridData[i] = gridItems;
+      });
+    }
+    
+  
     setGridData(defaultGridData);
   }, [Data]);
-
+  
 
 
   const handleFinalSubmit = async () => {
@@ -547,7 +574,7 @@ const GridComponent = ({ index, data }) => {
                         </div>
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
-                        {Array.from({ length: TotalBills }, (_, i) => (
+                        {Bills?.map((billDetails,i)=> (
                           <div key={i} className="card card-body my-3">
                             <div className="d-flex gap-3 flex-row overflow-auto">
                               <div className="col-md-2 col-3">
@@ -563,8 +590,7 @@ const GridComponent = ({ index, data }) => {
                                   name={`shipping_bill_number[${i}]`}
                                   id={`shipping_bill_number_${i}`}
                                   defaultValue={
-                                    Data?.stuffing_shipping_bill_details[i]
-                                      ?.shipping_bill_number
+                                    billDetails?.shipping_bill_number
                                   }
                                 />
                               </div>
@@ -578,8 +604,7 @@ const GridComponent = ({ index, data }) => {
                                   name={`commodity_description[${i}]`}
                                   id={`commodity_description_${i}`}
                                   defaultValue={
-                                    Data?.stuffing_shipping_bill_details[i]
-                                      ?.commodity_description
+                                    billDetails?.commodity_description
                                   }
                                 />
                               </div>
@@ -593,8 +618,7 @@ const GridComponent = ({ index, data }) => {
                                   name={`package_code[${i}]`}
                                   id={`package_code_${i}`}
                                   defaultValue={
-                                    Data?.stuffing_shipping_bill_details[i]
-                                      ?.package_code
+                                    billDetails?.package_code
                                   }
                                 />
                               </div>
@@ -606,8 +630,7 @@ const GridComponent = ({ index, data }) => {
                                   id={`no_of_packages_declared_${i}`}
                                   name={`no_of_packages_declared[${i}]`}
                                   defaultValue={
-                                    Data?.stuffing_shipping_bill_details[i]
-                                      ?.no_of_packages_declared
+                                    billDetails?.no_of_packages_declared
                                   }
                                   onChange={(e) =>
                                     handleBillPkgW(i, e.target.value)
@@ -622,8 +645,7 @@ const GridComponent = ({ index, data }) => {
                                   id={`package_weight_${i}`}
                                   name={`package_weight[${i}]`}
                                   defaultValue={
-                                    Data?.stuffing_shipping_bill_details[i]
-                                      ?.package_weight
+                                    billDetails?.package_weight
                                   }
                                 />
                               </div>

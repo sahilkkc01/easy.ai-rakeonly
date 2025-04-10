@@ -169,11 +169,11 @@ export default function DeStuffing() {
                     </button>
                     <button
                       className={`btn ${
-                        view === "Grid" ? "btn-primary" : "btn-outline-primary"
+                        view === "Card" ? "btn-primary" : "btn-outline-primary"
                       }`}
-                      onClick={() => setView("Grid")}
+                      onClick={() => setView("Card")}
                     >
-                      Grid
+                      Card
                     </button>
                   </div>
                 </div>
