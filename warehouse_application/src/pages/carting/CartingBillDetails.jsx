@@ -370,7 +370,7 @@ export default function CartingBillDetails() {
   };
 
   const handleBillDetails = (key, sbill) => {
-    Data?.carting_trucks?.map((details, a) => {
+    Data?.carting_shipping_bill_details?.map((details, a) => {
       if (details.shipping_bill_number == sbill) {
         document.getElementById(
           `cargo_description_${key}`
@@ -659,11 +659,9 @@ export default function CartingBillDetails() {
                                     <option value="" disabled>
                                       Select Bill
                                     </option>
-                                    {Data?.carting_trucks
-                                      ?.filter((truck) => truck.sbill) // Only include trucks with valid sbill
-                                      .map((truck, k) => (
-                                        <option key={k} value={truck.sbill}>
-                                          {truck.sbill}
+                                    {Data?.carting_shipping_bill_details.map((bill, k) => (
+                                        <option key={k} value={bill.shipping_bill_number}>
+                                          {bill.shipping_bill_number}
                                         </option>
                                       ))}
                                   </select>
