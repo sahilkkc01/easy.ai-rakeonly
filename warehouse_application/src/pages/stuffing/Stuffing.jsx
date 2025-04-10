@@ -220,7 +220,7 @@ export default function Stuffing() {
                         <table className="table table-striped table-sm table-hover">
                           <thead className="table-primary">
                             <tr>
-                              <th>Sr no</th>
+                              <th>SN.</th>
                               <th>Container no</th>
                               <th>Container size</th>
                               <th>Crn no</th>
@@ -284,7 +284,7 @@ export default function Stuffing() {
                                     <table className="table table-striped table-sm table-hover">
                                       <thead className="table-primary">
                                         <tr>
-                                          <th>Sr no</th>
+                                          <th>SN.</th>
                                           <th>Container no</th>
                                           <th>Container size</th>
                                           <th>Crn no</th>

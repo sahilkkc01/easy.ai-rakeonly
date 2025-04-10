@@ -185,7 +185,7 @@ export default function DeStuffing() {
                         <table className="table table-striped table-sm table-hover">
                           <thead>
                             <tr>
-                              <th>Sr no</th>
+                              <th>SN.</th>
                               <th>Type</th>
                               <th>Container No</th>
                               <th>Container Size</th>
@@ -250,7 +250,7 @@ export default function DeStuffing() {
                                     <table className="table table-striped table-sm table-bordered table-hover">
                                       <thead>
                                         <tr>
-                                          <th>Sr no</th>
+                                          <th>SN.</th>
                                           <th>Type</th>
                                           <th>Container No</th>
                                           <th>Container Size</th>

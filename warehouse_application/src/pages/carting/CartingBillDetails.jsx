@@ -331,7 +331,7 @@ export default function CartingBillDetails() {
       if (location.location_code === grid && loc_i == 1) {
         loc_i++;
         totalArea += parseInt(location.total_area) || 0;
-        occupied += parseInt(location.occupied_area) || 0;
+        occupied += parseInt(location.ocr_occupied_area ?? location.occupied_area) || 0;
       }
     });
 
@@ -340,7 +340,7 @@ export default function CartingBillDetails() {
 
     if (areaInput) {
       areaInput.value = available >= 0 ? available : 0;
-      areaInput.max = available >= 0 ? available : 0;
+      areaInput.max = totalArea;
     }
   };
 

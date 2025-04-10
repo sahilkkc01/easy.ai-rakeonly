@@ -170,7 +170,7 @@ export default function Carting() {
                         <table className="table table-striped table-sm table-hover">
                           <thead className="table-primary">
                             <tr>
-                              <th>#</th>
+                              <th>SN.</th>
                               <th>Type</th>
                               <th>CRN</th>
                               <th>Gw Port</th>
@@ -235,7 +235,7 @@ export default function Carting() {
                                     <table className="table table-striped table-sm table-hover">
                                       <thead className="table-primary">
                                         <tr>
-                                          <th>#</th>
+                                          <th>SN.</th>
                                           <th>Type</th>
                                           <th>CRN</th>
                                           <th>Gw Port</th>
