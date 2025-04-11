@@ -136,9 +136,9 @@ export default function Inventory() {
     if (type != "Normal") {
       const generateRandomContainerNo = () => {
        
-        const numbers = String(Math.floor(10000000 + Math.random() * 90000000)); // ensures 8 digits
+        const numbers = String(Math.floor(100000 + Math.random() * 999999)); // ensures 8 digits
 
-        return `UNRE` + numbers;
+        return `DUMM` + numbers;
       };
       setContainerNo(generateRandomContainerNo());
     }
@@ -227,6 +227,8 @@ export default function Inventory() {
                           <div className="col-md-4 mb-4">
                             <div className="form-floating form-floating-outline">
                               <input
+
+                              readOnly={type=='Unreadable'?true:false}
                                 className="form-control"
                                 type="text"
                                 placeholder="Container No"
@@ -240,7 +242,7 @@ export default function Inventory() {
                               <label htmlFor="container_no">Container No</label>
                             </div>
                             <div className="position-relative">
-                              {data && data?.length > 0 && (
+                              {data && data?.length > 0 && type =='Normal' && (
                                 <div className="card card-body p-2 mt-2">
                                   {data?.map((dd, i) => (
                                     <>
@@ -261,7 +263,7 @@ export default function Inventory() {
                                 className="form-select"
                               >
                                 <option value="EXIM">EXIM/Normal </option>
-                                <option value="EXIM">DSO IN EXIM</option>
+                                <option value="“DSOinEXIM">DSO IN EXIM</option>
                                 <option value="DOM">DOM</option>
                               </select>
                               <label htmlFor="type">Type</label>
@@ -313,7 +315,7 @@ export default function Inventory() {
                                 className="form-select"
                                 onChange={(e) => setLocation(e.target.value)}
                               >
-                                <option value="RSP">Railside</option>
+                                <option value="RSP">Railside(RSP)</option>
                                 <option value="Path">Path</option>
                                 <option value="Stack">Stack</option>
                                 <option value="Other">Other</option>
@@ -419,6 +421,76 @@ export default function Inventory() {
                                       )}
                                   </select>
 
+                                  <label htmlFor="col">Col</label>
+                                </div>
+                              </div>
+
+                              <div className="col-md-4 mb-4">
+                                <div className="form-floating form-floating-outline">
+                                  <input
+                                    className="form-control"
+                                    type="text"
+                                    placeholder="Tear"
+                                    id="tear"
+                                    name="tear"
+                                    maxLength={1}
+                                    onChange={(e) => {
+                                      const allowed = ["A", "B", "C", "D", "0"];
+                                      const value =
+                                        e.target.value.toUpperCase();
+
+                                      if (allowed.includes(value)) {
+                                        e.target.value = value;
+                                      } else {
+                                        e.target.value = "";
+                                      }
+                                    }}
+                                  />
+
+                                  <label htmlFor="tear">Tear</label>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                          {location && location == "Other" && (
+                            <>
+                              <div className="col-md-4 mb-4">
+                                <div className="form-floating form-floating-outline">
+                                  <input
+                                    name="stack"
+                                    id="stack"
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Stack"
+                                    onChange={(e) =>e.target.value.toUpperCase()}
+                                  />
+                                  <label htmlFor="stack">Stack</label>
+                                </div>
+                              </div>
+
+                              <div className="col-md-4 mb-4">
+                                <div className="form-floating form-floating-outline">
+                                  <input
+                                    id="row"
+                                    name="row"
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="Row"
+                                    onChange={(e) =>e.target.value.toUpperCase()}
+                                  />
+                                  <label htmlFor="row">Row</label>
+                                </div>
+                              </div>
+                              <div className="col-md-4 mb-4">
+                                <div className="form-floating form-floating-outline">
+                                  <input
+                                  type="text"
+                                    id="col"
+                                    name="col"
+                                    className="form-control"
+                                    placeholder="Col"
+                                    onChange={(e) =>e.target.value.toUpperCase()}
+                                  />
                                   <label htmlFor="col">Col</label>
                                 </div>
                               </div>
