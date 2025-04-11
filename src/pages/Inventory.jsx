@@ -26,7 +26,7 @@ export default function Inventory() {
 
     console.log(formEntries);
 
-    const url = `http://ctas.live/backend/api/yard/inventory/update`;
+    const url = `https://ctas.live/backend/api/yard/inventory/update`;
 
     try {
       const response = await axios.post(url, formEntries, {
@@ -64,7 +64,7 @@ export default function Inventory() {
 
   const GetData = async () => {
     setLoading(true);
-    const url = `http://ctas.live/backend/api/get/yard/inventory/data?container_no=${containerNo}`;
+    const url = `https://ctas.live/backend/api/get/yard/inventory/data?container_no=${containerNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -93,7 +93,7 @@ export default function Inventory() {
   };
   const GetStackData = async () => {
     setLoading(true);
-    const url = `http://ctas.live/backend/api/get/yard/stack/data`;
+    const url = `https://ctas.live/backend/api/get/yard/stack/data`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
