@@ -101,7 +101,7 @@ export default function Inventory() {
       if (response.data && response.data.data) {
         setStacks(response.data.data);
       } else {
-        setData([]);
+        setStacks([]);
         Swal.fire({
           icon: "Info",
           text: `Something Want Wrong..!`,
@@ -124,17 +124,49 @@ export default function Inventory() {
   useEffect(() => {
     if (containerNo && type === "Normal") {
       const ctrNoLnt = containerNo.length;
-      if (ctrNoLnt > 5) {
+      if (ctrNoLnt > 3) {
         GetData();
+      } else {
+        setData([]);
       }
     }
   }, [containerNo, type]);
+
+  useEffect(() => {
+    if (type != "Normal") {
+      const generateRandomContainerNo = () => {
+       
+        const numbers = String(Math.floor(10000000 + Math.random() * 90000000)); // ensures 8 digits
+
+        return `UNRE` + numbers;
+      };
+      setContainerNo(generateRandomContainerNo());
+    }
+  }, [type]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const container = params.get('container_no');
+    setContainerNo(container);
+  }, []);
 
   useEffect(() => {
     if (location == "Stack") {
       GetStackData();
     }
   }, [location]);
+
+  const [Photos, setPhotos] = useState(null);
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotos(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <>
@@ -172,22 +204,20 @@ export default function Inventory() {
                           <div className="col-md-12 d-flex gap-3 mb-5">
                             <button
                               type="button"
-                              className={`btn ${
-                                type == "Normal"
+                              className={`btn ${type == "Normal"
                                   ? "btn-primary"
                                   : "btn-label-primary"
-                              }`}
+                                }`}
                               onClick={() => setType("Normal")}
                             >
                               Normal
                             </button>
                             <button
                               type="button"
-                              className={`btn ${
-                                type == "Unreadable"
+                              className={`btn ${type == "Unreadable"
                                   ? "btn-primary"
                                   : "btn-label-primary"
-                              }`}
+                                }`}
                               onClick={() => setType("Unreadable")}
                             >
                               {" "}
@@ -209,6 +239,19 @@ export default function Inventory() {
                               />
                               <label htmlFor="container_no">Container No</label>
                             </div>
+                            <div className="position-relative">
+                              {data && data?.length > 0 && (
+                                <div className="card card-body p-2 mt-2">
+                                  {data?.map((dd, i) => (
+                                    <>
+                                      <a href={`?container_no=${dd.container_no}`} onClick={() => setContainerNo(dd.container_no)} className="" >{dd.container_no}</a>
+                                    </>
+                                  ))
+                                  }
+                                </div>
+                              )}
+
+                            </div>
                           </div>
                           <div className="col-md-4 mb-4">
                             <div className="form-floating form-floating-outline">
@@ -224,7 +267,7 @@ export default function Inventory() {
                               <label htmlFor="type">Type</label>
                             </div>
                           </div>
-                          <div className="col-md-4 mb-4">
+                          <div className="col-md-4 mb-4 d-flex gap-2 align-items-center">
                             <label
                               htmlFor="container_image"
                               className="btn btn-sm btn-label-primary"
@@ -237,10 +280,30 @@ export default function Inventory() {
                                 name="container_image"
                                 accept="image/*"
                                 capture="environment"
+
+                                onChange={(e) =>
+                                  handleImageChange(e, "driverPhoto")
+                                }
+
                               />
                               <i className="ri-camera-fill"></i>
                               &nbsp;&nbsp;Container Image
                             </label>
+                            {Photos && (
+                              <div className="mt-2">
+                                <img
+                                  src={Photos}
+                                  alt="container"
+                                  className="img-thumbnail rounded-3"
+                                  style={{
+                                    width: "200px",
+                                    height: "200px",
+                                    objectFit: "cover",
+                                  }}
+                                />
+                              </div>
+                            )}
+
                           </div>
                           <div className="col-md-4 mb-4">
                             <div className="form-floating form-floating-outline">
@@ -308,7 +371,7 @@ export default function Inventory() {
                                           },
                                           (_, i) => {
                                             const row =
-                                            String( Number(stack.row_start) + i).padStart(3, '0');
+                                              String(Number(stack.row_start) + i).padStart(3, '0');
                                             return (
                                               <option key={row} value={row}>
                                                 {row}
@@ -345,7 +408,7 @@ export default function Inventory() {
                                               1,
                                           },
                                           (_, i) => {
-                                            const col = String( Number(stack.col_start) + i).padStart(3, '0');
+                                            const col = String(Number(stack.col_start) + i).padStart(3, '0');
                                             return (
                                               <option key={col} value={col}>
                                                 {col}
@@ -377,7 +440,7 @@ export default function Inventory() {
                                       if (allowed.includes(value)) {
                                         e.target.value = value;
                                       } else {
-                                        e.target.value = ""; 
+                                        e.target.value = "";
                                       }
                                     }}
                                   />
@@ -411,8 +474,8 @@ export default function Inventory() {
                                   placeholder="Damage Remark"
                                   id="damage_remark"
                                   name="damage_remark"
-                                  onChange={(e)=>{
-                                    e.target.value=e.target.value.toUpperCase();
+                                  onChange={(e) => {
+                                    e.target.value = e.target.value.toUpperCase();
                                   }}
                                 />
                                 <label htmlFor="damage_remark">

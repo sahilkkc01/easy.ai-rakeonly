@@ -113,7 +113,7 @@ export default function App() {
           <Route path="/TallySheetDeStuffingFCL/:ContainerNo" element={<TallySheetDeStuffingFCL />} />
           <Route path="/TallySheetDeStuffingLCL/:ContainerNo" element={<TallySheetDeStuffingLCL />} />
 
-          <Route path="/inventory" element={<Inventory />} />
+          <Route path="/inventory" element={<PrivateRoute><Inventory /></PrivateRoute>} />
 
           {/* 
           {/* <Route path="/EIRMain/:Permit" element={<EIRMain />} />
