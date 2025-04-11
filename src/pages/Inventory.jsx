@@ -136,7 +136,7 @@ export default function Inventory() {
     if (type != "Normal") {
       const generateRandomContainerNo = () => {
        
-        const numbers = String(Math.floor(100000 + Math.random() * 999999)); // ensures 8 digits
+        const numbers = String(Math.floor(1000000 + Math.random() * 9999999)); // ensures 8 digits
 
         return `DUMM` + numbers;
       };
