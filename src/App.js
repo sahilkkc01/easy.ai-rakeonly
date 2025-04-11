@@ -44,6 +44,7 @@ import GateOUT from "./pages/GateOUT.jsx";
 import Rake_survey_tool from "./pages/Rake_survey_tool.jsx";
 import IndexROut from "./pages/IndexROut.jsx";
 import WTR from "./pages/WTR.jsx";
+import Inventory from "./pages/DTMSGate.jsx";
 
 export default function App() {
 
@@ -112,10 +113,10 @@ export default function App() {
           <Route path="/TallySheetDeStuffingFCL/:ContainerNo" element={<TallySheetDeStuffingFCL />} />
           <Route path="/TallySheetDeStuffingLCL/:ContainerNo" element={<TallySheetDeStuffingLCL />} />
 
-          {/* <Route path="/EIRMain/:Permit" element={<EIRMain />} /> */}
+          <Route path="/inventory" element={<Inventory />} />
 
           {/* 
-          <Route path="/DTMSGate" element={<PrivateRoute ><DTMSGate /></PrivateRoute>} />
+          {/* <Route path="/EIRMain/:Permit" element={<EIRMain />} />
           <Route path="/GateOld" element={<Index />} />
           <Route path="/DTMSYardTransactions" element={<PrivateRoute><DTMSRst /></PrivateRoute>} />
           <Route path="/RakeOutWords" element={<RakeOutWord />} />

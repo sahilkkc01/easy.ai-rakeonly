@@ -555,6 +555,17 @@ const GridComponent = ({ index, data }) => {
                               </div>
                               <div className="col-4">
                                 <label className="form-label">
+                                  CRN NO 
+                                </label>
+                                <input
+                                  type="text"
+                                  className="form-control p-2"
+                                  defaultValue={Data?.crn_number}
+                                  readOnly
+                                />
+                              </div>
+                              <div className="col-4">
+                                <label className="form-label">
                                   Start Date Time
                                 </label>
                                 <input
