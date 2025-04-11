@@ -126,18 +126,32 @@ export default function StuffingBillDetails() {
           }));
         } else {
           const matchingTrucks = Data?.carting_container?.carting_trucks?.filter(
-            (truck) => truck.sbill === billDetails.shipping_bill_number
+            (truck) => truck.sbill == billDetails.shipping_bill_number
           ) || [];
   
-          gridItems = matchingTrucks.flatMap((truck) =>
+          const rawGridItems = matchingTrucks.flatMap((truck) =>
             truck?.grid_area?.length > 0
-              ? truck.grid_area.map((item, index) => ({
-                  id: item.id || index + 1,
+              ? truck.grid_area.map((item) => ({
                   grid_location: item.grid_locations || "NA",
-                  area: item.area || "NA",
+                  area: parseFloat(item.area) || 0,
                 }))
               : []
           );
+  
+          const areaByLocation = {};
+          rawGridItems.forEach(item => {
+            if (areaByLocation[item.grid_location]) {
+              areaByLocation[item.grid_location] += item.area;
+            } else {
+              areaByLocation[item.grid_location] = item.area;
+            }
+          });
+  
+          gridItems = Object.entries(areaByLocation).map(([location, area], index) => ({
+            id: index + 1,
+            grid_location: location,
+            area: area,
+          }));
         }
   
         defaultGridData[i] = gridItems;
@@ -151,18 +165,32 @@ export default function StuffingBillDetails() {
   
       Data.carting_container.carting_shipping_bill_details.forEach((billDetails, i) => {
         const matchingTrucks = Data.carting_container.carting_trucks?.filter(
-          (truck) => truck.sbill === billDetails.shipping_bill_number
+          (truck) => truck.sbill == billDetails.shipping_bill_number
         ) || [];
   
-        const gridItems = matchingTrucks.flatMap((truck) =>
+        const rawGridItems = matchingTrucks.flatMap((truck) =>
           truck?.grid_area?.length > 0
-            ? truck.grid_area.map((item, index) => ({
-                id: item.id || index + 1,
+            ? truck.grid_area.map((item) => ({
                 grid_location: item.grid_locations || "NA",
-                area: item.area || "NA",
+                area: parseFloat(item.area) || 0,
               }))
             : []
         );
+  
+        const areaByLocation = {};
+        rawGridItems.forEach(item => {
+          if (areaByLocation[item.grid_location]) {
+            areaByLocation[item.grid_location] += item.area;
+          } else {
+            areaByLocation[item.grid_location] = item.area;
+          }
+        });
+  
+        const gridItems = Object.entries(areaByLocation).map(([location, area], index) => ({
+          id: index + 1,
+          grid_location: location,
+          area: area,
+        }));
   
         defaultGridData[i] = gridItems;
       });
@@ -171,8 +199,6 @@ export default function StuffingBillDetails() {
     setGridData(defaultGridData);
   }, [Data]);
   
-  
-
 
   const handleFinalSubmit = async () => {
     setLoading(true);
@@ -475,12 +501,6 @@ const GridComponent = ({ index, data }) => {
                         <a href="?" className="btn btn-primary mb-2 ms-2">
                           Search Another
                         </a>
-                        {/* <Link
-    to={"/delivery"}
-    className="btn btn-primary mb-2 ms-2"
-  >
-    Go Back
-  </Link> */}
                       </div>
                       <div className="" style={{ width: 789, height: 1099 }}>
                         <iframe
