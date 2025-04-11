@@ -36,7 +36,7 @@ import CisfOut from "./pages/CisfOut.jsx";
 import Rst from "./pages/Rst.jsx";
 import RSTMap from "./pages/RSTMap.jsx";
 import CWHDelivery from "./pages/CWHDelivery.jsx";
-import DTMSGate from "./pages/DTMSGate.jsx";
+import DTMSGate from "./pages/Inventory.jsx";
 import DTMSRst from "./pages/DTMSRst.jsx";
 import Gate from "./pages/Gate.jsx";
 import GateIN from "./pages/GateIN.jsx";
@@ -44,7 +44,7 @@ import GateOUT from "./pages/GateOUT.jsx";
 import Rake_survey_tool from "./pages/Rake_survey_tool.jsx";
 import IndexROut from "./pages/IndexROut.jsx";
 import WTR from "./pages/WTR.jsx";
-import Inventory from "./pages/DTMSGate.jsx";
+import Inventory from "./pages/Inventory.jsx";
 
 export default function App() {
 
