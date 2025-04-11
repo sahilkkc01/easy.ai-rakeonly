@@ -263,7 +263,7 @@ export default function Inventory() {
                                 className="form-select"
                               >
                                 <option value="EXIM">EXIM/Normal </option>
-                                <option value="“DSOinEXIM">DSO IN EXIM</option>
+                                <option value="DSOinEXIM">DSO IN EXIM</option>
                                 <option value="DOM">DOM</option>
                               </select>
                               <label htmlFor="type">Type</label>
