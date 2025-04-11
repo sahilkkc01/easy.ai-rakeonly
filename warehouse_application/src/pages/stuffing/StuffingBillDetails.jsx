@@ -116,13 +116,31 @@ export default function StuffingBillDetails() {
       setBills(Data.stuffing_shipping_bill_details);
   
       Data.stuffing_shipping_bill_details.forEach((billDetails, i) => {
-        defaultGridData[i] = billDetails?.grid_area?.length > 0
-          ? billDetails.grid_area.map((item, index) => ({
-              id: item.id || index + 1,
-              grid_location: item.grid_locations || "NA",
-              area: item.area || "NA",
-            }))
-          : [];
+        let gridItems = [];
+  
+        if (billDetails?.grid_area?.length > 0) {
+          gridItems = billDetails.grid_area.map((item, index) => ({
+            id: item.id || index + 1,
+            grid_location: item.grid_locations || "NA",
+            area: item.area || "NA",
+          }));
+        } else {
+          const matchingTrucks = Data?.carting_container?.carting_trucks?.filter(
+            (truck) => truck.sbill === billDetails.shipping_bill_number
+          ) || [];
+  
+          gridItems = matchingTrucks.flatMap((truck) =>
+            truck?.grid_area?.length > 0
+              ? truck.grid_area.map((item, index) => ({
+                  id: item.id || index + 1,
+                  grid_location: item.grid_locations || "NA",
+                  area: item.area || "NA",
+                }))
+              : []
+          );
+        }
+  
+        defaultGridData[i] = gridItems;
       });
     } else if (
       Data?.carting_container &&
@@ -130,12 +148,12 @@ export default function StuffingBillDetails() {
     ) {
       setTotalBills(Data.carting_container.carting_shipping_bill_details.length);
       setBills(Data.carting_container.carting_shipping_bill_details);
-    
+  
       Data.carting_container.carting_shipping_bill_details.forEach((billDetails, i) => {
         const matchingTrucks = Data.carting_container.carting_trucks?.filter(
           (truck) => truck.sbill === billDetails.shipping_bill_number
         ) || [];
-    
+  
         const gridItems = matchingTrucks.flatMap((truck) =>
           truck?.grid_area?.length > 0
             ? truck.grid_area.map((item, index) => ({
@@ -145,14 +163,14 @@ export default function StuffingBillDetails() {
               }))
             : []
         );
-    
+  
         defaultGridData[i] = gridItems;
       });
     }
-    
   
     setGridData(defaultGridData);
   }, [Data]);
+  
   
 
 
