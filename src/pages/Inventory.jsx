@@ -208,7 +208,9 @@ export default function Inventory() {
                                   ? "btn-primary"
                                   : "btn-label-primary"
                                 }`}
-                              onClick={() => setType("Normal")}
+                              onClick={() => {setType("Normal");
+                                setContainerNo('');
+                              }}
                             >
                               Normal
                             </button>
@@ -332,6 +334,7 @@ export default function Inventory() {
                                     id="stack"
                                     className="form-select"
                                     value={selectStack}
+                                    required
                                     onChange={(e) =>
                                       setSelectStack(e.target.value)
                                     }
@@ -355,6 +358,7 @@ export default function Inventory() {
                                     className="form-select mt-2"
                                     id="row"
                                     name="row"
+                                    required
                                   >
                                     <option value="" disabled>
                                       Select Row
@@ -393,6 +397,7 @@ export default function Inventory() {
                                     className="form-select mt-2"
                                     id="col"
                                     name="col"
+                                    required
                                   >
                                     <option value="" disabled>
                                       Select Col
@@ -433,6 +438,7 @@ export default function Inventory() {
                                     placeholder="Tear"
                                     id="tear"
                                     name="tear"
+                                    required
                                     maxLength={1}
                                     onChange={(e) => {
                                       const allowed = ["A", "B", "C", "D", "0"];
@@ -462,6 +468,7 @@ export default function Inventory() {
                                     type="text"
                                     className="form-control"
                                     placeholder="Stack"
+required
                                     onChange={(e) =>e.target.value.toUpperCase()}
                                   />
                                   <label htmlFor="stack">Stack</label>
@@ -476,6 +483,8 @@ export default function Inventory() {
                                     type="text"
                                     className="form-control"
                                     placeholder="Row"
+                                    maxLength={3}
+                                    required
                                     onChange={(e) =>e.target.value.toUpperCase()}
                                   />
                                   <label htmlFor="row">Row</label>
@@ -489,6 +498,8 @@ export default function Inventory() {
                                     name="col"
                                     className="form-control"
                                     placeholder="Col"
+                                    minLength={3}
+                                    required
                                     onChange={(e) =>e.target.value.toUpperCase()}
                                   />
                                   <label htmlFor="col">Col</label>
@@ -504,6 +515,7 @@ export default function Inventory() {
                                     id="tear"
                                     name="tear"
                                     maxLength={1}
+                                    required
                                     onChange={(e) => {
                                       const allowed = ["A", "B", "C", "D", "0"];
                                       const value =
