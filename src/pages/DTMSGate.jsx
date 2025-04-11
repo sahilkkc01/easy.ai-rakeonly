@@ -1,10 +1,91 @@
 import React, { useState, useEffect } from "react";
 import Footer from "./main/footer";
 import Nav from "./main/nav";
+import Swal from "sweetalert2";
+import axios from "axios";
 
 export default function Inventory() {
   const [loading, setLoading] = useState(false);
+  const [Data, setData] = useState([]);
 
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    const formData = new FormData(e.target);
+    let formEntries = Object.fromEntries(formData.entries());
+    formEntries.created_by = user.id;
+
+    console.log(formEntries);
+
+    const url = `https://ctas.live/backend/api`;
+
+    try {
+      const response = await axios.post(url, formEntries, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      console.log(response.data);
+      if (response.data.status && response.data.status == "success") {
+        Swal.fire({
+          icon: "success",
+          text: response.data.message,
+          timer: 3000,
+          showConfirmButton: false,
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: "info",
+          text: `Please Check all Field .... ${response.data.message}`,
+          timer: 3000,
+          showConfirmButton: false,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error in Data Fetch: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const GetData = async () => {
+    setLoading(true);
+    const url = `https://ctas.live/backend/api`;
+    try {
+      const response = await axios.get(url, {
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.data && response.data.data) {
+        setData(response.data.data);
+      } else {
+        setData([]);
+        Swal.fire({
+          icon: "Info",
+          text: `Something Want Wrong..!`,
+          timer: 3000,
+          showConfirmButton: false,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error in Data Fetch: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
       {loading && (
@@ -46,8 +127,8 @@ export default function Inventory() {
                               id="type"
                               className="form-select"
                             >
-                              <option value="EXIM">DSO IN EXIM</option>
                               <option value="EXIM">EXIM/Normal </option>
+                              <option value="EXIM">DSO IN EXIM</option>
                               <option value="DOM">DOM</option>
                             </select>
                             <label htmlFor="type">Type</label>
@@ -163,56 +244,6 @@ export default function Inventory() {
                               name="iso_code"
                             />
                             <label htmlFor="iso_code">Damage Remark</label>
-                          </div>
-                        </div>
-
-                        <div className="col-md-4 mb-4">
-                          <div className="form-floating form-floating-outline">
-                            <select
-                              name="container_size"
-                              id="container_size"
-                              className="form-select"
-                            >
-                              <option value="40">40</option>
-                              <option value="20">20</option>
-                            </select>
-                            <label htmlFor="container_no">Container Size</label>
-                          </div>
-                        </div>
-                        <div className="col-md-4 mb-4">
-                          <div className="form-floating form-floating-outline">
-                            <input
-                              className="form-control"
-                              type="text"
-                              placeholder="ISO Code"
-                              id="iso_code"
-                              name="iso_code"
-                            />
-                            <label htmlFor="iso_code">ISO Code</label>
-                          </div>
-                        </div>
-                        <div className="col-md-4 mb-4">
-                          <div className="form-floating form-floating-outline">
-                            <input
-                              className="form-control"
-                              type="text"
-                              placeholder="Stack Name"
-                              id="stack_name"
-                              name="stack_name"
-                            />
-                            <label htmlFor="container_no">Stack Name</label>
-                          </div>
-                        </div>
-                        <div className="col-md-4 mb-4">
-                          <div className="form-floating form-floating-outline">
-                            <input
-                              className="form-control"
-                              type="text"
-                              placeholder="Container No"
-                              id="container_no"
-                              name="container_no"
-                            />
-                            <label htmlFor="container_no">Container No</label>
                           </div>
                         </div>
                       </div>

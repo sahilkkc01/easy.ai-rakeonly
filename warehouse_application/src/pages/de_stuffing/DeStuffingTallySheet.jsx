@@ -208,7 +208,7 @@ export default function DeStuffingTallySheet() {
               <tbody>
                 {Data.de_stuffing_bill_details?.map((Details, k) => (
                   <tr key={k}>
-                    <td>{Details.bol_number}</td>
+                    <td>{Details?.bol_number ?? Details?.boe_number}</td>
                     <td>{Details.package_code}</td>
                     <td>
                       {Details.commodity_description} ({Details.commodity_code})
