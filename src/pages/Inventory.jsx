@@ -173,7 +173,7 @@ export default function Inventory() {
 
   const GetUpdatedData = async (page = 1) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/yard/inventory/updated/data`;
+    const url = `https://ctas.live/backend/api/get/yard/inventory/updated/data?page=${page}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -689,12 +689,89 @@ if(view!='Form'){
                                   <td>{dd.rn}</td>
                                   <td>{dd.container_no}</td>
                                   <td>{dd.container_type}</td>
-                                  <td>{dd.int_stack}</td>
+                                  <td>{dd.int_stack=='Stack' || dd.int_stack=='Other' ? (`${dd.int_stack}  ${dd.int_loc}`) : dd.int_stack }</td>
                                   <td>{dd.damage}</td>
                                 </tr>
                               ))}
                             </tbody>
                           </table>
+                          {updatedData && updatedData.data && (
+                          <div className="container mt-4">
+                            <div className="row">
+                              <div className="col-sm-12 col-md-6">
+                                <div
+                                  className="dataTables_info"
+                                  id="DataTables_Table_0_info"
+                                  role="status"
+                                  aria-live="polite"
+                                >
+                                  Showing {updatedData.from} to {updatedData.to} of{" "}
+                                  {updatedData.total} entries
+                                </div>
+                              </div>
+                              <div className="col-10 m-auto mt-2">
+                                <div
+                                  className="dataTables_paginate paging_simple_numbers"
+                                  id="DataTables_Table_0_paginate"
+                                >
+                                  <ul className="pagination ">
+                                    {updatedData &&
+                                      updatedData.links &&
+                                      updatedData.links.map((link, q) => {
+                                        let showData =
+                                          updatedData.links.length == q + 1
+                                            ? "Next"
+                                            : q == 0
+                                            ? "Previous"
+                                            : link.label;
+                                        return (
+                                          <li
+                                            key={q}
+                                            className={`paginate_button page-item ${
+                                              link.active === true
+                                                ? "active"
+                                                : ""
+                                            }  ${
+                                              showData == "Next" &&
+                                              updatedData.current_page ==
+                                                updatedData.last_page
+                                                ? "disabled"
+                                                : showData == "Previous" &&
+                                                  updatedData.current_page == 1
+                                                ? "disabled"
+                                                : ""
+                                            } `}
+                                          >
+                                            <button
+                                              onClick={() => {
+                                                showData == "Previous"
+                                                  ? GetUpdatedData(
+                                                      updatedData.current_page - 1
+                                                    )
+                                                  : showData == "Next"
+                                                  ? GetUpdatedData(
+                                                      updatedData.current_page + 1
+                                                    )
+                                                  : GetUpdatedData(link.label);
+                                              }}
+                                              aria-controls="DataTables_Table_0"
+                                              role="link"
+                                              aria-current="page"
+                                              data-dt-idx={0}
+                                              tabIndex={0}
+                                              className="page-link"
+                                            >
+                                              {showData}
+                                            </button>
+                                          </li>
+                                        );
+                                      })}
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                         </div>
                       </div>
                     </div>
