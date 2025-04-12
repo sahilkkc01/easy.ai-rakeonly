@@ -18,6 +18,7 @@ export default function Carting() {
   const [error, setError] = useState(null);
   const [modalData, setModalData] = useState("");
   const [view, setView] = useState("Table");
+  const [LocationsArea, setLocationsArea] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -103,6 +104,36 @@ export default function Carting() {
     let handline_type = formData.get("handline_type");
     handleFinalSubmit(ID, crn_number, start_time, end_time, handline_type);
   };
+
+  const fetchLocationsArea = async () => {
+    setLoading(true);
+    let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Export`;
+    try {
+      const response = await axios.get(url);
+      if (response?.data?.status === "success") {
+        setLocationsArea(response?.data?.data);
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(()=>{
+    fetchLocationsArea();
+  },[data])
 
   return (
     <>
@@ -319,20 +350,23 @@ export default function Carting() {
                                               <td>Grid Location & Area</td>
                                               <td>
                                                 <strong>
-                                                  {details?.grid_area?.map(
-                                                    (grid, k) => {
-                                                      if (grid.grid_locations) {
-                                                        return (
-                                                          <p className="mb-0">
-                                                            {
-                                                              grid.grid_locations
-                                                            }{" "}
-                                                            / {grid.area}{" "}
-                                                          </p>
-                                                        );
+                                                {details?.grid_area?.map(
+                                                      (grid, k) => {
+                                                        if (
+                                                          grid.grid_locations
+                                                        ) {
+                                                          const matchedArea = LocationsArea?.length > 0
+                                                          ? LocationsArea.find(area => area.location_code == grid.grid_locations)
+                                                          : 0;
+                                                          return (
+                                                            <p className="mb-0">{
+                                                                grid.grid_locations
+                                                              } / {matchedArea?.ocr_occupied_area?? item.area ?? '0'}
+                                                            </p>
+                                                          );
+                                                        }
                                                       }
-                                                    }
-                                                  )}
+                                                    )}
                                                 </strong>
                                               </td>
                                             </tr>

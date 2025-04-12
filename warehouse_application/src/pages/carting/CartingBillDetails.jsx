@@ -22,6 +22,7 @@ export default function CartingBillDetails() {
   const [ID, setID] = useState(false);
   const [MapName, setMapName] = useState(null);
   const [LocationNames, setLocationNames] = useState([]);
+  const [LocationsArea, setLocationsArea] = useState(null);
 
   const today = new Date();
   const fetchData = async (crn_number) => {
@@ -230,8 +231,11 @@ export default function CartingBillDetails() {
           timer: 2000,
         });
 
+        // navigate(
+        //   `?isFinalSubmit=0&id=${updatedId}&tally_sheet=1&crn_number=${CrnNo}`
+        // );
         navigate(
-          `?isFinalSubmit=0&id=${updatedId}&tally_sheet=1&crn_number=${CrnNo}`
+          `/carting`
         );
       } else {
         throw new Error(response.data?.message || "Failed to save job");
@@ -249,15 +253,33 @@ export default function CartingBillDetails() {
   };
 
   const GridComponent = ({ index, data }) => {
-    const [gridInputs, setGridInputs] = useState(
-      data?.grid_area?.length > 0
-        ? data.grid_area.map((item, i) => ({
+    // const [gridInputs, setGridInputs] = useState(
+    //   data?.grid_area?.length > 0
+    //     ? data.grid_area.map((item, i) => ({
+    //         id: i + 1,
+    //         grid_location: item.grid_locations || "",
+    //         area: item.area || "",
+    //       }))
+    //     : [{ id: 1, grid_location: "", area: "" }]
+    // );
+
+    const [gridInputs, setGridInputs] = useState(() => {
+      if (data?.grid_area?.length > 0) {
+        return data.grid_area.map((item, i) => {
+          const matchedArea = LocationsArea?.length > 0
+            ? LocationsArea.find(area => area.location_code == item.grid_locations)
+            : 0;
+    
+          return {
             id: i + 1,
             grid_location: item.grid_locations || "",
-            area: item.area || "",
-          }))
-        : [{ id: 1, grid_location: "", area: "" }]
-    );
+            area: matchedArea?.ocr_occupied_area?? item.area ?? "",
+          };
+        });
+      } else {
+        return [{ id: 1, grid_location: "", area: "" }];
+      }
+    });
     const addGridInput = () => {
       setGridInputs([
         ...gridInputs,
@@ -424,6 +446,37 @@ export default function CartingBillDetails() {
       console.log("Package weight input not found!");
     }
   };
+
+  const fetchLocationsArea = async () => {
+    setLoading(true);
+    let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Export`;
+    try {
+      const response = await axios.get(url);
+      if (response?.data?.status === "success") {
+        setLocationsArea(response?.data?.data);
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(()=>{
+    fetchLocationsArea();
+  },[searchParams,Data])
+
 
   return (
     <>
