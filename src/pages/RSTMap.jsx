@@ -161,16 +161,23 @@ const GoogleMapComponent = () => {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
+                                                        {Data.yard_jobs_within_radius?.gate && Data.yard_jobs_within_radius?.gate?.map((dd, i) => (
+                                                            <tr>
+                                                                <td>{i + 1}</td>
+                                                                <td>{dd.job_type}</td>
+                                                                <td>{dd.container_no}</td>
+                                                                <td>{dd.pickup_from}</td>
+                                                                <td>{dd.drop_to} {dd.drop_height ?? ''}</td>
+                                                            </tr>
+                                                        ))}
                                                         {Data.yard_jobs_within_radius?.rake && Data.yard_jobs_within_radius?.rake?.map((dd, i) => (
-                                                            
-                                                                <tr>
-                                                                    <td>{i + 1}</td>
-                                                                    <td>{dd.job_type}</td>
-                                                                    <td>{dd.container_no}</td>
-                                                                    <td>{dd.pickup_from}</td>
-                                                                    <td>{dd.drop_to}</td>
-                                                                </tr>
-                                                            
+                                                            <tr>
+                                                                <td>{i + 1}</td>
+                                                                <td>{dd.job_type}</td>
+                                                                <td>{dd.container_no}</td>
+                                                                <td>{dd.pickup_from}</td>
+                                                                <td>{dd.drop_to} {dd.drop_height ?? ''}</td>
+                                                            </tr>
                                                         ))}
                                                     </tbody>
                                                 </table>
@@ -193,6 +200,21 @@ const GoogleMapComponent = () => {
 
                                         {/* Dynamic Markers */}
                                         {Data.yard_jobs_within_radius?.rake && Data.yard_jobs_within_radius?.rake.map((dd, index) => {
+                                            const lastLatLong = dd.container_master?.last_lat_long; // Ensure it exists
+                                            if (!lastLatLong) return null; // Skip if missing data
+
+                                            // Split "28.5126 77.288" into [lat, lng]
+                                            const [lat, lng] = lastLatLong.split(" ").map(parseFloat);
+
+                                            return (
+                                                <React.Fragment key={index}>
+                                                    {lastLatLong} 
+                                                    <LocationMarker position={{ lat, lng }} number={null} image='location.gif' />
+                                                </React.Fragment>
+                                            );
+                                        })}
+
+                                        {Data.yard_jobs_within_radius?.gate && Data.yard_jobs_within_radius?.gate.map((dd, index) => {
                                             const lastLatLong = dd.container_master?.last_lat_long; // Ensure it exists
                                             if (!lastLatLong) return null; // Skip if missing data
 

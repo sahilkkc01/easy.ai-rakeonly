@@ -18,7 +18,7 @@ function Rst() {
   const GetData = async () => {
     // setLoading(true);
     // const url = `http://192.168.1.4:8000/api/get/rst/application/jobs?equipment_id=${equipment_id}`;
-    const url = `https://ctas.live/backend/api/get/rst/application/jobs?equipment_id=${equipment_id}`;
+    const url = `https://ctas.live/backend/api/get/rst/application/jobs/v2?equipment_id=${equipment_id}`;
     try {
       const response = await axios.get(url);
       if (response.data && response.data.status == "success") {
@@ -214,7 +214,7 @@ function Rst() {
                                             <tr>
                                               <td>DEST</td>
                                               <td>
-                                                <strong>{data.drop_to}</strong>
+                                                <strong>{data.drop_to} {data.drop_height ?? ''}</strong>
                                               </td>
                                             </tr>
                                           </tbody>
@@ -272,7 +272,7 @@ function Rst() {
                                             <tr>
                                               <td>DEST</td>
                                               <td>
-                                                <strong>{data.drop_to}</strong>
+                                                <strong>{data.drop_to} {data.drop_height ?? ''}</strong>
                                               </td>
                                             </tr>
                                           </tbody>
