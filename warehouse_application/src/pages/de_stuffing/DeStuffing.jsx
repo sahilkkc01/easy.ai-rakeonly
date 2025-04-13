@@ -18,7 +18,8 @@ export default function DeStuffing() {
   const [data, setData] = useState([]);
   const [modalData, setModalData] = useState("");
   const [error, setError] = useState(null);
-
+  const [LocationsArea, setLocationsArea] = useState(null);
+  
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -118,6 +119,37 @@ export default function DeStuffing() {
       handling_type
     );
   };
+
+
+  const fetchLocationsArea = async () => {
+    setLoading(true);
+    let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Import`;
+    try {
+      const response = await axios.get(url);
+      if (response?.data?.status === "success") {
+        setLocationsArea(response?.data?.data);
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(()=>{
+    fetchLocationsArea();
+  },[data])
 
   return (
     <>
@@ -351,10 +383,13 @@ export default function DeStuffing() {
                                                         if (
                                                           grid.grid_locations
                                                         ) {
+                                                          const matchedArea = LocationsArea?.length > 0
+                                                          ? LocationsArea.find(area => area.location_code == grid.grid_locations)
+                                                          : 0;
                                                           return (
                                                             <p className="mb-0">{
                                                                 grid.grid_locations
-                                                              } / {grid.area}{" "}
+                                                              } / {matchedArea?.ocr_occupied_area?? item.area ?? '0'}
                                                             </p>
                                                           );
                                                         }

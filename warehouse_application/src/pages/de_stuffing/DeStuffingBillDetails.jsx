@@ -20,6 +20,7 @@ export default function DeStuffingBillDetails() {
   const [TallySheet, setTallySheet] = useState(null);
   const [Data, setData] = useState(null);
   const [Locations, setLocations] = useState(null);
+  const [LocationsArea, setLocationsArea] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const today = new Date();
@@ -164,15 +165,28 @@ export default function DeStuffingBillDetails() {
   };
 
   const GridComponent = ({ details, index }) => {
-    const [gridInputs, setGridInputs] = useState(
-      details?.grid_area?.length > 0
-        ? details.grid_area.map((item, i) => ({
+
+    const [gridInputs, setGridInputs] = useState(() => {
+      if (details?.grid_area?.length > 0) {
+        return details.grid_area.map((item, i) => {
+          const matchedArea = LocationsArea?.length > 0
+            ? LocationsArea.find(area => area.location_code == item.grid_locations)
+            : 0;
+    
+          return {
             id: i + 1,
             grid_location: item.grid_locations || "",
-            area: item.area || "",
-          }))
-        : [{ id: 1, grid_location: "", area: "" }]
-    );
+            area: matchedArea?.ocr_occupied_area?? item.area ?? "",
+          };
+        });
+      } else {
+        return [{ id: 1, grid_location: "", area: "" }];
+      }
+    });
+    
+
+
+
 
     // Function to add a new grid input
     const addGridInput = () => {
@@ -335,9 +349,10 @@ export default function DeStuffingBillDetails() {
           text: response?.data?.message,
           timer: 2000,
         }).then(() => {
-          navigate(
-            `?isFinalSubmit=1&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`
-          );
+          // navigate(
+          //   `?isFinalSubmit=1&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`
+          // );
+          navigate(`/de-stuffing`);
         });
       } else {
         Swal.fire({
@@ -357,6 +372,37 @@ export default function DeStuffingBillDetails() {
       setLoading(false);
     }
   };
+
+
+  const fetchLocationsArea = async () => {
+    setLoading(true);
+    let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Import`;
+    try {
+      const response = await axios.get(url);
+      if (response?.data?.status === "success") {
+        setLocationsArea(response?.data?.data);
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(()=>{
+    fetchLocationsArea();
+  },[searchParams,Data])
 
   return (
     <>
