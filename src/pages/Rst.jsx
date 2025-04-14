@@ -289,7 +289,7 @@ function Rst() {
                                 </h4>
                                 {Data?.warehouse_jobs?.map((data, i) => (
                                   <div key={i} className="custom-card mb-4"  >
-                                    <div className="custom-card-body">
+                                    <div className="custom-card-body" style={i ==  0 ? { backgroundColor: '#bfedbf' } : i ==  1 ? {backgroundColor: '#ecf6ec'} : {}}>
                                       <table className="table table-sm mb-0">
                                         <tbody>
                                           <tr>
@@ -322,6 +322,7 @@ function Rst() {
                                             <td>
                                               <strong>
                                                 {
+                                                  data.icd_location ??
                                                   data?.container_master
                                                     ?.last_stk_loc
                                                 }
