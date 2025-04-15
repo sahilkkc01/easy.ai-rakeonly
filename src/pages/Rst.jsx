@@ -197,7 +197,7 @@ function Rst() {
                                                 <strong>
                                                   {
                                                     data?.container_master
-                                                      ?.container_size
+                                                      ?.container_size ?? data?.container_size ?? ''
                                                   }
                                                 </strong>
                                               </td>
@@ -255,7 +255,7 @@ function Rst() {
                                                 <strong>
                                                   {
                                                     data?.container_master
-                                                      ?.container_size
+                                                      ?.container_size ?? data.container_size ?? data.ctrsize ?? '*20'
                                                   }
                                                 </strong>
                                               </td>
