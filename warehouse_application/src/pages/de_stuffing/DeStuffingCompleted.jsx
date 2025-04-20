@@ -6,37 +6,39 @@ import Swal from "sweetalert2";
 import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
-import { set } from "date-fns";
 import {
   formatToDateTime,
   formatToDateTimeLocal,
 } from "../main/formatToDateTime";
 
-export default function Delivery() {
+export default function DeStuffingCompleted() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
   const [view, setView] = useState("Table");
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [error, setError] = useState(null);
+  const [CompletedData, setCompletedData] = useState([]);
   const [modalData, setModalData] = useState("");
-
+  const [error, setError] = useState(null);
+  const [LocationsArea, setLocationsArea] = useState(null);
+  
   const fetchData = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://ctas.live/backend/api/delivery/live/data"
+        "https://ctas.live/backend/api/de_stuffing/live/data"
       );
+      console.log("API Response:", response.data); // Debugging
 
-      if (response.data.data && Array.isArray(response.data.data)) {
-        setData(response.data.data);
+      if (response.data && Array.isArray(response.data.completed_data)) {
+        setData(response.data.completed_data); // Ensure we're setting an array
+        setCompletedData(response.data.completed_data);
       } else {
         setError("Invalid data format received.");
         setData([]);
       }
     } catch (err) {
+      console.error("Fetch error:", err);
       setError("Failed to fetch data.");
-
-      // Error Alert
       Swal.fire({
         title: "Error!",
         text: "Failed to fetch data.",
@@ -54,14 +56,15 @@ export default function Delivery() {
 
   const handleFinalSubmit = async (
     ID,
-    GpmNo,
+    Type,
+    ContainerNo,
     start_time,
     end_time,
     handling_type
   ) => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/delivery/final/submit?id=${ID}&gpm_number=${GpmNo}&start_time=${start_time}&end_time=${end_time}&handling_type=${handling_type}`;
+    const url = `https://ctas.live/backend/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}&start_time=${start_time}&end_time=${end_time}&handling_type=${handling_type}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -75,7 +78,7 @@ export default function Delivery() {
           timer: 2000,
         }).then(() => {
           navigate(
-            `/delivery/bill-details?isFinalSubmit=1&id=${ID}&tally_sheet=1&gpm_number=${GpmNo}`
+            `/de-stuffing/bill-details?isFinalSubmit=1&id=${ID}&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`
           );
         });
       } else {
@@ -103,12 +106,52 @@ export default function Delivery() {
 
     const formData = new FormData(e.target);
     let ID = formData.get("id");
-    let GpmNo = formData.get("gpm_number");
+    let Type = formData.get("type");
+    let ContainerNo = formData.get("container_no");
     let start_time = formData.get("start_time");
     let end_time = formData.get("end_time");
     let handling_type = formData.get("handling_type");
-    handleFinalSubmit(ID, GpmNo, start_time, end_time, handling_type);
+
+    handleFinalSubmit(
+      ID,
+      Type,
+      ContainerNo,
+      start_time,
+      end_time,
+      handling_type
+    );
   };
+
+
+  const fetchLocationsArea = async () => {
+    setLoading(true);
+    let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Import`;
+    try {
+      const response = await axios.get(url);
+      if (response?.data?.status === "success") {
+        setLocationsArea(response?.data?.data);
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(()=>{
+    fetchLocationsArea();
+  },[data])
 
   return (
     <>
@@ -127,19 +170,19 @@ export default function Delivery() {
           </div>
         </div>
       )}
-
       <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
         <div className="layout-container">
           <div className="layout-page">
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-                <div className="d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center justify-content-between my-5">
                   <div className="">
-                    <h3 className="text-primary">Delivery</h3>
+                    <h3 className="text-primary mb-0">DeStuffing Completed Trans</h3>
+                    <p>Last 10 Transections</p>
                   </div>
                   <div className="">
                     <Link
-                      to={`/delivery/bill-details`}
+                      to={`/de-stuffing/bill-details`}
                       className="btn btn-label-success"
                     >
                       + Create Job
@@ -147,12 +190,12 @@ export default function Delivery() {
                     <Link to={`/`} className="btn btn-label-primary ms-2">
                       Go Back
                     </Link>
-                    <Link to={`/completed_delivery`} className="btn btn-label-info ms-2">
-                          Completed Trans
-                      </Link>
+                    <Link to={`/de-stuffing`} className="btn btn-label-info ms-2">
+                       Live Cargo
+                    </Link>
                   </div>
                 </div>
-                <div className="col-md-12 px-4 mb-4">
+                <div className="col-md-12 px-4 mb-3">
                   <div className="d-flex gap-2 align-items-center">
                     <button
                       className={`btn ${
@@ -181,32 +224,33 @@ export default function Delivery() {
                           <thead>
                             <tr>
                               <th>SN.</th>
-                              <th>GPM Number</th>
+                              <th>Type</th>
                               <th>Container No</th>
                               <th>Container Size</th>
+                              <th>Seal No</th>
                               <th>Start Date Time</th>
                               <th>End Date Time</th>
                               <th>Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {data.length > 0 ? (
+                            {data && data.length > 0 ? (
                               data.map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{item.gpm_number}</td>
+                                  <td>{item.type}</td>
                                   <td>{item.container_number}</td>
                                   <td>{item.container_size}</td>
+                                  <td>{item.seal_number}</td>
                                   <td>{formatToDateTime(item.start_time)}</td>
                                   <td>{formatToDateTime(item.end_time)}</td>
                                   <td>
-                                    <Link
-                                      to={`/delivery/bill-details?gpm_number=${item.gpm_number}`}
+                                    {/* <Link
+                                      to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
                                       className="btn btn-label-primary btn-sm mx-1"
                                     >
                                       Edit
                                     </Link>
-
                                     <button
                                       type="button"
                                       className="btn btn-label-info btn-sm mx-1"
@@ -215,13 +259,13 @@ export default function Delivery() {
                                       onClick={() => setModalData(item)}
                                     >
                                       Final Submit
-                                    </button>
+                                    </button> */}
                                   </td>
                                 </tr>
                               ))
                             ) : (
                               <tr>
-                                <td colSpan="7" className="text-center">
+                                <td colSpan="8" className="text-center">
                                   No data available
                                 </td>
                               </tr>
@@ -241,13 +285,14 @@ export default function Delivery() {
                               <div className="col-md-12 mb-3">
                                 <div className="card border-primary border-1">
                                   <div className="card-body">
-                                    <table className="table table-striped table-sm table-hover">
+                                    <table className="table table-striped table-sm table-bordered table-hover">
                                       <thead>
                                         <tr>
                                           <th>SN.</th>
-                                          <th>GPM Number</th>
+                                          <th>Type</th>
                                           <th>Container No</th>
                                           <th>Container Size</th>
+                                          <th>Seal No</th>
                                           <th>Start Date Time</th>
                                           <th>End Date Time</th>
                                           <th>Action</th>
@@ -256,9 +301,10 @@ export default function Delivery() {
                                       <tbody>
                                         <tr key={index}>
                                           <td>{index + 1}</td>
-                                          <td>{item.gpm_number}</td>
+                                          <td>{item.type}</td>
                                           <td>{item.container_number}</td>
                                           <td>{item.container_size}</td>
+                                          <td>{item.seal_number}</td>
                                           <td>
                                             {formatToDateTime(item.start_time)}
                                           </td>
@@ -266,13 +312,12 @@ export default function Delivery() {
                                             {formatToDateTime(item.end_time)}
                                           </td>
                                           <td>
-                                            <Link
-                                              to={`/delivery/bill-details?gpm_number=${item.gpm_number}`}
+                                            {/* <Link
+                                              to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
                                               className="btn btn-label-primary btn-sm mx-1"
                                             >
                                               Edit
                                             </Link>
-
                                             <button
                                               type="button"
                                               className="btn btn-label-info btn-sm mx-1"
@@ -281,7 +326,7 @@ export default function Delivery() {
                                               onClick={() => setModalData(item)}
                                             >
                                               Final Submit
-                                            </button>
+                                            </button> */}
                                           </td>
                                         </tr>
                                       </tbody>
@@ -291,7 +336,7 @@ export default function Delivery() {
                               </div>
 
                               <div className="row">
-                                {item?.delivery_trucks?.map(
+                                {item?.de_stuffing_bill_details?.map(
                                   (details, i) => (
                                     <div className="col-md-4 col-sm-6 mb-3">
                                       <div className="card border-primary border-1">
@@ -302,7 +347,8 @@ export default function Delivery() {
                                                 <td>Bill Number</td>
                                                 <td>
                                                   <strong>
-                                                    {details.boe}
+                                                    {details.bol_number ??
+                                                      details.boe_number}
                                                   </strong>
                                                 </td>
                                               </tr>
@@ -311,7 +357,7 @@ export default function Delivery() {
                                                 <td>
                                                   <strong>
                                                     {
-                                                      details.cargo_description
+                                                      details.commodity_description
                                                     }
                                                   </strong>
                                                 </td>
@@ -321,7 +367,7 @@ export default function Delivery() {
                                                 <td>
                                                   <strong>
                                                     {
-                                                      details.no_of_pkgs
+                                                      details.no_of_packages_declared
                                                     }
                                                   </strong>
                                                 </td>
@@ -330,7 +376,7 @@ export default function Delivery() {
                                                 <td>Pkg Weight</td>
                                                 <td>
                                                   <strong>
-                                                    {details.pkgs_weight}
+                                                    {details.package_weight}
                                                   </strong>
                                                 </td>
                                               </tr>
@@ -343,12 +389,13 @@ export default function Delivery() {
                                                         if (
                                                           grid.grid_locations
                                                         ) {
+                                                          const matchedArea = LocationsArea?.length > 0
+                                                          ? LocationsArea.find(area => area.location_code == grid.grid_locations)
+                                                          : 0;
                                                           return (
-                                                            <p className="mb-0">
-                                                              {
+                                                            <p className="mb-0">{
                                                                 grid.grid_locations
-                                                              }{" "}
-                                                              / {grid.area}{" "}
+                                                              } / {matchedArea?.ocr_occupied_area?? item.area ?? '0'}
                                                             </p>
                                                           );
                                                         }
@@ -373,98 +420,7 @@ export default function Delivery() {
                       <h6 className="text-center">No data available</h6>
                     )}
                   </div>
-                )}               
-                <div
-                  className="modal fade"
-                  id="myModal"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <div className="modal-dialog">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title">Final Submit Data</h5>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                      <div className="modal-body">
-                        {/* Form inside the modal */}
-                        <form onSubmit={handleSubmitForm}>
-                          <input
-                            type="hidden"
-                            name="id"
-                            className="form-control"
-                            value={modalData?.id}
-                          />
-                          <div className="mb-3">
-                            <label className="form-label">GPM Number </label>
-                            <input
-                              type="text"
-                              name="gpm_number"
-                              className="form-control"
-                              readOnly
-                              value={modalData?.gpm_number}
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">Start Time</label>
-                            <input
-                              type="datetime-local"
-                              name="start_time"
-                              className="form-control"
-                              defaultValue={formatToDateTimeLocal(
-                                modalData?.start_time
-                              )}
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">End Time</label>
-                            <input
-                              type="datetime-local"
-                              name="end_time"
-                              className="form-control"
-                              defaultValue={formatToDateTimeLocal(
-                                modalData?.end_time
-                              )}
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">Handing Type</label>
-                            <select
-                              className="form-select p-2"
-                              name="handling_type"
-                              defaultValue={modalData?.handling_type}
-                            >
-                              <option value="LCH">LCH</option>
-                              <option value="MCH">MCH</option>
-                            </select>
-                          </div>
-
-                          <div className="modal-footer">
-                            <button
-                              type="button"
-                              className="btn btn-secondary"
-                              data-bs-dismiss="modal"
-                            >
-                              Close
-                            </button>
-                            <button
-                              type="submit"
-                              className="btn btn-primary"
-                              data-bs-dismiss="modal"
-                            >
-                              Final Submit
-                            </button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                )}
 
                 <Footer />
               </div>

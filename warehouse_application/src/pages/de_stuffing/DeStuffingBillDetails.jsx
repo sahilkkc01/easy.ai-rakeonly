@@ -7,6 +7,8 @@ import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTimeLocal } from "../main/formatToDateTime";
+import ImportMap from "../ImportMap";
+import $ from 'jquery';
 
 export default function DeStuffingBillDetails() {
   const [isFinalSubmit, setIsFinalSubmit] = useState(false);
@@ -22,6 +24,7 @@ export default function DeStuffingBillDetails() {
   const [Locations, setLocations] = useState(null);
   const [LocationsArea, setLocationsArea] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [activeGridSelection, setActiveGridSelection] = useState(null);
 
   const today = new Date();
 
@@ -184,10 +187,6 @@ export default function DeStuffingBillDetails() {
       }
     });
     
-
-
-
-
     // Function to add a new grid input
     const addGridInput = () => {
       setGridInputs([
@@ -201,17 +200,52 @@ export default function DeStuffingBillDetails() {
       setGridInputs(gridInputs.filter((input) => input.id !== id));
     };
 
+    const handleGridSelect = (selectedGridCode) => {
+      if (!activeGridSelection) return;
+    
+      const updatedInputs = [...gridInputs];
+      updatedInputs[activeGridSelection.index] = {
+        ...updatedInputs[activeGridSelection.index],
+        grid_location: selectedGridCode?.location_code,
+      };
+      setGridInputs(updatedInputs);
+    
+      // ✅ Close the modal using Bootstrap's JS API
+      const modalEl = document.getElementById("mapModal");
+      const modalInstance = window.bootstrap?.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
+      modalInstance.hide();
+      // $('#mapModal').modal('hide')
+      const closeBtn = document.getElementById("closeMapModalBtn");
+      closeBtn?.click();
+      // $('#closeMapModalBtn').click();
+
+      // alert(JSON.stringify(selectedGridCode.location_code));
+    };
+
     return (
+      <>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+
       <div className="col-md-3 col-5">
         <label className="form-label">Grid Location & Area (SQM)</label>
         {gridInputs.map((input, i) => (
           <div key={input.id} className="mb-2">
+            
             <div className="d-flex align-items-center gap-3 ">
+              <div className="map">
+                <button className="btn btn-sm btn-info" type="button" data-bs-toggle="modal" data-bs-target="#mapModal"  onClick={() => setActiveGridSelection({ id: details.id, index: i })}>
+                  <i class="fa fa-map" aria-hidden="true"></i>
+                </button>
+              </div>
               <select
                 className="form-select p-2"
                 name={`grid_locations[${details.id}][${i}]`}
-                defaultValue={input.grid_location}
+                // defaultValue={input.grid_location}
+                // onChange={(e) => GridAreaHandle(e.target.value, details.id, i)}
+
+                value={input.grid_location}
                 onChange={(e) => GridAreaHandle(e.target.value, details.id, i)}
+
               >
                 <option value="">Select Grid</option>
                 {Locations?.map((location, j) => (
@@ -251,6 +285,28 @@ export default function DeStuffingBillDetails() {
           </div>
         ))}
       </div>
+
+
+
+      {/* // data-bs-toggle="modal" data-bs-target="#staticBackdrop" */}
+      <div class="modal fade" id="mapModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="mapModalLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <ImportMap onGridSelect={handleGridSelect} />
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeMapModalBtn">Close</button>
+              {/* <button type="button" class="btn btn-primary">Understood</button> */}
+            </div>
+          </div>
+        </div>
+      </div>
+      </>
     );
   };
 

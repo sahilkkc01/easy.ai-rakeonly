@@ -12,26 +12,42 @@ import {
   formatToDateTimeLocal,
 } from "../main/formatToDateTime";
 
-export default function Delivery() {
+export default function StuffingCompleted() {
+  const containerModalRef = useRef(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [view, setView] = useState("Table");
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [modalData, setModalData] = useState("");
+  const [view, setView] = useState("Table");
+
+  useEffect(() => {
+    const containerModalEl = document.getElementById("containerModal");
+    if (containerModalEl) {
+      containerModalRef.current = new Modal(containerModalEl);
+    }
+  }, []);
+
+  // Open the Container Modal
+  const openContainerModal = () => {
+    if (containerModalRef.current) {
+      containerModalRef.current.show();
+    } else {
+      console.error("Container modal instance is not available.");
+    }
+  };
+
+  // table data fetch from api
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://ctas.live/backend/api/delivery/live/data"
+        "https://ctas.live/backend/api/stuffing/live/data"
       );
 
-      if (response.data.data && Array.isArray(response.data.data)) {
-        setData(response.data.data);
-      } else {
-        setError("Invalid data format received.");
-        setData([]);
+      if (response.data.completed_data && Array.isArray(response.data.completed_data)) {
+        setData(response.data.completed_data);
       }
     } catch (err) {
       setError("Failed to fetch data.");
@@ -52,16 +68,44 @@ export default function Delivery() {
     fetchData();
   }, []);
 
+  const GetFormData = async (e) => {
+    e.preventDefault();
+
+    const url = `https://ctas.live/backend/api/get/de_stuffing_data/LCL/${e.target.container_no.value}`;
+    try {
+      const response = await axios.post(url);
+      if (response?.data?.status == "success") {
+        navigate(
+          `/de-stuffing/bill-details?container_no=${e.target.container_no.value}`
+        );
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetch Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleFinalSubmit = async (
     ID,
-    GpmNo,
+    container_number,
     start_time,
-    end_time,
-    handling_type
+    end_time
   ) => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/delivery/final/submit?id=${ID}&gpm_number=${GpmNo}&start_time=${start_time}&end_time=${end_time}&handling_type=${handling_type}`;
+    const url = `https://ctas.live/backend/api/stuffing/final/submit?id=${ID}&container_number=${container_number}&start_time=${start_time}&end_time=${end_time}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -75,7 +119,7 @@ export default function Delivery() {
           timer: 2000,
         }).then(() => {
           navigate(
-            `/delivery/bill-details?isFinalSubmit=1&id=${ID}&tally_sheet=1&gpm_number=${GpmNo}`
+            `/stuffing/bill-details?isFinalSubmit=1&id=${ID}&tally_sheet=1&container_number=${container_number}`
           );
         });
       } else {
@@ -103,11 +147,11 @@ export default function Delivery() {
 
     const formData = new FormData(e.target);
     let ID = formData.get("id");
-    let GpmNo = formData.get("gpm_number");
+    let container_number = formData.get("container_number");
     let start_time = formData.get("start_time");
     let end_time = formData.get("end_time");
-    let handling_type = formData.get("handling_type");
-    handleFinalSubmit(ID, GpmNo, start_time, end_time, handling_type);
+
+    handleFinalSubmit(ID, container_number, start_time, end_time);
   };
 
   return (
@@ -127,7 +171,6 @@ export default function Delivery() {
           </div>
         </div>
       )}
-
       <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
         <div className="layout-container">
           <div className="layout-page">
@@ -135,11 +178,11 @@ export default function Delivery() {
               <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="">
-                    <h3 className="text-primary">Delivery</h3>
+                    <h3 className="text-primary">Stuffing</h3>
                   </div>
                   <div className="">
                     <Link
-                      to={`/delivery/bill-details`}
+                      to={`/stuffing/bill-details`}
                       className="btn btn-label-success"
                     >
                       + Create Job
@@ -147,12 +190,12 @@ export default function Delivery() {
                     <Link to={`/`} className="btn btn-label-primary ms-2">
                       Go Back
                     </Link>
-                    <Link to={`/completed_delivery`} className="btn btn-label-info ms-2">
-                          Completed Trans
-                      </Link>
+                    <Link to={`/stuffing`} className="btn btn-label-primary ms-2">
+                      Live Stuffing
+                    </Link>
                   </div>
                 </div>
-                <div className="col-md-12 px-4 mb-4">
+                <div className="col-md-12 px-4 mb-5">
                   <div className="d-flex gap-2 align-items-center">
                     <button
                       className={`btn ${
@@ -178,14 +221,14 @@ export default function Delivery() {
                     <div className="card-body">
                       <div className="table-responsive">
                         <table className="table table-striped table-sm table-hover">
-                          <thead>
+                          <thead className="table-primary">
                             <tr>
                               <th>SN.</th>
-                              <th>GPM Number</th>
-                              <th>Container No</th>
-                              <th>Container Size</th>
-                              <th>Start Date Time</th>
-                              <th>End Date Time</th>
+                              <th>Container no</th>
+                              <th>Container size</th>
+                              <th>Crn no</th>
+                              <th>Start time</th>
+                              <th>End time</th>
                               <th>Action</th>
                             </tr>
                           </thead>
@@ -194,14 +237,14 @@ export default function Delivery() {
                               data.map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{item.gpm_number}</td>
                                   <td>{item.container_number}</td>
                                   <td>{item.container_size}</td>
-                                  <td>{formatToDateTime(item.start_time)}</td>
-                                  <td>{formatToDateTime(item.end_time)}</td>
+                                  <td>{item.crn_number}</td>
+                                  <td>{item.start_time}</td>
+                                  <td>{item.end_time}</td>
                                   <td>
-                                    <Link
-                                      to={`/delivery/bill-details?gpm_number=${item.gpm_number}`}
+                                    {/* <Link
+                                      to={`/stuffing/bill-details?container_number=${item.container_number}`}
                                       className="btn btn-label-primary btn-sm mx-1"
                                     >
                                       Edit
@@ -215,7 +258,7 @@ export default function Delivery() {
                                       onClick={() => setModalData(item)}
                                     >
                                       Final Submit
-                                    </button>
+                                    </button> */}
                                   </td>
                                 </tr>
                               ))
@@ -242,32 +285,28 @@ export default function Delivery() {
                                 <div className="card border-primary border-1">
                                   <div className="card-body">
                                     <table className="table table-striped table-sm table-hover">
-                                      <thead>
+                                      <thead className="table-primary">
                                         <tr>
                                           <th>SN.</th>
-                                          <th>GPM Number</th>
-                                          <th>Container No</th>
-                                          <th>Container Size</th>
-                                          <th>Start Date Time</th>
-                                          <th>End Date Time</th>
+                                          <th>Container no</th>
+                                          <th>Container size</th>
+                                          <th>Crn no</th>
+                                          <th>Start time</th>
+                                          <th>End time</th>
                                           <th>Action</th>
                                         </tr>
                                       </thead>
                                       <tbody>
                                         <tr key={index}>
                                           <td>{index + 1}</td>
-                                          <td>{item.gpm_number}</td>
                                           <td>{item.container_number}</td>
                                           <td>{item.container_size}</td>
+                                          <td>{item.crn_number}</td>
+                                          <td>{item.start_time}</td>
+                                          <td>{item.end_time}</td>
                                           <td>
-                                            {formatToDateTime(item.start_time)}
-                                          </td>
-                                          <td>
-                                            {formatToDateTime(item.end_time)}
-                                          </td>
-                                          <td>
-                                            <Link
-                                              to={`/delivery/bill-details?gpm_number=${item.gpm_number}`}
+                                            {/* <Link
+                                              to={`/stuffing/bill-details?container_number=${item.container_number}`}
                                               className="btn btn-label-primary btn-sm mx-1"
                                             >
                                               Edit
@@ -281,7 +320,7 @@ export default function Delivery() {
                                               onClick={() => setModalData(item)}
                                             >
                                               Final Submit
-                                            </button>
+                                            </button> */}
                                           </td>
                                         </tr>
                                       </tbody>
@@ -291,79 +330,69 @@ export default function Delivery() {
                               </div>
 
                               <div className="row">
-                                {item?.delivery_trucks?.map(
-                                  (details, i) => (
-                                    <div className="col-md-4 col-sm-6 mb-3">
-                                      <div className="card border-primary border-1">
-                                        <div className="card-body px-2">
-                                          <table className="table table-sm mb-0">
-                                            <tbody>
-                                              <tr>
-                                                <td>Bill Number</td>
-                                                <td>
-                                                  <strong>
-                                                    {details.boe}
-                                                  </strong>
-                                                </td>
-                                              </tr>
-                                              <tr>
-                                                <td>Cargo Description</td>
-                                                <td>
-                                                  <strong>
-                                                    {
-                                                      details.cargo_description
-                                                    }
-                                                  </strong>
-                                                </td>
-                                              </tr>
-                                              <tr>
-                                                <td>No of Pkgs</td>
-                                                <td>
-                                                  <strong>
-                                                    {
-                                                      details.no_of_pkgs
-                                                    }
-                                                  </strong>
-                                                </td>
-                                              </tr>
-                                              <tr>
-                                                <td>Pkg Weight</td>
-                                                <td>
-                                                  <strong>
-                                                    {details.pkgs_weight}
-                                                  </strong>
-                                                </td>
-                                              </tr>
-                                              <tr>
-                                                <td>Grid Location & Area</td>
-                                                <td>
-                                                  <strong>
-                                                    {details?.grid_area?.map(
-                                                      (grid, k) => {
-                                                        if (
-                                                          grid.grid_locations
-                                                        ) {
-                                                          return (
-                                                            <p className="mb-0">
-                                                              {
-                                                                grid.grid_locations
-                                                              }{" "}
-                                                              / {grid.area}{" "}
-                                                            </p>
-                                                          );
-                                                        }
+                                {item?.stuffing_shipping_bill_details?.map((details, i) => (
+                                  <div className="col-md-4 col-sm-6 mb-3">
+                                    <div className="card border-primary border-1">
+                                      <div className="card-body px-2">
+                                        <table className="table table-sm mb-0">
+                                          <tbody>
+                                            <tr>
+                                              <td>Bill Number</td>
+                                              <td>
+                                                <strong>{details.shipping_bill_number}</strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>Cargo Description</td>
+                                              <td>
+                                                <strong>
+                                                  {details.commodity_description}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>No of Pkgs</td>
+                                              <td>
+                                                <strong>
+                                                  {details.no_of_packages_declared}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>Pkg Weight</td>
+                                              <td>
+                                                <strong>
+                                                  {details.package_weight}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                            <tr>
+                                              <td>Grid Location & Area</td>
+                                              <td>
+                                                <strong>
+                                                  {details?.grid_area?.map(
+                                                    (grid, k) => {
+                                                      if (grid.grid_locations) {
+                                                        return (
+                                                          <p className="mb-0">
+                                                            {
+                                                              grid.grid_locations
+                                                            }{" "}
+                                                            / {grid.area}{" "}
+                                                          </p>
+                                                        );
                                                       }
-                                                    )}
-                                                  </strong>
-                                                </td>
-                                              </tr>
-                                            </tbody>
-                                          </table>
-                                        </div>
+                                                    }
+                                                  )}
+                                                </strong>
+                                              </td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
                                       </div>
                                     </div>
-                                  )
-                                )}
+                                  </div>
+                                ))}
                               </div>
                             </div>
                           </div>
@@ -373,7 +402,9 @@ export default function Delivery() {
                       <h6 className="text-center">No data available</h6>
                     )}
                   </div>
-                )}               
+                )}
+
+
                 <div
                   className="modal fade"
                   id="myModal"
@@ -401,13 +432,15 @@ export default function Delivery() {
                             value={modalData?.id}
                           />
                           <div className="mb-3">
-                            <label className="form-label">GPM Number </label>
+                            <label className="form-label">
+                              Container Number{" "}
+                            </label>
                             <input
                               type="text"
-                              name="gpm_number"
+                              name="container_number"
                               className="form-control"
                               readOnly
-                              value={modalData?.gpm_number}
+                              value={modalData?.container_number}
                             />
                           </div>
                           <div className="mb-3">
@@ -436,8 +469,8 @@ export default function Delivery() {
                             <label className="form-label">Handing Type</label>
                             <select
                               className="form-select p-2"
-                              name="handling_type"
-                              defaultValue={modalData?.handling_type}
+                              name="handline_type"
+                              defaultValue={modalData?.handline_type}
                             >
                               <option value="LCH">LCH</option>
                               <option value="MCH">MCH</option>
@@ -465,11 +498,13 @@ export default function Delivery() {
                     </div>
                   </div>
                 </div>
-
                 <Footer />
+                <div className="content-backdrop fade" />
               </div>
             </div>
           </div>
+          <div className="layout-overlay layout-menu-toggle"></div>
+          <div className="drag-target"></div>
         </div>
       </div>
     </>

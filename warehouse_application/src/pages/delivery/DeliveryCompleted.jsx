@@ -12,7 +12,8 @@ import {
   formatToDateTimeLocal,
 } from "../main/formatToDateTime";
 
-export default function Delivery() {
+export default function DeliveryCompleted() {
+
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState("Table");
@@ -27,8 +28,8 @@ export default function Delivery() {
         "https://ctas.live/backend/api/delivery/live/data"
       );
 
-      if (response.data.data && Array.isArray(response.data.data)) {
-        setData(response.data.data);
+      if (response.data.completed_data && Array.isArray(response.data.completed_data)) {
+        setData(response.data.completed_data);
       } else {
         setError("Invalid data format received.");
         setData([]);
@@ -135,7 +136,8 @@ export default function Delivery() {
               <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="">
-                    <h3 className="text-primary">Delivery</h3>
+                    <h3 className="text-primary">Delivery Completed Trans</h3>
+                    <p>Last 10 Transections</p>
                   </div>
                   <div className="">
                     <Link
@@ -147,9 +149,10 @@ export default function Delivery() {
                     <Link to={`/`} className="btn btn-label-primary ms-2">
                       Go Back
                     </Link>
-                    <Link to={`/completed_delivery`} className="btn btn-label-info ms-2">
-                          Completed Trans
-                      </Link>
+
+                    <Link to={`/delivery`} className="btn btn-label-info ms-2">
+                        Live Cards
+                    </Link>
                   </div>
                 </div>
                 <div className="col-md-12 px-4 mb-4">
@@ -200,7 +203,7 @@ export default function Delivery() {
                                   <td>{formatToDateTime(item.start_time)}</td>
                                   <td>{formatToDateTime(item.end_time)}</td>
                                   <td>
-                                    <Link
+                                    {/* <Link
                                       to={`/delivery/bill-details?gpm_number=${item.gpm_number}`}
                                       className="btn btn-label-primary btn-sm mx-1"
                                     >
@@ -215,7 +218,7 @@ export default function Delivery() {
                                       onClick={() => setModalData(item)}
                                     >
                                       Final Submit
-                                    </button>
+                                    </button> */}
                                   </td>
                                 </tr>
                               ))
@@ -266,7 +269,7 @@ export default function Delivery() {
                                             {formatToDateTime(item.end_time)}
                                           </td>
                                           <td>
-                                            <Link
+                                            {/* <Link
                                               to={`/delivery/bill-details?gpm_number=${item.gpm_number}`}
                                               className="btn btn-label-primary btn-sm mx-1"
                                             >
@@ -281,7 +284,7 @@ export default function Delivery() {
                                               onClick={() => setModalData(item)}
                                             >
                                               Final Submit
-                                            </button>
+                                            </button> */}
                                           </td>
                                         </tr>
                                       </tbody>
@@ -373,98 +376,7 @@ export default function Delivery() {
                       <h6 className="text-center">No data available</h6>
                     )}
                   </div>
-                )}               
-                <div
-                  className="modal fade"
-                  id="myModal"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <div className="modal-dialog">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title">Final Submit Data</h5>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                      <div className="modal-body">
-                        {/* Form inside the modal */}
-                        <form onSubmit={handleSubmitForm}>
-                          <input
-                            type="hidden"
-                            name="id"
-                            className="form-control"
-                            value={modalData?.id}
-                          />
-                          <div className="mb-3">
-                            <label className="form-label">GPM Number </label>
-                            <input
-                              type="text"
-                              name="gpm_number"
-                              className="form-control"
-                              readOnly
-                              value={modalData?.gpm_number}
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">Start Time</label>
-                            <input
-                              type="datetime-local"
-                              name="start_time"
-                              className="form-control"
-                              defaultValue={formatToDateTimeLocal(
-                                modalData?.start_time
-                              )}
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">End Time</label>
-                            <input
-                              type="datetime-local"
-                              name="end_time"
-                              className="form-control"
-                              defaultValue={formatToDateTimeLocal(
-                                modalData?.end_time
-                              )}
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">Handing Type</label>
-                            <select
-                              className="form-select p-2"
-                              name="handling_type"
-                              defaultValue={modalData?.handling_type}
-                            >
-                              <option value="LCH">LCH</option>
-                              <option value="MCH">MCH</option>
-                            </select>
-                          </div>
-
-                          <div className="modal-footer">
-                            <button
-                              type="button"
-                              className="btn btn-secondary"
-                              data-bs-dismiss="modal"
-                            >
-                              Close
-                            </button>
-                            <button
-                              type="submit"
-                              className="btn btn-primary"
-                              data-bs-dismiss="modal"
-                            >
-                              Final Submit
-                            </button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                )}
 
                 <Footer />
               </div>

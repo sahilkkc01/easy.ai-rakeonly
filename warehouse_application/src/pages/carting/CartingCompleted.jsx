@@ -6,53 +6,32 @@ import Swal from "sweetalert2";
 import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
-import { set } from "date-fns";
 import {
   formatToDateTime,
   formatToDateTimeLocal,
 } from "../main/formatToDateTime";
 
-export default function Stuffing() {
-  const containerModalRef = useRef(null);
+export default function CartingCompleted() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [modalData, setModalData] = useState("");
   const [view, setView] = useState("Table");
-
-  useEffect(() => {
-    const containerModalEl = document.getElementById("containerModal");
-    if (containerModalEl) {
-      containerModalRef.current = new Modal(containerModalEl);
-    }
-  }, []);
-
-  // Open the Container Modal
-  const openContainerModal = () => {
-    if (containerModalRef.current) {
-      containerModalRef.current.show();
-    } else {
-      console.error("Container modal instance is not available.");
-    }
-  };
-
-  // table data fetch from api
+  const [LocationsArea, setLocationsArea] = useState(null);
 
   const fetchData = async () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://ctas.live/backend/api/stuffing/live/data"
+        "https://ctas.live/backend/api/carting/live/data"
       );
-
-      if (response.data.data && Array.isArray(response.data.data)) {
-        setData(response.data.data);
+      if (response.data.completed_data && Array.isArray(response.data.completed_data)) {
+        setData(response.data.completed_data);
       }
     } catch (err) {
       setError("Failed to fetch data.");
 
-      // Error Alert
       Swal.fire({
         title: "Error!",
         text: "Failed to fetch data.",
@@ -68,44 +47,16 @@ export default function Stuffing() {
     fetchData();
   }, []);
 
-  const GetFormData = async (e) => {
-    e.preventDefault();
-
-    const url = `https://ctas.live/backend/api/get/de_stuffing_data/LCL/${e.target.container_no.value}`;
-    try {
-      const response = await axios.post(url);
-      if (response?.data?.status == "success") {
-        navigate(
-          `/de-stuffing/bill-details?container_no=${e.target.container_no.value}`
-        );
-      } else {
-        Swal.fire({
-          icon: response?.data?.status,
-          text: response?.data?.message,
-          timer: 3000,
-        });
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        text: `Error Fetch Data: ${error.message}`,
-        timer: 3000,
-        showConfirmButton: false,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleFinalSubmit = async (
     ID,
-    container_number,
+    crn_number,
     start_time,
-    end_time
+    end_time,
+    handline_type
   ) => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/stuffing/final/submit?id=${ID}&container_number=${container_number}&start_time=${start_time}&end_time=${end_time}`;
+    const url = `https://ctas.live/backend/api/carting/final/submit?id=${ID}&crn_number=${crn_number}&start_time=${start_time}&end_time=${end_time}&handline_type=${handline_type}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -119,7 +70,7 @@ export default function Stuffing() {
           timer: 2000,
         }).then(() => {
           navigate(
-            `/stuffing/bill-details?isFinalSubmit=1&id=${ID}&tally_sheet=1&container_number=${container_number}`
+            `/carting/bill-details?isFinalSubmit=1&id=${ID}&tally_sheet=1&crn_number=${crn_number}`
           );
         });
       } else {
@@ -147,12 +98,42 @@ export default function Stuffing() {
 
     const formData = new FormData(e.target);
     let ID = formData.get("id");
-    let container_number = formData.get("container_number");
+    let crn_number = formData.get("crn_number");
     let start_time = formData.get("start_time");
     let end_time = formData.get("end_time");
-
-    handleFinalSubmit(ID, container_number, start_time, end_time);
+    let handline_type = formData.get("handline_type");
+    handleFinalSubmit(ID, crn_number, start_time, end_time, handline_type);
   };
+
+  const fetchLocationsArea = async () => {
+    setLoading(true);
+    let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Export`;
+    try {
+      const response = await axios.get(url);
+      if (response?.data?.status === "success") {
+        setLocationsArea(response?.data?.data);
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(()=>{
+    fetchLocationsArea();
+  },[data])
 
   return (
     <>
@@ -178,11 +159,12 @@ export default function Stuffing() {
               <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="">
-                    <h3 className="text-primary">Stuffing</h3>
+                    <h3 className="text-primary">Carting Completed</h3>
+                    <p>Last 10 Transections</p>
                   </div>
                   <div className="">
                     <Link
-                      to={`/stuffing/bill-details`}
+                      to={`/carting/bill-details`}
                       className="btn btn-label-success"
                     >
                       + Create Job
@@ -190,10 +172,11 @@ export default function Stuffing() {
                     <Link to={`/`} className="btn btn-label-primary ms-2">
                       Go Back
                     </Link>
-                    {/* stuffing_completed */}
-                    <Link to={`/stuffing_completed`} className="btn btn-label-info ms-2">
-                      Completd Trans
+
+                    <Link to={`/carting`} className="btn btn-label-info ms-2">
+                      Live Cargo
                     </Link>
+
                   </div>
                 </div>
                 <div className="col-md-12 px-4 mb-5">
@@ -225,9 +208,9 @@ export default function Stuffing() {
                           <thead className="table-primary">
                             <tr>
                               <th>SN.</th>
-                              <th>Container no</th>
-                              <th>Container size</th>
-                              <th>Crn no</th>
+                              <th>Type</th>
+                              <th>CRN</th>
+                              <th>Gw Port</th>
                               <th>Start time</th>
                               <th>End time</th>
                               <th>Action</th>
@@ -238,14 +221,15 @@ export default function Stuffing() {
                               data.map((item, index) => (
                                 <tr key={index}>
                                   <td>{index + 1}</td>
-                                  <td>{item.container_number}</td>
-                                  <td>{item.container_size}</td>
+
+                                  <td>{item.type}</td>
                                   <td>{item.crn_number}</td>
+                                  <td>{item.gw_port_code}</td>
                                   <td>{item.start_time}</td>
                                   <td>{item.end_time}</td>
                                   <td>
-                                    <Link
-                                      to={`/stuffing/bill-details?container_number=${item.container_number}`}
+                                    {/* <Link
+                                      to={`/carting/bill-details?crn_number=${item.crn_number}`}
                                       className="btn btn-label-primary btn-sm mx-1"
                                     >
                                       Edit
@@ -259,13 +243,13 @@ export default function Stuffing() {
                                       onClick={() => setModalData(item)}
                                     >
                                       Final Submit
-                                    </button>
+                                    </button> */}
                                   </td>
                                 </tr>
                               ))
                             ) : (
                               <tr>
-                                <td colSpan="7" className="text-center">
+                                <td colSpan="4" className="text-center">
                                   No data available
                                 </td>
                               </tr>
@@ -289,9 +273,9 @@ export default function Stuffing() {
                                       <thead className="table-primary">
                                         <tr>
                                           <th>SN.</th>
-                                          <th>Container no</th>
-                                          <th>Container size</th>
-                                          <th>Crn no</th>
+                                          <th>Type</th>
+                                          <th>CRN</th>
+                                          <th>Gw Port</th>
                                           <th>Start time</th>
                                           <th>End time</th>
                                           <th>Action</th>
@@ -300,14 +284,15 @@ export default function Stuffing() {
                                       <tbody>
                                         <tr key={index}>
                                           <td>{index + 1}</td>
-                                          <td>{item.container_number}</td>
-                                          <td>{item.container_size}</td>
+
+                                          <td>{item.type}</td>
                                           <td>{item.crn_number}</td>
+                                          <td>{item.gw_port_code}</td>
                                           <td>{item.start_time}</td>
                                           <td>{item.end_time}</td>
                                           <td>
-                                            <Link
-                                              to={`/stuffing/bill-details?container_number=${item.container_number}`}
+                                            {/* <Link
+                                              to={`/carting/bill-details?crn_number=${item.crn_number}`}
                                               className="btn btn-label-primary btn-sm mx-1"
                                             >
                                               Edit
@@ -321,7 +306,7 @@ export default function Stuffing() {
                                               onClick={() => setModalData(item)}
                                             >
                                               Final Submit
-                                            </button>
+                                            </button> */}
                                           </td>
                                         </tr>
                                       </tbody>
@@ -331,7 +316,7 @@ export default function Stuffing() {
                               </div>
 
                               <div className="row">
-                                {item?.stuffing_shipping_bill_details?.map((details, i) => (
+                                {item?.carting_trucks?.map((details, i) => (
                                   <div className="col-md-4 col-sm-6 mb-3">
                                     <div className="card border-primary border-1">
                                       <div className="card-body px-2">
@@ -340,14 +325,14 @@ export default function Stuffing() {
                                             <tr>
                                               <td>Bill Number</td>
                                               <td>
-                                                <strong>{details.shipping_bill_number}</strong>
+                                                <strong>{details.sbill}</strong>
                                               </td>
                                             </tr>
                                             <tr>
                                               <td>Cargo Description</td>
                                               <td>
                                                 <strong>
-                                                  {details.commodity_description}
+                                                  {details.cargo_description}
                                                 </strong>
                                               </td>
                                             </tr>
@@ -355,7 +340,7 @@ export default function Stuffing() {
                                               <td>No of Pkgs</td>
                                               <td>
                                                 <strong>
-                                                  {details.no_of_packages_declared}
+                                                  {details.no_of_pkgs}
                                                 </strong>
                                               </td>
                                             </tr>
@@ -363,7 +348,7 @@ export default function Stuffing() {
                                               <td>Pkg Weight</td>
                                               <td>
                                                 <strong>
-                                                  {details.package_weight}
+                                                  {details.pkgs_weight}
                                                 </strong>
                                               </td>
                                             </tr>
@@ -371,20 +356,23 @@ export default function Stuffing() {
                                               <td>Grid Location & Area</td>
                                               <td>
                                                 <strong>
-                                                  {details?.grid_area?.map(
-                                                    (grid, k) => {
-                                                      if (grid.grid_locations) {
-                                                        return (
-                                                          <p className="mb-0">
-                                                            {
-                                                              grid.grid_locations
-                                                            }{" "}
-                                                            / {grid.area}{" "}
-                                                          </p>
-                                                        );
+                                                {details?.grid_area?.map(
+                                                      (grid, k) => {
+                                                        if (
+                                                          grid.grid_locations
+                                                        ) {
+                                                          const matchedArea = LocationsArea?.length > 0
+                                                          ? LocationsArea.find(area => area.location_code == grid.grid_locations)
+                                                          : 0;
+                                                          return (
+                                                            <p className="mb-0">{
+                                                                grid.grid_locations
+                                                              } / {matchedArea?.ocr_occupied_area?? item.area ?? '0'}
+                                                            </p>
+                                                          );
+                                                        }
                                                       }
-                                                    }
-                                                  )}
+                                                    )}
                                                 </strong>
                                               </td>
                                             </tr>
@@ -405,107 +393,11 @@ export default function Stuffing() {
                   </div>
                 )}
 
-
-                <div
-                  className="modal fade"
-                  id="myModal"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <div className="modal-dialog">
-                    <div className="modal-content">
-                      <div className="modal-header">
-                        <h5 className="modal-title">Final Submit Data</h5>
-                        <button
-                          type="button"
-                          className="btn-close"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                      <div className="modal-body">
-                        {/* Form inside the modal */}
-                        <form onSubmit={handleSubmitForm}>
-                          <input
-                            type="hidden"
-                            name="id"
-                            className="form-control"
-                            value={modalData?.id}
-                          />
-                          <div className="mb-3">
-                            <label className="form-label">
-                              Container Number{" "}
-                            </label>
-                            <input
-                              type="text"
-                              name="container_number"
-                              className="form-control"
-                              readOnly
-                              value={modalData?.container_number}
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">Start Time</label>
-                            <input
-                              type="datetime-local"
-                              name="start_time"
-                              className="form-control"
-                              defaultValue={formatToDateTimeLocal(
-                                modalData?.start_time
-                              )}
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">End Time</label>
-                            <input
-                              type="datetime-local"
-                              name="end_time"
-                              className="form-control"
-                              defaultValue={formatToDateTimeLocal(
-                                modalData?.end_time
-                              )}
-                            />
-                          </div>
-                          <div className="mb-3">
-                            <label className="form-label">Handing Type</label>
-                            <select
-                              className="form-select p-2"
-                              name="handline_type"
-                              defaultValue={modalData?.handline_type}
-                            >
-                              <option value="LCH">LCH</option>
-                              <option value="MCH">MCH</option>
-                            </select>
-                          </div>
-
-                          <div className="modal-footer">
-                            <button
-                              type="button"
-                              className="btn btn-secondary"
-                              data-bs-dismiss="modal"
-                            >
-                              Close
-                            </button>
-                            <button
-                              type="submit"
-                              className="btn btn-primary"
-                              data-bs-dismiss="modal"
-                            >
-                              Final Submit
-                            </button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+             
                 <Footer />
-                <div className="content-backdrop fade" />
               </div>
             </div>
           </div>
-          <div className="layout-overlay layout-menu-toggle"></div>
-          <div className="drag-target"></div>
         </div>
       </div>
     </>

@@ -16,6 +16,7 @@ export default function DeStuffing() {
   const [view, setView] = useState("Table");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [CompletedData, setCompletedData] = useState([]);
   const [modalData, setModalData] = useState("");
   const [error, setError] = useState(null);
   const [LocationsArea, setLocationsArea] = useState(null);
@@ -30,6 +31,7 @@ export default function DeStuffing() {
 
       if (response.data && Array.isArray(response.data.data)) {
         setData(response.data.data); // Ensure we're setting an array
+        setCompletedData(response.data.completed_data);
       } else {
         setError("Invalid data format received.");
         setData([]);
@@ -186,6 +188,9 @@ export default function DeStuffing() {
                     </Link>
                     <Link to={`/`} className="btn btn-label-primary ms-2">
                       Go Back
+                    </Link>
+                    <Link to={`/de_stuffing_completed_trans`} className="btn btn-label-info ms-2">
+                       Completed Transections
                     </Link>
                   </div>
                 </div>

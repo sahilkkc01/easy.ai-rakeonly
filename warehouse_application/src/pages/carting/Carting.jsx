@@ -171,6 +171,9 @@ export default function Carting() {
                     <Link to={`/`} className="btn btn-label-primary ms-2">
                       Go Back
                     </Link>
+                    <Link to={`/carting_completed`} className="btn btn-label-info ms-2">
+                        Completed Trans
+                      </Link>
                   </div>
                 </div>
                 <div className="col-md-12 px-4 mb-5">

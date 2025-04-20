@@ -23,6 +23,10 @@ import StuffingTallySheet from "./pages/stuffing/StuffingTallySheet";
 import PrivateRoute from "./PrivateRoute";
 import Login from "./Login";
 import Logout from "./Logout";
+import DeStuffingCompleted from "./pages/de_stuffing/DeStuffingCompleted";
+import DeliveryCompleted from "./pages/delivery/DeliveryCompleted";
+import CartingCompleted from "./pages/carting/CartingCompleted";
+import StuffingCompleted from "./pages/stuffing/StuffingCompleted";
 
 
 
@@ -35,18 +39,25 @@ export default function App() {
           <Route path="/" element={<PrivateRoute><Index /></PrivateRoute>} />
 
           <Route path="/de-stuffing" element={<PrivateRoute><DeStuffing/></PrivateRoute>} />
+          <Route path="/de_stuffing_completed_trans" element={<PrivateRoute><DeStuffingCompleted/></PrivateRoute>} />
+
           <Route path="/de-stuffing/bill-details" element={<PrivateRoute><DeStuffingBillDetails/></PrivateRoute>} />
           <Route path="/de-stuffing/tally_sheet" element={<PrivateRoute><DeStuffingTallySheet/></PrivateRoute>} />
 
           <Route path="/delivery" element={<PrivateRoute><Delivery/></PrivateRoute>} />
+          <Route path="/completed_delivery" element={<PrivateRoute><DeliveryCompleted/></PrivateRoute>} />
+          
           <Route path="/delivery/bill-details" element={<PrivateRoute><DeliveryBillDetails/></PrivateRoute>} />
           <Route path="/delivery/tally_sheet" element={<PrivateRoute><DeliveryTallySheet/></PrivateRoute>} />
 
           <Route path="/carting" element={<PrivateRoute><Carting/></PrivateRoute>} />
+          <Route path="/carting_completed" element={<PrivateRoute><CartingCompleted/></PrivateRoute>} />
+          {/* CartingCompleted */}
           <Route path="/carting/bill-details" element={<PrivateRoute><CartingBillDetails/></PrivateRoute>} />
           <Route path="/carting/tally_sheet" element={<PrivateRoute><CartingTallySheet/></PrivateRoute>} />
 
           <Route path="/stuffing" element={<PrivateRoute><Stuffing/></PrivateRoute>} />
+          <Route path="/stuffing_completed" element={<PrivateRoute><StuffingCompleted/></PrivateRoute>} />
           <Route path="/stuffing/bill-details" element={<PrivateRoute><StuffingBillDetails/></PrivateRoute>} />
           <Route path="/stuffing/tally_sheet" element={<PrivateRoute><StuffingTallySheet/></PrivateRoute>} />
 
