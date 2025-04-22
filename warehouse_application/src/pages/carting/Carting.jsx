@@ -209,7 +209,7 @@ export default function Carting() {
                               <th>CRN</th>
                               <th>Gw Port</th>
                               <th>Start time</th>
-                              <th>End time</th>
+                              {/* <th>End time</th> */}
                               <th>Action</th>
                             </tr>
                           </thead>
@@ -223,7 +223,7 @@ export default function Carting() {
                                   <td>{item.crn_number}</td>
                                   <td>{item.gw_port_code}</td>
                                   <td>{item.start_time}</td>
-                                  <td>{item.end_time}</td>
+                                  {/* <td>{item.end_time}</td> */}
                                   <td>
                                     <Link
                                       to={`/carting/bill-details?crn_number=${item.crn_number}`}
@@ -274,7 +274,7 @@ export default function Carting() {
                                           <th>CRN</th>
                                           <th>Gw Port</th>
                                           <th>Start time</th>
-                                          <th>End time</th>
+                                          {/* <th>End time</th> */}
                                           <th>Action</th>
                                         </tr>
                                       </thead>
@@ -286,7 +286,7 @@ export default function Carting() {
                                           <td>{item.crn_number}</td>
                                           <td>{item.gw_port_code}</td>
                                           <td>{item.start_time}</td>
-                                          <td>{item.end_time}</td>
+                                          {/* <td>{item.end_time}</td> */}
                                           <td>
                                             <Link
                                               to={`/carting/bill-details?crn_number=${item.crn_number}`}

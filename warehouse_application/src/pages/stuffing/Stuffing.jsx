@@ -229,7 +229,7 @@ export default function Stuffing() {
                               <th>Container size</th>
                               <th>Crn no</th>
                               <th>Start time</th>
-                              <th>End time</th>
+                              {/* <th>End time</th> */}
                               <th>Action</th>
                             </tr>
                           </thead>
@@ -242,7 +242,7 @@ export default function Stuffing() {
                                   <td>{item.container_size}</td>
                                   <td>{item.crn_number}</td>
                                   <td>{item.start_time}</td>
-                                  <td>{item.end_time}</td>
+                                  {/* <td>{item.end_time}</td> */}
                                   <td>
                                     <Link
                                       to={`/stuffing/bill-details?container_number=${item.container_number}`}
@@ -293,7 +293,7 @@ export default function Stuffing() {
                                           <th>Container size</th>
                                           <th>Crn no</th>
                                           <th>Start time</th>
-                                          <th>End time</th>
+                                          {/* <th>End time</th> */}
                                           <th>Action</th>
                                         </tr>
                                       </thead>
@@ -304,7 +304,7 @@ export default function Stuffing() {
                                           <td>{item.container_size}</td>
                                           <td>{item.crn_number}</td>
                                           <td>{item.start_time}</td>
-                                          <td>{item.end_time}</td>
+                                          {/* <td>{item.end_time}</td> */}
                                           <td>
                                             <Link
                                               to={`/stuffing/bill-details?container_number=${item.container_number}`}

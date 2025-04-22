@@ -185,7 +185,7 @@ export default function Delivery() {
                               <th>Container No</th>
                               <th>Container Size</th>
                               <th>Start Date Time</th>
-                              <th>End Date Time</th>
+                              {/* <th>End Date Time</th> */}
                               <th>Action</th>
                             </tr>
                           </thead>
@@ -198,7 +198,7 @@ export default function Delivery() {
                                   <td>{item.container_number}</td>
                                   <td>{item.container_size}</td>
                                   <td>{formatToDateTime(item.start_time)}</td>
-                                  <td>{formatToDateTime(item.end_time)}</td>
+                                  {/* <td>{formatToDateTime(item.end_time)}</td> */}
                                   <td>
                                     <Link
                                       to={`/delivery/bill-details?gpm_number=${item.gpm_number}`}
@@ -249,7 +249,7 @@ export default function Delivery() {
                                           <th>Container No</th>
                                           <th>Container Size</th>
                                           <th>Start Date Time</th>
-                                          <th>End Date Time</th>
+                                          {/* <th>End Date Time</th> */}
                                           <th>Action</th>
                                         </tr>
                                       </thead>
@@ -262,9 +262,9 @@ export default function Delivery() {
                                           <td>
                                             {formatToDateTime(item.start_time)}
                                           </td>
-                                          <td>
+                                          {/* <td>
                                             {formatToDateTime(item.end_time)}
-                                          </td>
+                                          </td> */}
                                           <td>
                                             <Link
                                               to={`/delivery/bill-details?gpm_number=${item.gpm_number}`}

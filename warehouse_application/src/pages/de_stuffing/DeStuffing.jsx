@@ -228,7 +228,7 @@ export default function DeStuffing() {
                               <th>Container Size</th>
                               <th>Seal No</th>
                               <th>Start Date Time</th>
-                              <th>End Date Time</th>
+                              {/* <th>End Date Time</th> */}
                               <th>Action</th>
                             </tr>
                           </thead>
@@ -242,7 +242,7 @@ export default function DeStuffing() {
                                   <td>{item.container_size}</td>
                                   <td>{item.seal_number}</td>
                                   <td>{formatToDateTime(item.start_time)}</td>
-                                  <td>{formatToDateTime(item.end_time)}</td>
+                                  {/* <td>{formatToDateTime(item.end_time)}</td> */}
                                   <td>
                                     <Link
                                       to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}
@@ -293,7 +293,7 @@ export default function DeStuffing() {
                                           <th>Container Size</th>
                                           <th>Seal No</th>
                                           <th>Start Date Time</th>
-                                          <th>End Date Time</th>
+                                          {/* <th>End Date Time</th> */}
                                           <th>Action</th>
                                         </tr>
                                       </thead>
@@ -307,9 +307,9 @@ export default function DeStuffing() {
                                           <td>
                                             {formatToDateTime(item.start_time)}
                                           </td>
-                                          <td>
+                                          {/* <td>
                                             {formatToDateTime(item.end_time)}
-                                          </td>
+                                          </td> */}
                                           <td>
                                             <Link
                                               to={`/de-stuffing/bill-details?type=${item.type}&container_no=${item.container_number}`}

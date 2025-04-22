@@ -150,17 +150,17 @@ export default function ExportMap({
       );
 
       if (clickedData) {
-        if(clickedData.occupied_area==20){
+        if (clickedData.occupied_area == 20) {
           onClose();
           Swal.fire({
             icon: "warning",
             text: `This Area Occupied`,
-            timer: 3000
+            timer: 3000,
           });
-        }else{
-          setActiveGridSelection(clickedData); 
+        } else {
+          setActiveGridSelection(clickedData);
           onClose();
-          setModalVisible2(true);              
+          setModalVisible2(true);
         }
       }
     },
