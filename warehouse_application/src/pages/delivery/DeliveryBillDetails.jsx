@@ -213,7 +213,7 @@ export default function DeliveryBillDetails() {
 
   const handleBillDetails = (key, sBillNo) => {
     Data?.delivery_bill_details?.forEach((details) => {
-      if (details.boe_number === sBillNo) {
+      if (details.boe_number == sBillNo) {
         document.getElementById(`cargo_description_${key}`).value =
           details.commodity_description;
         document.getElementById(`no_of_pkgs_${key}`).value =
@@ -228,7 +228,7 @@ export default function DeliveryBillDetails() {
           Data?.de_stuffing_container?.de_stuffing_bill_details?.length > 0
             ? Data.de_stuffing_container.de_stuffing_bill_details.flatMap(
                 (detail) =>
-                  detail.boe_number === sBillNo
+                  (detail.boe_number == sBillNo  || detail.bol_number == sBillNo)
                     ? detail?.grid_area?.map((item, i) => ({
                         id: i + 1,
                         grid_location: item.grid_locations || "NA",
@@ -237,8 +237,6 @@ export default function DeliveryBillDetails() {
                     : []
               )
             : [];
-
-        // Update state to trigger re-render
         setGridData((prev) => ({
           ...prev,
           [key]: myData,

@@ -259,6 +259,9 @@ export default function DeStuffingBillDetails() {
                   }
                   readOnly
                 />
+                <span>
+                  {JSON.stringify(gridAreas[modalId])}
+                </span>
                 <input
                   type="text"
                   className="form-control p-2"
@@ -501,7 +504,7 @@ export default function DeStuffingBillDetails() {
           setGridAreas((prev) => {
             const current = prev[ModalIds] || [];
             const updated = current.includes(area)
-              ? current
+              ? current.filter((item) => item != area)
               : [...current, area];
             return { ...prev, [ModalIds]: updated };
           })

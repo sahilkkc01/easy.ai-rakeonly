@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import ExportMap from "./ExportMap";
 import MezzanineMap from "./MezzanineMap";
 import ImportMap from "./ImportMap";
+import OycMap from "./OycMap";
 
 const MapModal = ({
   isVisible,
@@ -55,9 +56,18 @@ const MapModal = ({
             setModalVisible2={setModalVisible2}
           />
         );
-      case "Mazzanine": // fixed typo from "Mazzanine"
+      case "Mazzanine": 
         return (
           <MezzanineMap
+            setActiveGridSelection={setActiveGridSelection}
+            activeGridSelection={activeGridSelection}
+            onClose={onClose}
+            setModalVisible2={setModalVisible2}
+          />
+        );
+      case "OYC": 
+        return (
+          <OycMap
             setActiveGridSelection={setActiveGridSelection}
             activeGridSelection={activeGridSelection}
             onClose={onClose}
@@ -135,7 +145,7 @@ const MapAreaModal = ({
       setCol(5);
       setWidth("50px");
       setHeight("10vh");
-    } else if (activeGridSelection?.warehouse_name == "Mazzanine") {
+    } else if (activeGridSelection?.warehouse_name == "Mazzanine" || activeGridSelection?.warehouse_name == "OYC") {
       setRow(1);
       setCol(1);
       setWidth("250px");
@@ -243,7 +253,7 @@ const MapAreaModal = ({
                               }
                             }}
                           >
-                            {activeGridSelection?.warehouse_name == "Mazzanine"
+                            {(activeGridSelection?.warehouse_name == "Mazzanine" ||activeGridSelection?.warehouse_name == "OYC")
                               ? activeGridSelection?.location_code
                               : cellValue}
                           </button>

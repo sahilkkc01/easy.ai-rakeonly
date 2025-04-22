@@ -340,11 +340,13 @@ export default function CartingBillDetails() {
                   type="button"
                   onClick={() => {
                     setModalIds(modalId);
+                    setGridAreas((prev) =>({...prev,[modalId]:[]}));
                     setVisibleModals((prev) => ({ ...prev, [modalId]: true }));
                   }}
                 >
                   <i className="fa fa-map" />
                 </button>
+                
                 <input
                   type="text"
                   className="form-control p-2"
@@ -356,6 +358,9 @@ export default function CartingBillDetails() {
                   }
                   readOnly
                 />
+                 <span>
+                  {JSON.stringify(gridAreas[modalId])}
+                </span>
                 <input
                   type="text"
                   className="form-control p-2"
@@ -558,7 +563,7 @@ export default function CartingBillDetails() {
           setGridAreas((prev) => {
             const current = prev[ModalIds] || [];
             const updated = current.includes(area)
-              ? current
+              ? current.filter((item) => item != area)
               : [...current, area];
             return { ...prev, [ModalIds]: updated };
           })
