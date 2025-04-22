@@ -7,7 +7,10 @@ import Legend from "./Legend";
 import { Link } from "react-router-dom";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
-export default function ImportMap({ onGridSelect }) {
+export default function ImportMap({  setActiveGridSelection,
+  activeGridSelection,
+  onClose,
+  setModalVisible2, }) {
   const [zoomLevel, setZoomLevel] = useState(0.5);
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -167,12 +170,18 @@ export default function ImportMap({ onGridSelect }) {
         (data) => data.camera_locations === locationId
       );
 
-      onGridSelect(clickedData);
-
-      // if (clickedData) {
-      //   setModalData(clickedData);
-      //   setIsModalOpen(true);
-      // }
+      if(clickedData.occupied_area==20){
+        onClose();
+        Swal.fire({
+          icon: "warning",
+          text: `This Area Occupied`,
+          timer: 3000
+        });
+      }else{
+        setActiveGridSelection(clickedData); 
+        onClose();
+        setModalVisible2(true);              
+      }
     },
     [Data]
   );
@@ -3884,7 +3893,7 @@ export default function ImportMap({ onGridSelect }) {
                                                     <div
                                                       className="d-flex align-items-center justify-content-center position-absolute border-light border border-2"
                                                       style={{
-                                                        height: "25vh",
+                                                        height: "26vh",
                                                         width: "298px",
                                                         backgroundColor:
                                                           "#de4ede",
@@ -3989,7 +3998,7 @@ export default function ImportMap({ onGridSelect }) {
                                                     <div
                                                       className="d-flex align-items-center justify-content-center position-absolute border-light border border-2"
                                                       style={{
-                                                        // height: "26.8vh",
+                                                        height: "26.8vh",
                                                         width: "193px",
                                                         backgroundColor:
                                                           "#c435a3",
@@ -4439,7 +4448,7 @@ export default function ImportMap({ onGridSelect }) {
                                                           zIndex: 1,
                                                           backdropFilter:
                                                             "blur(1px)",
-                                                          fontSize: "10px",
+                                                          fontSize: "20px",
                                                         }}
                                                       >
                                                         Z22C1

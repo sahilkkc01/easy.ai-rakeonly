@@ -4,8 +4,10 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Header from "../main/header";
 import Nav from "../main/nav";
-import Footer from "../main/footer";
 import { formatToDateTimeLocal } from "../main/formatToDateTime";
+import ExportMap from "../ExportMap";
+import MezzanineMap from "../MezzanineMap";
+import { MapAreaModal, MapModal } from "../MapModal";
 
 export default function CartingBillDetails() {
   const navigate = useNavigate();
@@ -23,8 +25,14 @@ export default function CartingBillDetails() {
   const [MapName, setMapName] = useState(null);
   const [LocationNames, setLocationNames] = useState([]);
   const [LocationsArea, setLocationsArea] = useState(null);
-
   const today = new Date();
+
+  const [visibleModals, setVisibleModals] = useState({});
+  const [visibleAreaModals, setVisibleAreaModals] = useState({});
+  const [activeGridSelections, setActiveGridSelections] = useState({});
+  const [gridAreas, setGridAreas] = useState({});
+  const [ModalIds, setModalIds] = useState(0);
+
   const fetchData = async (crn_number) => {
     setLoading(true);
     try {
@@ -150,7 +158,7 @@ export default function CartingBillDetails() {
 
   useEffect(() => {
     if (LocationNames) {
-      setMapName(LocationNames[0])
+      setMapName(LocationNames[0]);
     }
   }, [LocationNames]);
 
@@ -234,9 +242,7 @@ export default function CartingBillDetails() {
         // navigate(
         //   `?isFinalSubmit=0&id=${updatedId}&tally_sheet=1&crn_number=${CrnNo}`
         // );
-        navigate(
-          `/carting`
-        );
+        navigate(`/carting`);
       } else {
         throw new Error(response.data?.message || "Failed to save job");
       }
@@ -252,118 +258,145 @@ export default function CartingBillDetails() {
     }
   };
 
-  const GridComponent = ({ index, data }) => {
-    // const [gridInputs, setGridInputs] = useState(
-    //   data?.grid_area?.length > 0
-    //     ? data.grid_area.map((item, i) => ({
-    //         id: i + 1,
-    //         grid_location: item.grid_locations || "",
-    //         area: item.area || "",
-    //       }))
-    //     : [{ id: 1, grid_location: "", area: "" }]
-    // );
+  const [allGridInputs, setAllGridInputs] = useState({});
 
-    const [gridInputs, setGridInputs] = useState(() => {
-      if (data?.grid_area?.length > 0) {
-        return data.grid_area.map((item, i) => {
-          const matchedArea = LocationsArea?.length > 0
-            ? LocationsArea.find(area => area.location_code == item.grid_locations)
-            : 0;
-    
-          return {
-            id: i + 1,
-            grid_location: item.grid_locations || "",
-            area: matchedArea?.ocr_occupied_area?? item.area ?? "",
-          };
+  useEffect(() => {
+    if (Data && LocationsArea) {
+      const gridData = {};
+
+      Data?.carting_trucks.forEach((data, index) => {
+        if (data?.grid_area?.length > 0) {
+          gridData[index] = data?.grid_area?.map((item, i) => {
+            const matchedArea =
+              LocationsArea?.length > 0
+                ? LocationsArea.find(
+                    (area) => area.location_code === item.grid_locations
+                  )
+                : null;
+
+            return {
+              id: i + 1,
+              grid_location: item.grid_locations || "",
+              area: matchedArea?.ocr_occupied_area ?? item.area ?? "",
+            };
+          });
+        } else {
+          gridData[index] = [{ id: 1, grid_location: "", area: "" }];
+        }
+      });
+
+      setAllGridInputs(gridData);
+    }
+  }, [Data, LocationsArea]);
+
+  useEffect(() => {
+    if (TotalTruck) {
+      if (!allGridInputs[TotalTruck - 1]) {
+        setAllGridInputs({
+          ...allGridInputs,
+          [TotalTruck - 1]: [{ id: 1, grid_location: "", area: "" }],
         });
-      } else {
-        return [{ id: 1, grid_location: "", area: "" }];
       }
-    });
-    const addGridInput = () => {
-      setGridInputs([
-        ...gridInputs,
-        { id: gridInputs.length + 1, grid_location: "", area: "" },
-      ]);
-    };
-    const removeGridInput = (id) => {
-      setGridInputs(gridInputs.filter((input) => input.id !== id));
-    };
+    }
+  }, [TotalTruck]);
 
-    return (
-      <div className="col-md-3 col-5">
-        <label className="form-label">Grid Location & Area (SQM)</label>
-        {gridInputs.map((input, i) => (
-          <div key={input.id} className="mb-2">
-            <div className="d-flex align-items-center gap-3 ">
-              <select
-                className="form-select p-2"
-                name={`grid_locations[${index}][${i}]`}
-                defaultValue={input.grid_location}
-                onChange={(e) => GridAreaHandle(e.target.value, index, i)}
-              >
-                <option value="">Select Grid</option>
-                {Locations?.map((location, j) => (
-                  <option key={j} value={location.location_code}>
-                    {location.location_code}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="text"
-                className="form-control p-2"
-                placeholder="Area (SQM)"
-                name={`area[${index}][${i}]`}
-                id={`area_${index}_${i}`}
-                defaultValue={input.area}
-                onChange={(e) => AreaHandle(index, i)}
-                // readOnly
-              />
-              {/* Add button */}
-              <button
-                type="button"
-                className="btn btn-success btn-sm px-2 py-1"
-                onClick={addGridInput}
-              >
-                +
-              </button>
-              {gridInputs.length > 1 && (
-                <button
-                  type="button"
-                  className="btn btn-danger btn-sm px-2 py-1"
-                  onClick={() => removeGridInput(input.id)}
-                >
-                  -
-                </button>
-              )}
-            </div>
-            <small id={`error_area_${index}_${i}`}></small>
-          </div>
-        ))}
-      </div>
-    );
+  const addGridInput = (index) => {
+    const updatedInputs = [...(allGridInputs[index] || [])];
+    updatedInputs.push({
+      id: updatedInputs.length + 1,
+      grid_location: "",
+      area: "",
+    });
+
+    setAllGridInputs({
+      ...allGridInputs,
+      [index]: updatedInputs,
+    });
   };
 
-  const GridAreaHandle = (grid, id, key) => {
-    let totalArea = 0;
-    let occupied = 0;
-    let loc_i = 1;
+  const removeGridInput = (id, index) => {
+    const updatedInputs = (allGridInputs[index] || []).filter(
+      (input) => input.id !== id
+    );
 
-    Locations?.forEach((location) => {
-      if (location.location_code === grid && loc_i == 1) {
-        loc_i++;
-        totalArea += parseInt(location.total_area) || 0;
-        occupied += parseInt(location.ocr_occupied_area ?? location.occupied_area) || 0;
-      }
+    setAllGridInputs({
+      ...allGridInputs,
+      [index]: updatedInputs,
     });
+  };
 
-    let available = totalArea - occupied;
-    let areaInput = document.getElementById(`area_${id}_${key}`);
+  const GridComponents = ({ index }) => {
+    const gridInputs = allGridInputs[index];
+    return (
+      <div className="col-md-4 col-6">
+        <label className="form-label">Grid Location & Area (SQM)</label>
+        {gridInputs?.map((input, i) => {
+          const modalId = `${index}_${i}`;
+          return (
+            <div key={input.id} className="mb-2">
+              <div className="d-flex align-items-center gap-3">
+                <button
+                  className="btn btn-sm btn-info me-1"
+                  type="button"
+                  onClick={() => {
+                    setModalIds(modalId);
+                    setVisibleModals((prev) => ({ ...prev, [modalId]: true }));
+                  }}
+                >
+                  <i className="fa fa-map" />
+                </button>
+                <input
+                  type="text"
+                  className="form-control p-2"
+                  placeholder="Grid Location"
+                  name={`grid_locations[${index}][${i}]`}
+                  value={
+                    activeGridSelections[modalId]?.location_code ??
+                    input.grid_location
+                  }
+                  readOnly
+                />
+                <input
+                  type="text"
+                  className="form-control p-2"
+                  placeholder="Area (SQM)"
+                  name={`area[${index}][${i}]`}
+                  id={`area_${index}_${i}`}
+                  defaultValue={gridAreas[modalId]?.length ?? input.area}
+                  onChange={(e) => AreaHandle(index, i)}
+                />
+                <input
+                  type="hidden"
+                  className="form-control p-2"
+                  name={`wh_area_loc[${index}][${i}]`}
+                  value={JSON.stringify(gridAreas[modalId])}
+                />
 
-    if (areaInput) {
-      areaInput.value = available >= 0 ? available : 0;
-      areaInput.max = totalArea;
-    }
+                <button
+                  type="button"
+                  className="btn btn-success btn-sm px-2 py-1"
+                  onClick={() => addGridInput(index)}
+                >
+                  +
+                </button>
+                {gridInputs.length > 1 && (
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm px-2 py-1"
+                    onClick={() => {
+                      removeGridInput(input.id, index);
+                    }}
+                  >
+                    -
+                  </button>
+                )}
+              </div>
+              <small id={`error_area_${index}_${i}`}></small>
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   const AreaHandle = (id, key) => {
@@ -473,10 +506,9 @@ export default function CartingBillDetails() {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchLocationsArea();
-  },[searchParams,Data])
-
+  }, [searchParams, Data]);
 
   return (
     <>
@@ -495,6 +527,44 @@ export default function CartingBillDetails() {
           </div>
         </div>
       )}
+      <MapModal
+        isVisible={visibleModals[ModalIds] || false}
+        onClose={() =>
+          setVisibleModals((prev) => ({ ...prev, [ModalIds]: false }))
+        }
+        MapName={MapName}
+        setActiveGridSelection={(val) =>
+          setActiveGridSelections((prev) => ({
+            ...prev,
+            [ModalIds]: val,
+          }))
+        }
+        activeGridSelection={activeGridSelections[ModalIds]}
+        setModalVisible2={(val) =>
+          setVisibleAreaModals((prev) => ({ ...prev, [ModalIds]: val }))
+        }
+      />
+
+      <MapAreaModal
+        isVisible2={visibleAreaModals[ModalIds] || false}
+        onClose2={() =>
+          setVisibleAreaModals((prev) => ({
+            ...prev,
+            [ModalIds]: false,
+          }))
+        }
+        activeGridSelection={activeGridSelections[ModalIds]}
+        setGridArea={(area) =>
+          setGridAreas((prev) => {
+            const current = prev[ModalIds] || [];
+            const updated = current.includes(area)
+              ? current
+              : [...current, area];
+            return { ...prev, [ModalIds]: updated };
+          })
+        }
+        gridArea={gridAreas[ModalIds] ?? []}
+      />
       <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
         <div className="layout-container">
           <div className="layout-page">
@@ -630,7 +700,7 @@ export default function CartingBillDetails() {
                                     defaultValue={formatToDateTimeLocal(today)}
                                   />
                                 </div>
-                                <div className="col-4">
+                                {/* <div className="col-4">
                                   <label className="form-label">
                                     End Date Time
                                   </label>
@@ -642,17 +712,17 @@ export default function CartingBillDetails() {
                                   />
                                 </div>
                                 <div className="col-4">
-                                <label className="form-label">
-                                  Handling Type
-                                </label>
-                                <select
-                                  className="form-select p-2"
-                                  name="handline_type"
-                                >
-                                  <option value="LCH">LCH</option>
-                                  <option value="MCH">MCH</option>
-                                </select>
-                              </div>
+                                  <label className="form-label">
+                                    Handling Type
+                                  </label>
+                                  <select
+                                    className="form-select p-2"
+                                    name="handline_type"
+                                  >
+                                    <option value="LCH">LCH</option>
+                                    <option value="MCH">MCH</option>
+                                  </select>
+                                </div> */}
                               </div>
                             </div>
                           </div>
@@ -664,9 +734,8 @@ export default function CartingBillDetails() {
                                 value={MapName}
                                 onChange={(e) => setMapName(e.target.value)}
                               >
-                                {LocationNames?.map((map,i)=>(
+                                {LocationNames?.map((map, i) => (
                                   <option value={map}>{map}</option>
-
                                 ))}
                               </select>
                             </div>
@@ -712,11 +781,16 @@ export default function CartingBillDetails() {
                                     <option value="" disabled>
                                       Select Bill
                                     </option>
-                                    {Data?.carting_shipping_bill_details.map((bill, k) => (
-                                        <option key={k} value={bill.shipping_bill_number}>
+                                    {Data?.carting_shipping_bill_details.map(
+                                      (bill, k) => (
+                                        <option
+                                          key={k}
+                                          value={bill.shipping_bill_number}
+                                        >
                                           {bill.shipping_bill_number}
                                         </option>
-                                      ))}
+                                      )
+                                    )}
                                   </select>
                                 </div>
 
@@ -779,14 +853,7 @@ export default function CartingBillDetails() {
                                     }
                                   />
                                 </div>
-                                <GridComponent
-                                  index={i}
-                                  data={
-                                    Data?.carting_trucks?.[i] ?? {
-                                      grid_area: [],
-                                    }
-                                  }
-                                />
+                                <GridComponents index={i} />
                               </div>
                             </div>
                           ))}
@@ -858,13 +925,9 @@ export default function CartingBillDetails() {
                     </div>
                   )}
                 </div>
-                <Footer />
-                <div className="content-backdrop fade" />
               </div>
             </div>
           </div>
-          <div className="layout-overlay layout-menu-toggle"></div>
-          <div className="drag-target"></div>
         </div>
       </div>
     </>

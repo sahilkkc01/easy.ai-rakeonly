@@ -8,7 +8,8 @@ import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTimeLocal } from "../main/formatToDateTime";
 import ImportMap from "../ImportMap";
-import $ from 'jquery';
+import $ from "jquery";
+import { MapAreaModal, MapModal } from "../MapModal";
 
 export default function DeStuffingBillDetails() {
   const [isFinalSubmit, setIsFinalSubmit] = useState(false);
@@ -24,9 +25,13 @@ export default function DeStuffingBillDetails() {
   const [Locations, setLocations] = useState(null);
   const [LocationsArea, setLocationsArea] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeGridSelection, setActiveGridSelection] = useState(null);
-
   const today = new Date();
+
+  const [visibleModals, setVisibleModals] = useState({});
+  const [visibleAreaModals, setVisibleAreaModals] = useState({});
+  const [activeGridSelections, setActiveGridSelections] = useState({});
+  const [gridAreas, setGridAreas] = useState({});
+  const [ModalIds, setModalIds] = useState(0);
 
   const fetchData = async (type, containerNo) => {
     setLoading(true);
@@ -58,7 +63,7 @@ export default function DeStuffingBillDetails() {
     setLoading(true);
     let url = `https://ctas.live/backend/api/warehouse/locations?warehouse_type=Import`;
     if (MapName) {
-      url += `&warehouse_name=${MapName}`; 
+      url += `&warehouse_name=${MapName}`;
     }
     try {
       const response = await axios.get(url);
@@ -167,146 +172,133 @@ export default function DeStuffingBillDetails() {
     }
   };
 
-  const GridComponent = ({ details, index }) => {
+  const [allGridInputs, setAllGridInputs] = useState({});
 
-    const [gridInputs, setGridInputs] = useState(() => {
-      if (details?.grid_area?.length > 0) {
-        return details.grid_area.map((item, i) => {
-          const matchedArea = LocationsArea?.length > 0
-            ? LocationsArea.find(area => area.location_code == item.grid_locations)
-            : 0;
-    
-          return {
-            id: i + 1,
-            grid_location: item.grid_locations || "",
-            area: matchedArea?.ocr_occupied_area?? item.area ?? "",
-          };
-        });
-      } else {
-        return [{ id: 1, grid_location: "", area: "" }];
-      }
+  useEffect(() => {
+    if (Data && LocationsArea) {
+      const gridData = {};
+
+      Data?.de_stuffing_bill_details.forEach((data, index) => {
+        if (data?.grid_area?.length > 0) {
+          gridData[index] = data?.grid_area?.map((item, i) => {
+            const matchedArea =
+              LocationsArea?.length > 0
+                ? LocationsArea.find(
+                    (area) => area.location_code === item.grid_locations
+                  )
+                : null;
+
+            return {
+              id: i + 1,
+              grid_location: item.grid_locations || "",
+              area: matchedArea?.ocr_occupied_area ?? item.area ?? "",
+            };
+          });
+        } else {
+          gridData[index] = [{ id: 1, grid_location: "", area: "" }];
+        }
+      });
+
+      setAllGridInputs(gridData);
+    }
+  }, [Data, LocationsArea]);
+
+  const addGridInput = (index) => {
+    const updatedInputs = [...(allGridInputs[index] || [])];
+    updatedInputs.push({
+      id: updatedInputs.length + 1,
+      grid_location: "",
+      area: "",
     });
-    
-    // Function to add a new grid input
-    const addGridInput = () => {
-      setGridInputs([
-        ...gridInputs,
-        { id: gridInputs.length + 1, grid_location: "", area: "" },
-      ]);
-    };
 
-    // Function to remove a grid input
-    const removeGridInput = (id) => {
-      setGridInputs(gridInputs.filter((input) => input.id !== id));
-    };
+    setAllGridInputs({
+      ...allGridInputs,
+      [index]: updatedInputs,
+    });
+  };
 
-    const handleGridSelect = (selectedGridCode) => {
-      if (!activeGridSelection) return;
-    
-      const updatedInputs = [...gridInputs];
-      updatedInputs[activeGridSelection.index] = {
-        ...updatedInputs[activeGridSelection.index],
-        grid_location: selectedGridCode?.location_code,
-      };
-      setGridInputs(updatedInputs);
-    
-      // ✅ Close the modal using Bootstrap's JS API
-      const modalEl = document.getElementById("mapModal");
-      const modalInstance = window.bootstrap?.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
-      modalInstance.hide();
-      // $('#mapModal').modal('hide')
-      const closeBtn = document.getElementById("closeMapModalBtn");
-      closeBtn?.click();
-      // $('#closeMapModalBtn').click();
+  const removeGridInput = (id, index) => {
+    const updatedInputs = (allGridInputs[index] || []).filter(
+      (input) => input.id !== id
+    );
 
-      // alert(JSON.stringify(selectedGridCode.location_code));
-    };
+    setAllGridInputs({
+      ...allGridInputs,
+      [index]: updatedInputs,
+    });
+  };
 
+  const GridComponents = ({ index }) => {
+    const gridInputs = allGridInputs[index];
     return (
-      <>
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
-
-      <div className="col-md-3 col-5">
+      <div className="col-md-4 col-6">
         <label className="form-label">Grid Location & Area (SQM)</label>
-        {gridInputs.map((input, i) => (
-          <div key={input.id} className="mb-2">
-            
-            <div className="d-flex align-items-center gap-3 ">
-              <div className="map">
-                <button className="btn btn-sm btn-info" type="button" data-bs-toggle="modal" data-bs-target="#mapModal"  onClick={() => setActiveGridSelection({ id: details.id, index: i })}>
-                  <i class="fa fa-map" aria-hidden="true"></i>
+        {gridInputs?.map((input, i) => {
+          const modalId = `${index}_${i}`;
+          return (
+            <div key={input.id} className="mb-2">
+              <div className="d-flex align-items-center gap-3">
+                <button
+                  className="btn btn-sm btn-info me-1"
+                  type="button"
+                  onClick={() => {
+                    setModalIds(modalId);
+                    setVisibleModals((prev) => ({ ...prev, [modalId]: true }));
+                  }}
+                >
+                  <i className="fa fa-map" />
                 </button>
-              </div>
-              <select
-                className="form-select p-2"
-                name={`grid_locations[${details.id}][${i}]`}
-                // defaultValue={input.grid_location}
-                // onChange={(e) => GridAreaHandle(e.target.value, details.id, i)}
+                <input
+                  type="text"
+                  className="form-control p-2"
+                  placeholder="Grid Location"
+                  name={`grid_locations[${index}][${i}]`}
+                  value={
+                    activeGridSelections[modalId]?.location_code ??
+                    input.grid_location
+                  }
+                  readOnly
+                />
+                <input
+                  type="text"
+                  className="form-control p-2"
+                  placeholder="Area (SQM)"
+                  name={`area[${index}][${i}]`}
+                  id={`area_${index}_${i}`}
+                  defaultValue={gridAreas[modalId]?.length ?? input.area}
+                  onChange={(e) => AreaHandle(index, i)}
+                />
+                <input
+                  type="hidden"
+                  className="form-control p-2"
+                  name={`wh_area_loc[${index}][${i}]`}
+                  value={JSON.stringify(gridAreas[modalId])}
+                />
 
-                value={input.grid_location}
-                onChange={(e) => GridAreaHandle(e.target.value, details.id, i)}
-
-              >
-                <option value="">Select Grid</option>
-                {Locations?.map((location, j) => (
-                  <option key={j} value={location.location_code}>
-                    {location.location_code}
-                  </option>
-                ))}
-              </select>
-              <input
-                type="text"
-                className="form-control p-2"
-                placeholder="Area (SQM)"
-                name={`area[${details.id}][${i}]`}
-                id={`area_${details.id}_${i}`}
-                defaultValue={input.area}
-                onChange={(e) => AreaHandle(details.id, i)}
-              />
-              {/* Add button */}
-              <button
-                type="button"
-                className="btn btn-success btn-sm px-2 py-1"
-                onClick={addGridInput}
-              >
-                +
-              </button>
-              {gridInputs.length > 1 && (
                 <button
                   type="button"
-                  className="btn btn-danger btn-sm px-2 py-1"
-                  onClick={() => removeGridInput(input.id)}
+                  className="btn btn-success btn-sm px-2 py-1"
+                  onClick={() => addGridInput(index)}
                 >
-                  -
+                  +
                 </button>
-              )}
+                {gridInputs.length > 1 && (
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm px-2 py-1"
+                    onClick={() => {
+                      removeGridInput(input.id, index);
+                    }}
+                  >
+                    -
+                  </button>
+                )}
+              </div>
+              <small id={`error_area_${index}_${i}`}></small>
             </div>
-            <small id={`error_area_${details.id}_${i}`}></small>
-          </div>
-        ))}
+          );
+        })}
       </div>
-
-
-
-      {/* // data-bs-toggle="modal" data-bs-target="#staticBackdrop" */}
-      <div class="modal fade" id="mapModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="mapModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="mapModalLabel">Modal title</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <ImportMap onGridSelect={handleGridSelect} />
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeMapModalBtn">Close</button>
-              {/* <button type="button" class="btn btn-primary">Understood</button> */}
-            </div>
-          </div>
-        </div>
-      </div>
-      </>
     );
   };
 
@@ -319,7 +311,8 @@ export default function DeStuffingBillDetails() {
       if (location.location_code === grid && loc_i == 1) {
         loc_i++;
         totalArea += parseInt(location.total_area) || 0;
-        occupied += parseInt(location.ocr_occupied_area ?? location.occupied_area) || 0;
+        occupied +=
+          parseInt(location.ocr_occupied_area ?? location.occupied_area) || 0;
       }
     });
 
@@ -429,7 +422,6 @@ export default function DeStuffingBillDetails() {
     }
   };
 
-
   const fetchLocationsArea = async () => {
     setLoading(true);
     let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Import`;
@@ -456,15 +448,15 @@ export default function DeStuffingBillDetails() {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchLocationsArea();
-  },[searchParams,Data])
+  }, [searchParams, Data]);
 
   return (
     <>
       {loading && (
         <div
-          className="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100"
+          className="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 myDiv"
           style={{ zIndex: 9999 }}
         >
           <div className="sk-chase sk-primary display-1">
@@ -477,6 +469,45 @@ export default function DeStuffingBillDetails() {
           </div>
         </div>
       )}
+
+      <MapModal
+        isVisible={visibleModals[ModalIds] || false}
+        onClose={() =>
+          setVisibleModals((prev) => ({ ...prev, [ModalIds]: false }))
+        }
+        MapName={MapName}
+        setActiveGridSelection={(val) =>
+          setActiveGridSelections((prev) => ({
+            ...prev,
+            [ModalIds]: val,
+          }))
+        }
+        activeGridSelection={activeGridSelections[ModalIds]}
+        setModalVisible2={(val) =>
+          setVisibleAreaModals((prev) => ({ ...prev, [ModalIds]: val }))
+        }
+      />
+
+      <MapAreaModal
+        isVisible2={visibleAreaModals[ModalIds] || false}
+        onClose2={() =>
+          setVisibleAreaModals((prev) => ({
+            ...prev,
+            [ModalIds]: false,
+          }))
+        }
+        activeGridSelection={activeGridSelections[ModalIds]}
+        setGridArea={(area) =>
+          setGridAreas((prev) => {
+            const current = prev[ModalIds] || [];
+            const updated = current.includes(area)
+              ? current
+              : [...current, area];
+            return { ...prev, [ModalIds]: updated };
+          })
+        }
+        gridArea={gridAreas[ModalIds] ?? []}
+      />
       <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
         <div className="layout-container">
           <div className="layout-page">
@@ -602,7 +633,7 @@ export default function DeStuffingBillDetails() {
                                   defaultValue={formatToDateTimeLocal(today)}
                                 />
                               </div>
-                              <div className="col-4">
+                              {/* <div className="col-4">
                                 <label className="form-label">
                                   End Date Time
                                 </label>
@@ -624,7 +655,7 @@ export default function DeStuffingBillDetails() {
                                   <option value="LCH">LCH</option>
                                   <option value="MCH">MCH</option>
                                 </select>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                         </div>
@@ -712,7 +743,8 @@ export default function DeStuffingBillDetails() {
                                   name={`package_weight[${details.id}]`}
                                 />
                               </div>
-                              <GridComponent details={details} index={i} />
+                              {/* <GridComponent details={details} index={i} /> */}
+                              <GridComponents index={i} />
                             </div>
                           </div>
                         ))}
