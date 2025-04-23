@@ -358,9 +358,9 @@ export default function CartingBillDetails() {
                   }
                   readOnly
                 />
-                 <span>
+                 {/* <span>
                   {JSON.stringify(gridAreas[modalId])}
-                </span>
+                </span> */}
                 <input
                   type="text"
                   className="form-control p-2"
