@@ -44,6 +44,7 @@ import Rake_survey_tool from "./pages/Rake_survey_tool.jsx";
 import IndexROut from "./pages/IndexROut.jsx";
 import WTR from "./pages/WTR.jsx";
 import Inventory from "./pages/Inventory.jsx";
+import YardRowData from "./pages/YardRowData.jsx";
 
 export default function App() {
 
@@ -113,6 +114,8 @@ export default function App() {
           <Route path="/TallySheetDeStuffingLCL/:ContainerNo" element={<TallySheetDeStuffingLCL />} />
 
           <Route path="/inventory" element={<PrivateRoute><Inventory /></PrivateRoute>} />
+
+          <Route path="/yard/row/data" element={<YardRowData />} />
 
           {/* 
           {/* <Route path="/EIRMain/:Permit" element={<EIRMain />} />
