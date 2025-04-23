@@ -13,12 +13,28 @@ import { useReactToPrint } from "react-to-print";
 export default function YardRowData() {
 
   const [Data, setData] = useState([]);
+  
+  const [ContainerNo, setContainerNo] = useState(null);
+  const [From, setFrom] = useState(null);
+  const [To, setTo] = useState(null);
+  
 const [loading, setLoading] = useState(false);
 
 const GetData = async (page=1) => {
+  // alert('1');
     setLoading(true);
     let url;
     url = `https://ctas.live/backend/api/yard/row/data?page=`+page;
+
+    if(ContainerNo){
+      url += '&container_no='+ContainerNo;
+    }
+    if(From){
+      url += '&from='+From;
+    }
+    if(To){
+      url += '&to='+To;
+    }
 
     try {
       const response = await axios.get(url, {
@@ -48,8 +64,26 @@ const GetData = async (page=1) => {
 
   return (
     <>
-        <div className="contianer">
+        <div className="container">
             {/* {JSON.stringify(Data.data[0])} */}
+          <h3 className="mt-3">Row Data</h3>
+            <div className="row mt-4">
+              <div className="col-md-3">
+                <label htmlFor="">Contianer No</label>
+                <input type="text" className="form-control" name="container_no"  placeholder="Container No"  onChange={(e) => setContainerNo(e.target.value)} />
+              </div>
+              <div className="col-md-3">
+              <label htmlFor="">From</label>
+                <input type="date" className="form-control" name="start" onChange={(e) => setFrom(e.target.value)}  />
+              </div>
+              <div className="col-md-3">
+              <label htmlFor="">To</label>
+                <input type="date" className="form-control"  name="end" onChange={(e) => setTo(e.target.value)} />
+              </div>
+              <div className="col-md-3">
+                <button className="btn btn-info mt-5" onClick={()=>GetData()}>Submit</button>
+              </div>
+            </div>
 
             <div className="card my-3">
                     <div className="card-body">
