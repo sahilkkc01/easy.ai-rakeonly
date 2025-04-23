@@ -101,7 +101,7 @@ export default function DeliveryBillDetails() {
         setTotalTrucks(Data?.delivery_trucks?.length);
       }
 
-      if (Data.status === "1" || Data.status === "2") {
+      if (Data.status == "1" || Data.status == "2") {
         navigate(`?isFinalSubmit=1&id=${ID}&tally_sheet=1&gpm_number=${GpmNo}`);
       }
     }
@@ -502,6 +502,7 @@ const GridComponent = ({ index, data }) => {
                                     Data?.delivery_trucks[i]?.truck_number ??
                                     null
                                   }
+                                  onChange={(e)=>{e.target.value=e.target.value.toUpperCase()}}
                                 />
                               </div>
                               <div className="col-md-2 col-3">

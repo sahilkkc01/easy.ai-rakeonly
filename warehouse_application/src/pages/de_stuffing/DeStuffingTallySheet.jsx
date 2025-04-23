@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -7,13 +7,12 @@ import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTime } from "../main/formatToDateTime";
 
-
 export default function DeStuffingTallySheet() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [Data, setData] = useState(null);
-  
+
   const fetchData = async (type, containerNo) => {
     setLoading(true);
     const url = `https://ctas.live/backend/api/get/de_stuffing/${type}/${containerNo}`;
@@ -64,7 +63,7 @@ export default function DeStuffingTallySheet() {
       Data.de_stuffing_bill_details.forEach((Details) => {
         totalPackages += parseInt(Details.no_of_packages_declared ?? 0);
         totalPackagesWeight += parseFloat(Details.package_weight ?? 0);
-        
+
         if (Array.isArray(Details?.grid_area)) {
           Details.grid_area.forEach((grid) => {
             totalArea += parseFloat(grid.area ?? 0);
@@ -88,7 +87,7 @@ export default function DeStuffingTallySheet() {
 
   return (
     <>
-       {loading && (
+      {loading && (
         <div
           className="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100"
           style={{ zIndex: 9999 }}
@@ -186,7 +185,21 @@ export default function DeStuffingTallySheet() {
                   </td>
                   <td>Importer Name</td>
                   <td>
-                    <strong>: --</strong>
+                    <strong>
+                      :
+                      {[
+                        ...new Set(
+                          Data.de_stuffing_bill_details?.map(
+                            (de) => de.importer_name
+                          )
+                        ),
+                      ].map((name, i) => (
+                        <React.Fragment key={i}>
+                          <span>{name},</span>
+                          <br />
+                        </React.Fragment>
+                      ))}
+                    </strong>
                   </td>
                 </tr>
               </tbody>
@@ -214,7 +227,11 @@ export default function DeStuffingTallySheet() {
                       {Details.commodity_description} ({Details.commodity_code})
                     </td>
                     <td>{Details.no_of_packages_declared}</td>
-                    <td>{Details.package_weight ? Number(Details.package_weight).toFixed(2) : "0"}</td>
+                    <td>
+                      {Details.package_weight
+                        ? Number(Details.package_weight).toFixed(2)
+                        : "0"}
+                    </td>
                     <td>
                       {Details.grid_area?.map((grid, index) => (
                         <span key={index}>{grid.grid_locations}, </span>
@@ -252,7 +269,11 @@ export default function DeStuffingTallySheet() {
                   <td></td>
                   <td></td>
                   <td>{totalPackages}</td>
-                  <td>{totalPackagesWeight ? Number(totalPackagesWeight).toFixed(2) : "0"}</td>
+                  <td>
+                    {totalPackagesWeight
+                      ? Number(totalPackagesWeight).toFixed(2)
+                      : "0"}
+                  </td>
                   <td></td>
                   <td>{totalArea}</td>
                 </tr>
@@ -284,4 +305,3 @@ export default function DeStuffingTallySheet() {
     </>
   );
 }
-

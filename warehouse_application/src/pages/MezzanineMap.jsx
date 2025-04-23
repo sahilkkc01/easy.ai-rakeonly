@@ -127,52 +127,121 @@ export default function MezzanineMap({ setActiveGridSelection,
   const [modalData, setModalData] = useState(null);
   const [TotalArea, setTotalArea] = useState(0);
 
+  // useEffect(() => {
+  //   if (!Array.isArray(Data)) return;
+  //   let areaSum = 0;
+  //   const handleDoubleClick = (data) => () => {
+  //     if (data) {
+  //       setActiveGridSelection(data); 
+  //       setModalVisible2(true);              
+  //       onClose();
+  //     }
+  //   };
+
+  //   Data.forEach((data) => {
+  //     if (!data?.camera_locations) return;
+  //     const location = `${data.location_code ?? data.camera_locations}`;
+  //     const grid_id = location.toLowerCase();
+  //     let grid = document.getElementById(grid_id);
+
+  //     if (grid) {
+  //       grid.addEventListener("click", handleDoubleClick(data));
+  //     }
+
+  //     const total_area = data?.total_area ?? 20;
+  //     const occupied = data?.occupied_area ?? 0;
+  //     const ocr_occupied = data?.ocr_occupied_area ?? 0;
+
+  //     areaSum += Number(total_area);
+
+  //     const setBackgroundColor = (id, color) => {
+  //       const element = document.getElementById(id);
+  //       if (element) {
+  //         element.style.setProperty("background-color", color, "important");
+  //       }
+  //     };
+  //     setBackgroundColor(`${grid_id}`, `${occupied > 0 && "#8f51dd"}`);
+  //     setBackgroundColor(`${grid_id}`, `${ocr_occupied > 0 && "#00b0c4"}`);
+
+  //     Array.from({ length: ocr_occupied }, (_, id) =>
+  //       setBackgroundColor(`${grid_id}_${id + 1}`, "#00b0c4")
+  //     );
+  //     Array.from({ length: occupied }, (_, id) =>
+  //       setBackgroundColor(`${grid_id}_${id + 1}`, "#8f51dd")
+  //     );
+  //   });
+  //   setTotalArea(areaSum);
+  // }, [Data]);
+
   useEffect(() => {
     if (!Array.isArray(Data)) return;
     let areaSum = 0;
     const handleDoubleClick = (data) => () => {
-      if (data) {
-        setActiveGridSelection(data); 
+      setActiveGridSelection(data); 
         setModalVisible2(true);              
         onClose();
-      }
     };
-
+  
+    const eventListeners = [];
     Data.forEach((data) => {
-      if (!data?.camera_locations) return;
-      const location = `${data.location_code ?? data.camera_locations}`;
-      const grid_id = location.toLowerCase();
-      let grid = document.getElementById(grid_id);
-
-      if (grid) {
-        grid.addEventListener("click", handleDoubleClick(data));
+      if (!data?.camera_locations && !data?.location_code) return;
+  
+      const location = `${data.location_code ?? data.camera_locations}`.toLowerCase();
+      const grid_id = location;
+      const gridElement = document.getElementById(grid_id);
+      if (gridElement) {
+        const handler = handleDoubleClick(data);
+        gridElement.addEventListener("click", handler);
+        eventListeners.push({ element: gridElement, handler });
       }
-
+  
       const total_area = data?.total_area ?? 20;
       const occupied = data?.occupied_area ?? 0;
       const ocr_occupied = data?.ocr_occupied_area ?? 0;
-
+  
       areaSum += Number(total_area);
-
+  
       const setBackgroundColor = (id, color) => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.style.setProperty("background-color", color, "important");
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.setProperty("background-color", color, "important");
         }
       };
-      setBackgroundColor(`${grid_id}`, `${occupied > 0 && "#8f51dd"}`);
-      setBackgroundColor(`${grid_id}`, `${ocr_occupied > 0 && "#00b0c4"}`);
-
-      Array.from({ length: ocr_occupied }, (_, id) =>
-        setBackgroundColor(`${grid_id}_${id + 1}`, "#00b0c4")
-      );
-      Array.from({ length: occupied }, (_, id) =>
-        setBackgroundColor(`${grid_id}_${id + 1}`, "#8f51dd")
-      );
+  
+      // Set background on parent box
+      setBackgroundColor(grid_id, occupied > 0 ? "#8f51dd" : "");
+      setBackgroundColor(grid_id, ocr_occupied > 0 ? "#00b0c4" : "");
+  
+      // Apply to inner boxes + add click listeners to each
+      for (let i = 1; i <= total_area; i++) {
+        const boxId = `${grid_id}_${i}`;
+        const boxElement = document.getElementById(boxId);
+  
+        // Priority: ocr_occupied first, then occupied
+        if (i <= ocr_occupied) {
+          setBackgroundColor(boxId, "#00b0c4");
+        } else if (i <= occupied) {
+          setBackgroundColor(boxId, "#8f51dd");
+        }
+  
+        // Add modal click for each inner box
+        if (boxElement) {
+          const handler = handleDoubleClick(data);
+          boxElement.addEventListener("click", handler);
+          eventListeners.push({ element: boxElement, handler });
+        }
+      }
     });
+  
     setTotalArea(areaSum);
+  
+    // Cleanup listeners on unmount
+    return () => {
+      eventListeners.forEach(({ element, handler }) => {
+        element.removeEventListener("click", handler);
+      });
+    };
   }, [Data]);
-
   return (
     <>
       {loading && (
