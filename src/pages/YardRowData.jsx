@@ -13,12 +13,32 @@ import { useReactToPrint } from "react-to-print";
 export default function YardRowData() {
 
   const [Data, setData] = useState([]);
+  
+  const [EquipmentId, setEquipmentId] = useState(null);
+  const [ContainerNo, setContainerNo] = useState(null);
+  const [From, setFrom] = useState(null);
+  const [To, setTo] = useState(null);
+  
 const [loading, setLoading] = useState(false);
 
 const GetData = async (page=1) => {
+  // alert('1');
     setLoading(true);
     let url;
     url = `https://ctas.live/backend/api/yard/row/data?page=`+page;
+
+    if(ContainerNo){
+      url += '&container_no='+ContainerNo;
+    }
+    if(From){
+      url += '&from='+From;
+    }
+    if(To){
+      url += '&to='+To;
+    }
+    if(EquipmentId){
+      url += '&EquipmentId='+EquipmentId;
+    }
 
     try {
       const response = await axios.get(url, {
@@ -48,8 +68,50 @@ const GetData = async (page=1) => {
 
   return (
     <>
-        <div className="contianer">
+        <div className="container">
             {/* {JSON.stringify(Data.data[0])} */}
+          <h3 className="mt-3">Row Data</h3>
+            <div className="row mt-4">
+            <div className="col-md-3">
+                <label htmlFor="equipment_id">Equipment Name</label>
+                {/* <input type="text" className="form-control" name="equipment_id"  placeholder="Equipment Name"  onChange={(e) => setEquipmentId(e.target.value)} /> */}
+
+                  <select name="equipment_id" id="equipment_id" className="form-control" onChange={(e) => setEquipmentId(e.target.value)}>
+                    <option value="" selected disabled>Select Equipment</option>
+                    <option value="R-S1">R-S1</option>
+                    <option value="R-S2">R-S2</option>
+                    <option value="RH04">RH04</option>
+                    <option value="RH05">RH05</option>
+                    <option value="RH06">RH06</option>
+                    <option value="RH07">RH07</option>
+                    <option value="RH08">RH08</option>
+                    <option value="RH10">RH10</option>
+                    <option value="RH12">RH12</option>
+                    <option value="RH13">RH13</option>
+                    <option value="R-S3">R-S3</option>
+                    <option value="RTG5">RTG5</option>
+                    <option value="RTG6">RTG6</option>
+                    <option value="RTG8">RTG8</option>
+                    <option value="RTG9">RTG9</option>
+                  </select>
+
+              </div>
+              <div className="col-md-3">
+                <label htmlFor="">Contianer No</label>
+                <input type="text" className="form-control" name="container_no"  placeholder="Container No"  onChange={(e) => setContainerNo(e.target.value)} />
+              </div>
+              <div className="col-md-3">
+              <label htmlFor="">From</label>
+                <input type="date" className="form-control" name="start" onChange={(e) => setFrom(e.target.value)}  />
+              </div>
+              <div className="col-md-3">
+              <label htmlFor="">To</label>
+                <input type="date" className="form-control"  name="end" onChange={(e) => setTo(e.target.value)} />
+              </div>
+              <div className="col-md-3">
+                <button className="btn btn-info mt-5" onClick={()=>GetData()}>Submit</button>
+              </div>
+            </div>
 
             <div className="card my-3">
                     <div className="card-body">
