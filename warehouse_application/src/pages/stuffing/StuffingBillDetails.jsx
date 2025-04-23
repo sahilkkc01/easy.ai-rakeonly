@@ -595,7 +595,7 @@ const GridComponent = ({ index, data }) => {
                                   defaultValue={formatToDateTimeLocal(today)}
                                 />
                               </div>
-                              {/* <div className="col-4">
+                              <div className="col-4">
                                 <label className="form-label">
                                   End Date Time
                                 </label>
@@ -617,7 +617,7 @@ const GridComponent = ({ index, data }) => {
                                   <option value="LCH">LCH</option>
                                   <option value="MCH">MCH</option>
                                 </select>
-                              </div> */}
+                              </div>
                             </div>
                           </div>
                         </div>

@@ -184,7 +184,7 @@ export default function DeStuffingBillDetails() {
             const matchedArea =
               LocationsArea?.length > 0
                 ? LocationsArea.find(
-                    (area) => area.location_code === item.grid_locations
+                    (area) => area.location_code == item.grid_locations
                   )
                 : null;
 
@@ -228,7 +228,7 @@ export default function DeStuffingBillDetails() {
     });
   };
 
-  const GridComponents = ({ index }) => {
+  const GridComponents = ({ index,details }) => {
     const gridInputs = allGridInputs[index];
     return (
       <div className="col-md-4 col-6">
@@ -252,7 +252,7 @@ export default function DeStuffingBillDetails() {
                   type="text"
                   className="form-control p-2"
                   placeholder="Grid Location"
-                  name={`grid_locations[${index}][${i}]`}
+                  name={`grid_locations[${details.id}][${i}]`}
                   value={
                     activeGridSelections[modalId]?.location_code ??
                     input.grid_location
@@ -266,7 +266,7 @@ export default function DeStuffingBillDetails() {
                   type="text"
                   className="form-control p-2"
                   placeholder="Area (SQM)"
-                  name={`area[${index}][${i}]`}
+                  name={`area[${details.id}][${i}]`}
                   id={`area_${index}_${i}`}
                   defaultValue={gridAreas[modalId]?.length ?? input.area}
                   onChange={(e) => AreaHandle(index, i)}
@@ -274,7 +274,7 @@ export default function DeStuffingBillDetails() {
                 <input
                   type="hidden"
                   className="form-control p-2"
-                  name={`wh_area_loc[${index}][${i}]`}
+                  name={`wh_area_loc[${details.id}][${i}]`}
                   value={JSON.stringify(gridAreas[modalId])}
                 />
 
@@ -636,7 +636,7 @@ export default function DeStuffingBillDetails() {
                                   defaultValue={formatToDateTimeLocal(today)}
                                 />
                               </div>
-                              {/* <div className="col-4">
+                              <div className="col-4">
                                 <label className="form-label">
                                   End Date Time
                                 </label>
@@ -658,7 +658,7 @@ export default function DeStuffingBillDetails() {
                                   <option value="LCH">LCH</option>
                                   <option value="MCH">MCH</option>
                                 </select>
-                              </div> */}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -747,7 +747,7 @@ export default function DeStuffingBillDetails() {
                                 />
                               </div>
                               {/* <GridComponent details={details} index={i} /> */}
-                              <GridComponents index={i} />
+                              <GridComponents index={i} details={details} />
                             </div>
                           </div>
                         ))}
