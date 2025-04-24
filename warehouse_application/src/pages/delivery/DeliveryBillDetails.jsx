@@ -28,7 +28,7 @@ export default function DeliveryBillDetails() {
     const url = `https://ctas.live/backend/api/get/delivery/de_stuffing/${gpm_number}`;
     try {
       const response = await axios.get(url);
-      if (response?.data?.status === "success") {
+      if (response?.data?.status == "success") {
         setData(response?.data?.data);
       } else {
         Swal.fire({
@@ -56,7 +56,7 @@ export default function DeliveryBillDetails() {
     const id = searchParams.get("id");
 
     if (FinalSubmit) {
-      setIsFinalSubmit(FinalSubmit === "1");
+      setIsFinalSubmit(FinalSubmit == "1");
     }
     if (id) {
       setID(id);
@@ -127,7 +127,7 @@ export default function DeliveryBillDetails() {
         }
       );
 
-      if (response?.data?.status === "success") {
+      if (response?.data?.status == "success") {
         await Swal.fire({
           icon: "success",
           text: response.data.message,
@@ -167,7 +167,7 @@ export default function DeliveryBillDetails() {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      if (response?.data?.status === "success") {
+      if (response?.data?.status == "success") {
         const updatedId = response.data.data?.id || ID;
         setID(updatedId);
 
@@ -197,18 +197,28 @@ export default function DeliveryBillDetails() {
       setLoading(false);
     }
   };
+
+
   useEffect(() => {
     let defaultGridData = {};
     Data?.delivery_trucks?.forEach((truck, i) => {
-      defaultGridData[i] =
-        truck?.grid_area?.length > 0
-          ? truck.grid_area.map((item, index) => ({
-              id: item.id || index + 1,
-              grid_location: item.grid_locations || "NA",
-              area: item.area || "NA",
-            }))
-          : [];
+      let gridItems = [];
+  
+      if (truck?.grid_area?.length > 0) {
+        gridItems = truck.grid_area.map((item, index) => {
+  
+          return {
+            id: item.id || index + 1,
+            grid_location: item.grid_locations || "NA",
+            area: item.area || "NA",
+            sBillNo: truck.boe,
+            total_pkg: Number(truck.no_of_pkgs) || 0,
+          };
+        });
+      }
+      defaultGridData[i] = gridItems;
     });
+  
     setGridData(defaultGridData);
     setGridData2(defaultGridData);
   }, [Data]);
@@ -232,10 +242,10 @@ export default function DeliveryBillDetails() {
             ? Data.de_stuffing_container.de_stuffing_bill_details.flatMap(
                 (detail) =>
                   ( (details.boe_number != null && 
-                    (detail.bol_number === details.boe_number || detail.boe_number === details.boe_number)
+                    (detail.bol_number == details.boe_number || detail.boe_number == details.boe_number)
                   ) ||
                   (details.bol_number != null && 
-                    (detail.bol_number === details.bol_number || detail.boe_number === details.bol_number)
+                    (detail.bol_number == details.bol_number || detail.boe_number == details.bol_number)
                   ))
                     ? detail?.grid_area?.map((item, i) => ({
                         id: i + 1,
