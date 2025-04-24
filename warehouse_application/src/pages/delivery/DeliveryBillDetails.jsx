@@ -19,6 +19,7 @@ export default function DeliveryBillDetails() {
   const [isFinalSubmit, setIsFinalSubmit] = useState(false);
   const [ID, setID] = useState(false);
   const [gridData, setGridData] = useState({});
+  const [gridData2, setGridData2] = useState({});
 
   const today = new Date();
 
@@ -209,6 +210,7 @@ export default function DeliveryBillDetails() {
           : [];
     });
     setGridData(defaultGridData);
+    setGridData2(defaultGridData);
   }, [Data]);
 
   const handleBillDetails = (key, sBillNo) => {
@@ -224,20 +226,33 @@ export default function DeliveryBillDetails() {
           details.package_code;
 
         // Extract grid data for the selected bill
+        // alert(sBillNo);
         let myData =
           Data?.de_stuffing_container?.de_stuffing_bill_details?.length > 0
             ? Data.de_stuffing_container.de_stuffing_bill_details.flatMap(
                 (detail) =>
-                  (detail.boe_number == sBillNo  || detail.bol_number == sBillNo)
+                  ( (details.boe_number != null && 
+                    (detail.bol_number === details.boe_number || detail.boe_number === details.boe_number)
+                  ) ||
+                  (details.bol_number != null && 
+                    (detail.bol_number === details.bol_number || detail.boe_number === details.bol_number)
+                  ))
                     ? detail?.grid_area?.map((item, i) => ({
                         id: i + 1,
                         grid_location: item.grid_locations || "NA",
-                        area: item.area || "NA",
+                        area: item.area || 0,
+                        sBillNo: sBillNo || 0,
+                        total_pkg: Number(detail?.no_of_packages_declared) || 0,
                       })) || []
                     : []
               )
             : [];
         setGridData((prev) => ({
+          ...prev,
+          [key]: myData,
+        }));
+
+        setGridData2((prev) => ({
           ...prev,
           [key]: myData,
         }));
@@ -315,7 +330,38 @@ const GridComponent = ({ index, data }) => {
     } else {
       console.log("Package weight input not found!");
     }
+
+    const currentGrids = gridData2[key];
+
+    if (currentGrids && currentGrids.length > 0 && pkg) {
+      const updatedGrids = currentGrids.map((item) => {
+        const totalPkg = item.total_pkg || 0;
+        const totalArea = Number(item.area || 0);
+    
+        if (totalPkg > 0 && totalArea > 0) {
+          const perPackageArea = totalArea / totalPkg;
+          return {
+            ...item,
+            area: Math.round(perPackageArea * pkg),
+          };
+        }
+        return item; 
+      });
+      
+      setGridData((prev) => ({
+        ...prev,
+        [key]: updatedGrids,
+      }));
+    }
   };
+
+  useEffect(()=>{
+    console.log('gridData',gridData);
+  },[gridData])
+
+  useEffect(()=>{
+    console.log('gridData2',gridData2);
+  },[gridData2])
 
   return (
     <>

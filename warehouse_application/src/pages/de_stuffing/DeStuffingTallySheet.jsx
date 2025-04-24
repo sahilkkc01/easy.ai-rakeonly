@@ -171,7 +171,14 @@ export default function DeStuffingTallySheet() {
                 <tr>
                   <td>Total No. of Packages Declared</td>
                   <td>
-                    <strong>: {totalPackages}</strong>
+                    {/* <strong>: {totalPackages}</strong> */}
+                    <strong> : 
+                      {Data?.de_stuffing_bill_details?.reduce(
+                        (sum, details) =>
+                          sum + Number(details.ccls_no_of_pkg_declared || 0),
+                        0
+                      )}
+                    </strong>
                   </td>
                   <td>Excess / Short Packages</td>
                   <td>

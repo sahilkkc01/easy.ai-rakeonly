@@ -203,7 +203,14 @@ export default function CartingTallySheet() {
                 <tr>
                   <td>Total No. of Packages Declared</td>
                   <td>
-                    <strong>: {totalPackages}</strong>
+                    {/* <strong>: {totalPackages}</strong> */}
+                    <strong> : 
+                      {Data?.carting_shipping_bill_details?.reduce(
+                        (sum, details) =>
+                          sum + Number(details.no_of_packages_declared || 0),
+                        0
+                      )}
+                    </strong>
                   </td>
                   <td>Exporter Name</td>
                   <td>

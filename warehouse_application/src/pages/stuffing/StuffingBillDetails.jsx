@@ -391,7 +391,7 @@ const GridComponent = ({ index, data }) => {
 
     let boe_number = document.getElementById(`boe_${key}`)?.value;
 
-    Data?.delivery_bill_details?.forEach((details) => {
+    Data?.stuffing_shipping_bill_details?.forEach((details) => {
       if (details.boe_number == boe_number) {
         package_weight += parseFloat(details.package_weight) || 0;
         no_of_pkgs += parseFloat(details.no_of_packages_declared) || 0;
@@ -406,7 +406,7 @@ const GridComponent = ({ index, data }) => {
       Per_package_weight += package_weight / no_of_pkgs.toFixed(2);
     }
 
-    let weightInput = document.getElementById(`pkgs_weight_${key}`);
+    let weightInput = document.getElementById(`package_weight_${key}`);
 
     if (weightInput) {
       if (pkg && pkg != 0) {
@@ -420,6 +420,16 @@ const GridComponent = ({ index, data }) => {
       console.log("Package weight input not found!");
     }
   };
+
+  useEffect(() => {
+    if (Data) {
+      setID(Data?.id);
+
+      if (Data.status == "1" || Data.status == "2") {
+        navigate(`?isFinalSubmit=1&id=${ID}&tally_sheet=1&container_number=${Data.container_number}`);
+      }
+    }
+  }, [Data]);
 
   return (
     <>

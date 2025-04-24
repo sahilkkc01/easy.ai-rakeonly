@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
@@ -18,11 +14,11 @@ export default function DeliveryBillDetails() {
   const [GpmNo, setGpmNo] = useState(null);
   const [TallySheet, setTallySheet] = useState(null);
   const [Data, setData] = useState(null);
-  const [Locations, setLocations] = useState(null);
   const [TotalTrucks, setTotalTrucks] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFinalSubmit, setIsFinalSubmit] = useState(false);
-const [ID, setID] = useState(false);
+  const [ID, setID] = useState(false);
+  const [gridData, setGridData] = useState({});
 
   const today = new Date();
 
@@ -52,20 +48,19 @@ const [ID, setID] = useState(false);
     }
   };
 
-  // this is manoj
   useEffect(() => {
     const gpm_number = searchParams.get("gpm_number");
     const tallySheet = searchParams.get("tally_sheet");
     const FinalSubmit = searchParams.get("isFinalSubmit");
     const id = searchParams.get("id");
-    
-    if(FinalSubmit){
-      setIsFinalSubmit(FinalSubmit === '1');
+
+    if (FinalSubmit) {
+      setIsFinalSubmit(FinalSubmit === "1");
     }
-    if(id){
+    if (id) {
       setID(id);
     }
-    
+
     if (gpm_number) {
       setGpmNo(gpm_number);
       if (tallySheet) {
@@ -76,31 +71,6 @@ const [ID, setID] = useState(false);
     }
   }, [searchParams]);
 
-  const fetchLocations = async () => {
-    setLoading(true);
-    const url = `https://ctas.live/backend/api/warehouse/empty/locations?type=Import`;
-    try {
-      const response = await axios.get(url);
-      if (response?.data?.status === "success") {
-        setLocations(response?.data?.data);
-      } else {
-        Swal.fire({
-          icon: response?.data?.status,
-          text: response?.data?.message,
-          timer: 3000,
-        });
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        text: `Error Fetching Data: ${error.message}`,
-        timer: 3000,
-        showConfirmButton: false,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const GetFormData = async (e) => {
     e.preventDefault();
@@ -123,77 +93,62 @@ const [ID, setID] = useState(false);
     }
   }, [searchParams]);
 
-  // useEffect(() => {
-  //   if (Data) {
-  //     fetchLocations();
-
-  //     if (Data?.delivery_trucks && Data?.delivery_trucks?.length > 0) {
-  //       setTotalTrucks(Data?.delivery_trucks?.length);
-  //     }
-  //   }
-  // }, [Data]);
-
   useEffect(() => {
     if (Data) {
       setID(Data?.id);
-      fetchLocations();
-  
+
       if (Data?.delivery_trucks && Data?.delivery_trucks?.length > 0) {
         setTotalTrucks(Data?.delivery_trucks?.length);
       }
-      
-      if(Data.status === '1' || Data.status === '2'){
+
+      if (Data.status == "1" || Data.status == "2") {
         navigate(`?isFinalSubmit=1&id=${ID}&tally_sheet=1&gpm_number=${GpmNo}`);
       }
     }
   }, [Data]);
 
-  // this is manoj
-  
   const handleFinalSubmit = async () => {
     setLoading(true);
-    
+
     try {
-      // Note the corrected endpoint URL (matches what you specified)
       const url = `https://ctas.live/backend/api/delivery/final/submit?id=${ID}&gpm_number=${GpmNo}`;
-      // Using POST method with parameters in the body is more standard for submit actions
       const response = await axios.get(
         url,
         {
           id: ID,
-          gpm_number: GpmNo
+          gpm_number: GpmNo,
         },
         {
           headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          }
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
         }
       );
-  
+
       if (response?.data?.status === "success") {
         await Swal.fire({
           icon: "success",
           text: response.data.message,
-          timer: 2000
+          timer: 2000,
         });
-        
-        // Navigate to view-only mode
+
         navigate(`?isFinalSubmit=1&id=${ID}&tally_sheet=1&gpm_number=${GpmNo}`);
       } else {
         Swal.fire({
           icon: "error",
           text: response?.data?.message || "Final submit failed",
-          timer: 3000
+          timer: 3000,
         });
       }
     } catch (error) {
       console.error("Final submit error:", error);
       Swal.fire({
         icon: "error",
-        text: error.response?.data?.message || 
-             "Failed to complete final submission. Please try again.",
-        timer: 3000
+        text:
+          error.response?.data?.message ||
+          "Failed to complete final submission. Please try again.",
+        timer: 3000,
       });
     } finally {
       setLoading(false);
@@ -205,26 +160,25 @@ const [ID, setID] = useState(false);
     setLoading(true);
     const formData = new FormData(e.target);
     const url = `https://ctas.live/backend/api/delivery/de_stuffing/update`;
-  
+
     try {
       const response = await axios.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-  
+
       if (response?.data?.status === "success") {
-        // Get the updated ID from response or use existing
         const updatedId = response.data.data?.id || ID;
-        setID(updatedId); // Update the ID state
-  
-        // Wait for state to update and show success message
+        setID(updatedId);
+
         await Swal.fire({
           icon: "success",
           text: response.data.message,
           timer: 2000,
         });
-  
-        // Navigate to tally sheet view with edit mode
-        navigate(`?isFinalSubmit=0&id=${updatedId}&tally_sheet=1&gpm_number=${GpmNo}`);
+
+        navigate(
+          `?isFinalSubmit=0&id=${updatedId}&tally_sheet=1&gpm_number=${GpmNo}`
+        );
       } else {
         Swal.fire({
           icon: "error",
@@ -242,144 +196,90 @@ const [ID, setID] = useState(false);
       setLoading(false);
     }
   };
-  const GridComponent = ({ index ,data}) => {
-
-    const [gridInputs, setGridInputs] = useState(
-      data?.grid_area?.length > 0
-        ? data.grid_area.map((item, i) => ({
-            id: i + 1,
-            grid_location: item.grid_locations || "",
-            area: item.area || "",
-          }))
-        : [{ id: 1, grid_location: "", area: "" }]
-    );
-  
-    // Function to add a new grid input
-    const addGridInput = () => {
-      setGridInputs([...gridInputs, { id: gridInputs.length + 1, grid_location: "", area: "" }]);
-    };
-  
-    // Function to remove a grid input
-    const removeGridInput = (id) => {
-      setGridInputs(gridInputs.filter((input) => input.id !== id));
-    };
-// console.log(gridInputs);
-    return (
-      <div className="col-md-3 col-5">
-        <label className="form-label">Grid Location & Area (SQM)</label>
-        {gridInputs.map((input, i) => (
-          <div key={input.id} className="mb-2">
-            <div className="d-flex align-items-center gap-3 ">
-            <select
-              className="form-select p-2"
-              name={`grid_locations[${index}][${i}]`}
-              defaultValue={input.grid_location}
-              onChange={(e) => GridAreaHandle(e.target.value, index, i)}
-            >
-              <option value="">Select Grid</option>
-              {Locations?.map((location, j) => (
-                <option key={j} value={location.camera_locations}>
-                  {location.camera_locations}
-                </option>
-              ))}
-            </select>
-            <input
-              type="text"
-              className="form-control p-2"
-              placeholder="Area (SQM)"
-              name={`area[${index}][${i}]`}
-              id={`area_${index}_${i}`}
-              defaultValue={input.area}
-              onChange={(e) => AreaHandle(index, i)}
-            />
-            {/* Add button */}
-            <button type="button" className="btn btn-success btn-sm px-2 py-1" onClick={addGridInput}>
-              +
-            </button>
-            {gridInputs.length > 1 && (
-              <button
-                type="button"
-                className="btn btn-danger btn-sm px-2 py-1"
-                onClick={() => removeGridInput(input.id)}
-              >
-                -
-              </button>
-            )}
-          </div>
-          <small id={`error_area_${index}_${i}`}></small>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-
-  const GridAreaHandle = (grid, id, key) => {
-    let totalArea = 0;
-    let occupied = 0;
-    let loc_i =1;
-  
-    Locations?.forEach((location) => {
-      if (location.camera_locations === grid && loc_i == 1) {
-        loc_i++;
-        totalArea += parseInt(location.total_area) || 0;
-        occupied += parseInt(location.occupied_area) || 0;
-      }
+  useEffect(() => {
+    let defaultGridData = {};
+    Data?.delivery_trucks?.forEach((truck, i) => {
+      defaultGridData[i] =
+        truck?.grid_area?.length > 0
+          ? truck.grid_area.map((item, index) => ({
+              id: item.id || index + 1,
+              grid_location: item.grid_locations || "NA",
+              area: item.area || "NA",
+            }))
+          : [];
     });
+    setGridData(defaultGridData);
+  }, [Data]);
 
-    let available = totalArea - occupied;
-    let areaInput = document.getElementById(`area_${id}_${key}`);
-  
-    if (areaInput) {
-      areaInput.value = available >= 0 ? available : 0;
-      areaInput.max = available >= 0 ? available : 0; 
-    }
-  };
-
-  const AreaHandle = (id, key) => {
-    let areaInput = document.getElementById(`area_${id}_${key}`);
-    let errorMsg = document.getElementById(`error_area_${id}_${key}`);
-  
-    if (areaInput) {
-      let myValue = parseFloat(areaInput.value) || 0;
-      let maxAttr = parseFloat(areaInput.getAttribute("max"));
-      let myMaxValue = maxAttr|| maxAttr == 0 ? maxAttr : 20;
-  
-      if (myValue > myMaxValue) {
-        areaInput.classList.add("border", "border-danger"); 
-        if (errorMsg) {
-          errorMsg.className = "text-danger d-block mt-1";
-          errorMsg.innerText = `Grid Maximum Area Available ${myMaxValue}`;
-        }
-      } else {
-        areaInput.classList.remove("border", "border-danger");
-        if (errorMsg) {
-          errorMsg.className='';
-          errorMsg.innerText = '';
-        }
-      }
-    }
-  };
-  
   const handleBillDetails = (key, sBillNo) => {
-    Data?.delivery_bill_details?.map((details, a) => {
+    Data?.delivery_bill_details?.forEach((details) => {
       if (details.boe_number == sBillNo) {
-        document.getElementById(
-          `cargo_description_${key}`
-        ).value = `${details.commodity_description}`;
-        document.getElementById(
-          `no_of_pkgs_${key}`
-        ).value = `${details.no_of_packages_declared}`;
-        document.getElementById(
-          `pkgs_weight_${key}`
-        ).value = `${details.package_weight}`;
-        document.getElementById(
-          `pkg_code_${key}`
-        ).value = `${details.package_code}`;
+        document.getElementById(`cargo_description_${key}`).value =
+          details.commodity_description;
+        document.getElementById(`no_of_pkgs_${key}`).value =
+          details.no_of_packages_declared;
+        document.getElementById(`pkgs_weight_${key}`).value =
+          details.package_weight;
+        document.getElementById(`pkg_code_${key}`).value =
+          details.package_code;
+
+        // Extract grid data for the selected bill
+        let myData =
+          Data?.de_stuffing_container?.de_stuffing_bill_details?.length > 0
+            ? Data.de_stuffing_container.de_stuffing_bill_details.flatMap(
+                (detail) =>
+                  (detail.boe_number == sBillNo  || detail.bol_number == sBillNo)
+                    ? detail?.grid_area?.map((item, i) => ({
+                        id: i + 1,
+                        grid_location: item.grid_locations || "NA",
+                        area: item.area || "NA",
+                      })) || []
+                    : []
+              )
+            : [];
+        setGridData((prev) => ({
+          ...prev,
+          [key]: myData,
+        }));
       }
     });
   };
 
+
+
+const GridComponent = ({ index, data }) => {
+  return (
+    <div className="col-md-3 col-5">
+      <label className="form-label">Grid Location & Area (SQM)</label>
+      {data.length > 0 ? (
+        data.map((input, i) => (
+          <div key={input.id} className="mb-2">
+            <div className="d-flex align-items-center gap-3">
+              <input
+                type="text"
+                readOnly
+                className="form-control p-2"
+                name={`grid_locations[${index}][${i}]`}
+                value={input.grid_location}
+              />
+              <input
+                type="text"
+                className="form-control p-2"
+                placeholder="Area (SQM)"
+                name={`area[${index}][${i}]`}
+                id={`area_${index}_${i}`}
+                readOnly
+                value={input.area}
+              />
+            </div>
+          </div>
+        ))
+      ) : (
+        <p className="text-muted">No Grid Data Available</p>
+      )}
+    </div>
+  );
+};
   const handleBillPkgW = (key, pkg) => {
     let no_of_pkgs = 0;
     let package_weight = 0;
@@ -442,66 +342,39 @@ const [ID, setID] = useState(false);
                 {GpmNo && TallySheet ? (
                   <div className="row justify-content-center">
                     <div className="col-lg-10 col-md-11">
-                      {/* <div className="text-end">
-                        <button
-                          onClick={() => {
-                            if (iframeRef.current) {
-                              iframeRef.current.contentWindow.print();
-                            }
-                          }}
-                          className="btn btn-label-primary mb-2"
-                        >
-                          Print
-                        </button>
+                      <div className="text-end">
+                        {isFinalSubmit ? (
+                          <button
+                            onClick={() => {
+                              if (iframeRef.current) {
+                                iframeRef.current.contentWindow.print();
+                              }
+                            }}
+                            className="btn btn-label-primary mb-2"
+                          >
+                            Print
+                          </button>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              className="btn btn-primary mb-2"
+                              onClick={handleFinalSubmit}
+                            >
+                              Final Submit
+                            </button>
+                            <a
+                              href={`?isFinalSubmit=0&id=${ID}&gpm_number=${GpmNo}`}
+                              className="btn btn-primary mb-2 ms-2"
+                            >
+                              Edit
+                            </a>
+                          </>
+                        )}
                         <a href="?" className="btn btn-primary mb-2 ms-2">
                           Search Another
                         </a>
-                        <Link
-                          to={"/delivery"}
-                          className="btn btn-primary mb-2 ms-2"
-                        >
-                          Go Back
-                        </Link>
-                      </div> */}
-                      <div className="text-end">
-  {isFinalSubmit ? (
-    <button
-      onClick={() => {
-        if (iframeRef.current) {
-          iframeRef.current.contentWindow.print();
-        }
-      }}
-      className="btn btn-label-primary mb-2"
-    >
-      Print
-    </button>
-  ) : (
-    <>
-      <button 
-        type="button"
-        className="btn btn-primary mb-2"
-        onClick={handleFinalSubmit}
-      >
-        Final Submit
-      </button>
-      <a  
-        href={`?isFinalSubmit=0&id=${ID}&gpm_number=${GpmNo}`}
-        className="btn btn-primary mb-2 ms-2"
-      >
-        Edit
-      </a>
-    </>
-  )}
-  <a href="?" className="btn btn-primary mb-2 ms-2">
-    Search Another
-  </a>
-  {/* <Link
-    to={"/delivery"}
-    className="btn btn-primary mb-2 ms-2"
-  >
-    Go Back
-  </Link> */}
-</div>
+                      </div>
                       <div className="" style={{ width: 789, height: 1099 }}>
                         <iframe
                           ref={iframeRef}
@@ -593,11 +466,24 @@ const [ID, setID] = useState(false);
                                   defaultValue={formatToDateTimeLocal(today)}
                                 />
                               </div>
+                              <div className="col-4">
+                                <label className="form-label">
+                                  Handling Type
+                                </label>
+                                <select
+                                  className="form-select p-2"
+                                  name="handling_type"
+                                >
+                                  <option value="LCH">LCH</option>
+                                  <option value="MCH">MCH</option>
+                                </select>
+                              </div>
                             </div>
                           </div>
                         </div>
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
+
                         {Array.from({ length: TotalTrucks }, (_, i) => (
                           <div key={i} className="card card-body my-3">
                             <div className="d-flex gap-3 flex-row overflow-auto">
@@ -612,7 +498,11 @@ const [ID, setID] = useState(false);
                                   type="text"
                                   className="form-control p-2"
                                   name={`truck_number[${i}]`}
-                                  defaultValue={Data?.delivery_trucks[i]?.truck_number ??null}
+                                  defaultValue={
+                                    Data?.delivery_trucks[i]?.truck_number ??
+                                    null
+                                  }
+                                  onChange={(e)=>{e.target.value=e.target.value.toUpperCase()}}
                                 />
                               </div>
                               <div className="col-md-2 col-3">
@@ -626,11 +516,11 @@ const [ID, setID] = useState(false);
                                     handleBillDetails(i, e.target.value)
                                   }
                                   id={`boe_${i}`}
-                                  defaultValue={Data?.delivery_trucks[i]?.boe ??null}
+                                  defaultValue={
+                                    Data?.delivery_trucks[i]?.boe ?? null
+                                  }
                                 >
-                                  <option value="" selected disabled>
-                                    Select Bill
-                                  </option>
+                                  <option value="">Select Bill</option>
                                   {Data?.delivery_bill_details?.map(
                                     (details, k) => (
                                       <option
@@ -653,7 +543,9 @@ const [ID, setID] = useState(false);
                                   name={`pkg_code[${i}]`}
                                   id={`pkg_code_${i}`}
                                   readOnly
-                                  defaultValue={Data?.delivery_trucks[i]?.pkg_code ??null}
+                                  defaultValue={
+                                    Data?.delivery_trucks[i]?.pkg_code ?? null
+                                  }
                                 />
                                 <input
                                   type="text"
@@ -661,7 +553,10 @@ const [ID, setID] = useState(false);
                                   name={`cargo_description[${i}]`}
                                   id={`cargo_description_${i}`}
                                   readOnly
-                                  defaultValue={Data?.delivery_trucks[i]?.cargo_description ??null}
+                                  defaultValue={
+                                    Data?.delivery_trucks[i]
+                                      ?.cargo_description ?? null
+                                  }
                                 />
                               </div>
                               <div className="col-md-2 col-3">
@@ -674,7 +569,9 @@ const [ID, setID] = useState(false);
                                   onChange={(e) =>
                                     handleBillPkgW(i, e.target.value)
                                   }
-                                  defaultValue={Data?.delivery_trucks[i]?.no_of_pkgs ??null}
+                                  defaultValue={
+                                    Data?.delivery_trucks[i]?.no_of_pkgs ?? null
+                                  }
                                 />
                               </div>
                               <div className="col-md-2 col-3">
@@ -684,13 +581,23 @@ const [ID, setID] = useState(false);
                                   className="form-control p-2"
                                   id={`pkgs_weight_${i}`}
                                   name={`pkgs_weight[${i}]`}
-                                  defaultValue={Data?.delivery_trucks[i]?.pkgs_weight ??null}
+                                  defaultValue={
+                                    Data?.delivery_trucks[i]?.pkgs_weight ??
+                                    null
+                                  }
                                 />
                               </div>
-                              <GridComponent index={i} data={Data?.delivery_trucks[i] ??null} />
+                              {Data?.de_stuffing_container && (
+                                <>
+                                  {gridData[i] && <GridComponent index={i} data={gridData[i]} />}
+                                </>
+                              )}
+
+                            
                             </div>
                           </div>
                         ))}
+
                         <div className="col-12 my-2 text-end">
                           <button
                             type="button"
@@ -712,7 +619,7 @@ const [ID, setID] = useState(false);
                     <div className="col-6">
                       <div className="card my-3">
                         <div className="card-body">
-                        <div className="d-flex align-items-center justify-content-between mb-3">
+                          <div className="d-flex align-items-center justify-content-between mb-3">
                             <h4 className="text-primary">Delivery</h4>
                             <div className="text-end">
                               <Link
@@ -754,12 +661,9 @@ const [ID, setID] = useState(false);
                 )}
 
                 <Footer />
-                <div className="content-backdrop fade" />
               </div>
             </div>
           </div>
-          <div className="layout-overlay layout-menu-toggle"></div>
-          <div className="drag-target"></div>
         </div>
       </div>
     </>

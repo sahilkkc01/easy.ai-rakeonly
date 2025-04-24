@@ -172,7 +172,6 @@ export default function StuffingTallySheet() {
                   </td>
                   <td>Start Date & Time</td>
                   <td>
-                    
                       <strong>: {formatToDateTime(Data.start_time)}</strong>
                   </td>
                 </tr>
@@ -183,7 +182,6 @@ export default function StuffingTallySheet() {
                   </td>
                   <td>End Date & Time</td>
                   <td>
-                   
                       <strong>: {formatToDateTime(Data.end_time)}</strong>
                   </td>
                 </tr>
@@ -200,11 +198,18 @@ export default function StuffingTallySheet() {
                 <tr>
                   <td>Total No. of Packages Declared</td>
                   <td>
-                    <strong>: {totalPackages}</strong>
+                    {/* <strong>: {totalPackages}</strong> */}
+                    <strong> : 
+                      {Data?.stuffing_shipping_bill_details?.reduce(
+                        (sum, details) =>
+                          sum + Number(details.ccls_no_of_pkg_declared || 0),
+                        0
+                      )}
+                    </strong>
                   </td>
                   <td>Exporter Name</td>
                   <td>
-                    <strong>: --</strong>
+                    <strong>: {Data?.carting_container?.exporter_name??'--'}</strong>
                   </td>
                 </tr>
                 <tr>

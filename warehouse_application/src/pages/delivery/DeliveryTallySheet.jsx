@@ -108,8 +108,7 @@ export default function DeliveryTallySheet() {
               <br />
               <span>Container Delivery Tally Sheet</span>
             </div>
-            <div className="col text-end">
-            </div>
+            <div className="col text-end"></div>
           </div>
           <hr />
           <div className="row px-0 top">
@@ -133,7 +132,7 @@ export default function DeliveryTallySheet() {
                       {Data?.delivery_bill_details?.map((details, i) => (
                         <>
                           <span>{details.boe_number}, </span>
-                          { (i + 1) % 3 === 0 && <br /> }
+                          {(i + 1) % 3 === 0 && <br />}
                         </>
                       ))}
                     </strong>
@@ -161,8 +160,7 @@ export default function DeliveryTallySheet() {
                   <td>Start Date & Time</td>
                   <td>
                     <strong>
-                      :
-                        {Data.start_time && formatToDateTime(Data.start_time)}
+                      :{Data.start_time && formatToDateTime(Data.start_time)}
                     </strong>
                   </td>
                 </tr>
@@ -174,16 +172,21 @@ export default function DeliveryTallySheet() {
                   <td>End Date & Time</td>
                   <td>
                     <strong>
-                      :
-                      
-                       { Data.end_time && formatToDateTime(Data.end_time)}
+                      :{Data.end_time && formatToDateTime(Data.end_time)}
                     </strong>
                   </td>
                 </tr>
                 <tr>
                   <td>Total No. of Packages Declared</td>
                   <td>
-                    <strong>: {totalPackages}</strong>
+                    {/* <strong>: {totalPackages}</strong> */}
+                    <strong>
+                      {Data?.delivery_bill_details?.reduce(
+                        (sum, details) =>
+                          sum + Number(details.no_of_packages_declared || 0),
+                        0
+                      )}
+                    </strong>
                   </td>
                   <td>Excess / Short Packages</td>
                   <td>
@@ -193,18 +196,11 @@ export default function DeliveryTallySheet() {
                 <tr>
                   <td>Handling Type</td>
                   <td>
-                    <strong>
-                      :
-                        {Data.handling_type}
-                    </strong>
+                    <strong>:{Data.handling_type}</strong>
                   </td>
                   <td>Importer Name</td>
                   <td>
-                    <strong>
-                      :
-                     
-                      {Data.importer_name}
-                    </strong>
+                    <strong>:{Data.importer_name}</strong>
                   </td>
                 </tr>
               </tbody>
@@ -228,36 +224,22 @@ export default function DeliveryTallySheet() {
                 {Data.delivery_trucks &&
                   Data.delivery_trucks.map((Trucks, k) => (
                     <tr key={k}>
-                      <td>
-                         { Trucks.truck_number}
-                      </td>
-                      <td>
-                        
-                         { Trucks.boe}
-                      </td>
-                      <td>
-                         { Trucks.pkg_code}
-                      </td>
-                      <td>
-                        {Trucks.cargo_description}
-                        
-                      </td>
+                      <td>{Trucks.truck_number}</td>
+                      <td>{Trucks.boe}</td>
+                      <td>{Trucks.pkg_code}</td>
+                      <td>{Trucks.cargo_description}</td>
 
+                      <td>{Trucks.no_of_pkgs}</td>
+                      <td>{Trucks.pkgs_weight}</td>
                       <td>
-                         { Trucks.no_of_pkgs}
+                        {Trucks?.grid_area?.map((grid_area) => (
+                          <span>{grid_area.grid_locations} ,</span>
+                        ))}
                       </td>
                       <td>
-                          {Trucks.pkgs_weight}
-                      </td>
-                      <td>
-                          {Trucks?.grid_area?.map((grid_area) => (
-                            <span>{grid_area.grid_locations} ,</span>
-                          ))}
-                      </td>
-                      <td>
-                          {Trucks?.grid_area?.map((grid_area) => (
-                            <span>{grid_area.area} ,</span>
-                          ))}
+                        {Trucks?.grid_area?.map((grid_area) => (
+                          <span>{grid_area.area} ,</span>
+                        ))}
                       </td>
                     </tr>
                   ))}

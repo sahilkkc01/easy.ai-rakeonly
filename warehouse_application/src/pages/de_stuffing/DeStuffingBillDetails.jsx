@@ -373,7 +373,7 @@ export default function DeStuffingBillDetails() {
       Per_package_weight += package_weight / no_of_pkgs.toFixed(2);
     }
 
-    let weightInput = document.getElementById(`package_weight_${id}`);
+    let weightInput = document.getElementById(`pkgWeight_${id}`);
 
     if (weightInput) {
       if (pkg && pkg != 0) {
