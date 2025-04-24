@@ -270,6 +270,7 @@ export default function DeStuffingBillDetails() {
                   id={`area_${index}_${i}`}
                   defaultValue={gridAreas[modalId]?.length ?? input.area}
                   onChange={(e) => AreaHandle(index, i)}
+                  max={Number(activeGridSelections[modalId]?.total_area??20)-Number(activeGridSelections[modalId]?.occupied_area??0)}
                 />
                 <input
                   type="hidden"
