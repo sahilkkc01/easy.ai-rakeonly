@@ -175,7 +175,7 @@ export default function DeStuffingTallySheet() {
                     <strong> : 
                       {Data?.de_stuffing_bill_details?.reduce(
                         (sum, details) =>
-                          sum + Number(details.ccls_no_of_pkg_declared ??details.no_of_pkg_declared??0),
+                          sum + Number(details.ccls_no_of_pkg_declared ??details.no_of_packages_declared??0),
                         0
                       )}
                     </strong>
