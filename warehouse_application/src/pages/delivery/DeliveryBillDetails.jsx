@@ -226,7 +226,7 @@ export default function DeliveryBillDetails() {
           details.package_code;
 
         // Extract grid data for the selected bill
-        // alert(sBillNo);
+        // alert( details.package_code);
         let myData =
           Data?.de_stuffing_container?.de_stuffing_bill_details?.length > 0
             ? Data.de_stuffing_container.de_stuffing_bill_details.flatMap(
@@ -584,7 +584,8 @@ const GridComponent = ({ index, data }) => {
                                   Cargo Description (Code)
                                 </label>
                                 <input
-                                  type="hidden"
+                                  type="text"
+                                  hidden
                                   className="form-control p-2"
                                   name={`pkg_code[${i}]`}
                                   id={`pkg_code_${i}`}
