@@ -145,11 +145,16 @@ const MapAreaModal = ({
       setCol(5);
       setWidth("50px");
       setHeight("10vh");
-    } else if (activeGridSelection?.warehouse_name == "Mazzanine" || activeGridSelection?.warehouse_name == "OYC") {
+    } else if ( activeGridSelection?.warehouse_name == "OYC"||(activeGridSelection?.warehouse_name == "Mazzanine" &&activeGridSelection?.area_boxes !='20')) {
       setRow(1);
       setCol(1);
       setWidth("250px");
       setHeight("40vh");
+    }else{
+      setRow(4);
+      setCol(5);
+      setWidth("50px");
+      setHeight("10vh");
     }
   }, [activeGridSelection]);
 
@@ -253,7 +258,7 @@ const MapAreaModal = ({
                               }
                             }}
                           >
-                            {(activeGridSelection?.warehouse_name == "Mazzanine" ||activeGridSelection?.warehouse_name == "OYC")
+                            {( activeGridSelection?.warehouse_name == "OYC"||(activeGridSelection?.warehouse_name == "Mazzanine" &&activeGridSelection?.area_boxes !='20'))
                               ? activeGridSelection?.location_code
                               : cellValue}
                           </button>
