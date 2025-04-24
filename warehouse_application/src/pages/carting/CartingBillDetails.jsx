@@ -454,7 +454,7 @@ export default function CartingBillDetails() {
     let package_weight = 0;
     let Per_package_weight = 0;
 
-    let shipping_bill_number = document.getElementById(`sbill_${key}`)?.value;
+    let shipping_bill_number = document.getElementById(`boe_${key}`)?.value;
 
     Data?.carting_shipping_bill_details?.forEach((details) => {
       if (details.shipping_bill_number == shipping_bill_number) {
