@@ -202,7 +202,7 @@ export default function StuffingTallySheet() {
                     <strong> : 
                       {Data?.stuffing_shipping_bill_details?.reduce(
                         (sum, details) =>
-                          sum + Number(details.ccls_no_of_pkg_declared || 0),
+                          sum + Number(details.ccls_no_of_pkg_declared ?? details.no_of_packages_declared ?? 0),
                         0
                       )}
                     </strong>
