@@ -186,8 +186,8 @@ export default function MezzanineMap({ setActiveGridSelection,
           });
         }else{
           setActiveGridSelection(data); 
-          onClose();
           setModalVisible2(true);              
+          onClose();
         }
     };
   
