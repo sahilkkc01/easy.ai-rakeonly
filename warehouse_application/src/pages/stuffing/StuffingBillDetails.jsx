@@ -21,6 +21,7 @@ export default function StuffingBillDetails() {
   const [isFinalSubmit, setIsFinalSubmit] = useState(false);
   const [ID, setID] = useState(null);
   const [gridData, setGridData] = useState({});
+  const [gridData2, setGridData2] = useState({});
 
   const today = new Date();
 
@@ -29,7 +30,7 @@ export default function StuffingBillDetails() {
     const url = `https://ctas.live/backend/api/get/stuffing?type=FCL&container_number=${container_number}`;
     try {
       const response = await axios.get(url);
-      if (response?.data?.status === "success") {
+      if (response?.data?.status == "success") {
         setData(response?.data?.data);
       } else {
         Swal.fire({
@@ -55,7 +56,7 @@ export default function StuffingBillDetails() {
     const url = `https://ctas.live/backend/api/warehouse/empty/locations?type=Export`;
     try {
       const response = await axios.get(url);
-      if (response?.data?.status === "success") {
+      if (response?.data?.status == "success") {
         setLocations(response?.data?.data);
       } else {
         Swal.fire({
@@ -89,7 +90,7 @@ export default function StuffingBillDetails() {
     const id = searchParams.get("id");
     const tallySheet = searchParams.get("tally_sheet");
     const finalSubmit = searchParams.get("isFinalSubmit");
-    if (finalSubmit) setIsFinalSubmit(finalSubmit === "1");
+    if (finalSubmit) setIsFinalSubmit(finalSubmit == "1");
     if (id) {
       setID(id);
     }
@@ -111,6 +112,39 @@ export default function StuffingBillDetails() {
   
     let defaultGridData = {};
   
+    const processGridItems = (billDetails, matchingTrucks) => {
+      const rawGridItems = matchingTrucks.flatMap((truck) =>
+        truck?.grid_area?.length > 0
+          ? truck.grid_area.map((item) => ({
+              grid_location: item.grid_locations || "NA",
+              area: parseFloat(item.area) || 0,
+              no_of_pkgs: Number(truck?.no_of_pkgs ?? 0),
+            }))
+          : []
+      );
+  
+      const areaByLocation = {};
+      rawGridItems.forEach((item) => {
+        if (areaByLocation[item.grid_location]) {
+          areaByLocation[item.grid_location].area += item.area;
+          areaByLocation[item.grid_location].total_pkg += item.no_of_pkgs;
+        } else {
+          areaByLocation[item.grid_location] = {
+            area: item.area,
+            total_pkg: item.no_of_pkgs,
+          };
+        }
+      });
+  
+      return Object.entries(areaByLocation).map(([location, data], index) => ({
+        id: index + 1,
+        grid_location: location,
+        area: data.area,
+        sBillNo: billDetails?.shipping_bill_number || 0,
+        total_pkg: Number(data.total_pkg) || 0,
+      }));
+    };
+  
     if (Data?.stuffing_shipping_bill_details?.length > 0) {
       setTotalBills(Data.stuffing_shipping_bill_details.length);
       setBills(Data.stuffing_shipping_bill_details);
@@ -122,83 +156,50 @@ export default function StuffingBillDetails() {
           gridItems = billDetails.grid_area.map((item, index) => ({
             id: item.id || index + 1,
             grid_location: item.grid_locations || "NA",
-            area: item.area || "NA",
+            area: item.area || 0,
+            sBillNo: billDetails?.shipping_bill_number || 0,
+            total_pkg: Number(billDetails?.no_of_packages_declared) || 0,
           }));
         } else {
-          const matchingTrucks = Data?.carting_container?.carting_trucks?.filter(
-            (truck) => truck.sbill == billDetails.shipping_bill_number
-          ) || [];
+          const matchingTrucks =
+            Data?.carting_container?.carting_trucks?.filter(
+              (truck) => truck.sbill == billDetails.shipping_bill_number
+            ) || [];
   
-          const rawGridItems = matchingTrucks.flatMap((truck) =>
-            truck?.grid_area?.length > 0
-              ? truck.grid_area.map((item) => ({
-                  grid_location: item.grid_locations || "NA",
-                  area: parseFloat(item.area) || 0,
-                }))
-              : []
-          );
-  
-          const areaByLocation = {};
-          rawGridItems.forEach(item => {
-            if (areaByLocation[item.grid_location]) {
-              areaByLocation[item.grid_location] += item.area;
-            } else {
-              areaByLocation[item.grid_location] = item.area;
-            }
-          });
-  
-          gridItems = Object.entries(areaByLocation).map(([location, area], index) => ({
-            id: index + 1,
-            grid_location: location,
-            area: area,
-          }));
+          gridItems = processGridItems(billDetails, matchingTrucks);
         }
   
         defaultGridData[i] = gridItems;
       });
     } else if (
-      Data?.carting_container &&
-      Data.carting_container?.carting_shipping_bill_details?.length > 0
+      Data?.carting_container?.carting_shipping_bill_details?.length > 0
     ) {
       setTotalBills(Data.carting_container.carting_shipping_bill_details.length);
       setBills(Data.carting_container.carting_shipping_bill_details);
   
       Data.carting_container.carting_shipping_bill_details.forEach((billDetails, i) => {
-        const matchingTrucks = Data.carting_container.carting_trucks?.filter(
-          (truck) => truck.sbill == billDetails.shipping_bill_number
-        ) || [];
+        const matchingTrucks =
+          Data.carting_container.carting_trucks?.filter(
+            (truck) => truck.sbill == billDetails.shipping_bill_number
+          ) || [];
   
-        const rawGridItems = matchingTrucks.flatMap((truck) =>
-          truck?.grid_area?.length > 0
-            ? truck.grid_area.map((item) => ({
-                grid_location: item.grid_locations || "NA",
-                area: parseFloat(item.area) || 0,
-              }))
-            : []
-        );
-  
-        const areaByLocation = {};
-        rawGridItems.forEach(item => {
-          if (areaByLocation[item.grid_location]) {
-            areaByLocation[item.grid_location] += item.area;
-          } else {
-            areaByLocation[item.grid_location] = item.area;
-          }
-        });
-  
-        const gridItems = Object.entries(areaByLocation).map(([location, area], index) => ({
-          id: index + 1,
-          grid_location: location,
-          area: area,
-        }));
+        const gridItems = processGridItems(billDetails, matchingTrucks);
   
         defaultGridData[i] = gridItems;
       });
     }
   
     setGridData(defaultGridData);
+    setGridData2(defaultGridData);
   }, [Data]);
   
+   useEffect(()=>{
+    console.log('gridData',gridData);
+  },[gridData])
+
+  useEffect(()=>{
+    console.log('gridData2',gridData2);
+  },[gridData2])
 
   const handleFinalSubmit = async () => {
     setLoading(true);
@@ -218,7 +219,7 @@ export default function StuffingBillDetails() {
         }
       );
 
-      if (response?.data?.status === "success") {
+      if (response?.data?.status == "success") {
          Swal.fire({
           icon: "success",
           text: response.data.message,
@@ -258,7 +259,7 @@ export default function StuffingBillDetails() {
         headers: { "Content-Type": "multipart/form-data" },
       });
       // console.log(response.data);
-      if (response?.data?.status === "success") {
+      if (response?.data?.status == "success") {
         Swal.fire({
           icon: response?.data?.status,
           text: response?.data?.message,
@@ -324,7 +325,7 @@ const GridComponent = ({ index, data }) => {
     let occupied = 0;
     let loc_i = 1;
     Locations?.forEach((location) => {
-      if (location.camera_locations === grid && loc_i == 1) {
+      if (location.camera_locations == grid && loc_i == 1) {
         loc_i++;
         totalArea += parseInt(location.total_area) || 0;
         occupied += parseInt(location.occupied_area) || 0;
@@ -419,6 +420,31 @@ const GridComponent = ({ index, data }) => {
     } else {
       console.log("Package weight input not found!");
     }
+
+
+    const currentGrids = gridData2[key];
+
+    if (currentGrids && currentGrids.length > 0 && pkg) {
+      const updatedGrids = currentGrids.map((item) => {
+        const totalPkg = item.total_pkg || 0;
+        const totalArea = Number(item.area || 0);
+    
+        if (totalPkg > 0 && totalArea > 0) {
+          const perPackageArea = totalArea / totalPkg;
+          return {
+            ...item,
+            area: Math.round(perPackageArea * pkg),
+          };
+        }
+        return item; 
+      });
+      
+      setGridData((prev) => ({
+        ...prev,
+        [key]: updatedGrids,
+      }));
+    }
+
   };
 
   useEffect(() => {
