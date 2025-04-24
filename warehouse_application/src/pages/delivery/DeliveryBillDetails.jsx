@@ -355,13 +355,13 @@ const GridComponent = ({ index, data }) => {
     }
   };
 
-  useEffect(()=>{
-    console.log('gridData',gridData);
-  },[gridData])
+  // useEffect(()=>{
+  //   console.log('gridData',gridData);
+  // },[gridData])
 
-  useEffect(()=>{
-    console.log('gridData2',gridData2);
-  },[gridData2])
+  // useEffect(()=>{
+  //   console.log('gridData2',gridData2);
+  // },[gridData2])
 
   return (
     <>

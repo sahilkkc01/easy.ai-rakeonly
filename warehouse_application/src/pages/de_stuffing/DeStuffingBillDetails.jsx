@@ -142,7 +142,7 @@ export default function DeStuffingBillDetails() {
       const response = await axios.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(response.data);
+      // console.log(response.data);
       if (response?.data?.status === "success") {
         Swal.fire({
           icon: response?.data?.status,
@@ -395,7 +395,7 @@ export default function DeStuffingBillDetails() {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(response.data);
+      // console.log(response.data);
       if (response?.data?.status === "success") {
         Swal.fire({
           icon: response?.data?.status,

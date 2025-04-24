@@ -66,7 +66,7 @@ export default function Delivery() {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      console.log(response.data);
+      // console.log(response.data);
       if (response?.data?.status === "success") {
         fetchData();
         Swal.fire({
