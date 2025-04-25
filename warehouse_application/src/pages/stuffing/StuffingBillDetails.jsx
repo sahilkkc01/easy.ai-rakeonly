@@ -395,7 +395,7 @@ const GridComponent = ({ index, data }) => {
     Data?.stuffing_shipping_bill_details?.forEach((details) => {
       if (details.boe_number == boe_number) {
         package_weight += parseFloat(details.package_weight) || 0;
-        no_of_pkgs += parseFloat(details.no_of_packages_declared) || 0;
+        no_of_pkgs += parseFloat(details.no_of_packages_declared??pkg) || 0;
       }
     });
     if (
