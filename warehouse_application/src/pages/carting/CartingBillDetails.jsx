@@ -455,6 +455,8 @@ export default function CartingBillDetails() {
   const handleBillPkgW = (key, pkg) => {
     let no_of_pkgs = 0;
     let package_weight = 0;
+    let gross_weight = 0;
+    let dec_pkg = 0;
     let Per_package_weight = 0;
 
     let shipping_bill_number = document.getElementById(`boe_${key}`)?.value;
@@ -464,13 +466,24 @@ export default function CartingBillDetails() {
     );
 
     if (billDetail) {
-      package_weight = parseFloat(billDetail.package_weight) || 0;
-      if (billDetail?.no_of_packages_declared) {
+      if (billDetail.package_weight && billDetail.package_weight != "0") {
+        package_weight = parseFloat(billDetail.package_weight) || 0;
+      } else {
+        gross_weight = parseFloat(Data.gross_weight) || 0;
+      }
+
+      if (
+        billDetail?.no_of_packages_declared &&
+        billDetail.no_of_packages_declared != "0"
+      ) {
         no_of_pkgs = parseFloat(billDetail?.no_of_packages_declared) || 0;
       } else {
         for (let i = 0; i < Data?.carting_trucks?.length; i++) {
           const billInput = document.getElementById(`boe_${i}`);
           const pkgInput = document.getElementById(`no_of_pkgs_${i}`);
+          if (pkgInput) {
+            dec_pkg += parseFloat(pkgInput.value ?? 0) || 0;
+          }
 
           if (
             billInput &&
@@ -485,15 +498,21 @@ export default function CartingBillDetails() {
         }
       }
     }
-
-    if (
-      package_weight &&
-      no_of_pkgs &&
-      package_weight != 0 &&
-      no_of_pkgs != 0
-    ) {
-      Per_package_weight += package_weight / no_of_pkgs.toFixed(2);
+    if (billDetail.package_weight && billDetail.package_weight != "0") {
+      if (
+        package_weight &&
+        no_of_pkgs &&
+        package_weight != 0 &&
+        no_of_pkgs != 0
+      ) {
+        Per_package_weight = package_weight / no_of_pkgs.toFixed(2);
+      }
+    } else {
+      if (gross_weight && dec_pkg && gross_weight != 0 && dec_pkg != 0) {
+        Per_package_weight = gross_weight / dec_pkg.toFixed(2);
+      }
     }
+
     if (billDetail?.no_of_packages_declared) {
       let weightInput = document.getElementById(`pkgs_weight_${key}`);
 
@@ -509,7 +528,24 @@ export default function CartingBillDetails() {
     } else {
       for (let i = 0; i < Data?.carting_trucks?.length; i++) {
         const billInputs = document.getElementById(`boe_${i}`);
-        if (billInputs.value == shipping_bill_number) {
+
+        if (billDetail.package_weight && billDetail.package_weight != "0") {
+          if (billInputs.value == shipping_bill_number) {
+            let weightInput = document.getElementById(`pkgs_weight_${i}`);
+            let pkgInput = document.getElementById(`no_of_pkgs_${i}`);
+            let pkgValue = parseFloat(pkgInput?.value || 0);
+
+            if (weightInput) {
+              if (pkgValue && pkgValue != 0) {
+                weightInput.value = (Per_package_weight * pkgValue).toFixed(2);
+              } else if (pkgValue == 0) {
+                weightInput.value = 0;
+              }
+            } else {
+              console.log("Package weight input not found!");
+            }
+          }
+        } else {
           let weightInput = document.getElementById(`pkgs_weight_${i}`);
           let pkgInput = document.getElementById(`no_of_pkgs_${i}`);
           let pkgValue = parseFloat(pkgInput?.value || 0);
