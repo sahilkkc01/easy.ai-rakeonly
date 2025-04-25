@@ -390,10 +390,9 @@ const GridComponent = ({ index, data }) => {
     let package_weight = 0;
     let Per_package_weight = 0;
 
-    let boe_number = document.getElementById(`boe_${key}`)?.value;
-
-    Data?.stuffing_shipping_bill_details?.forEach((details) => {
-      if (details.boe_number == boe_number) {
+    let boe_number = document.getElementById(`shipping_bill_number_${key}`)?.value;
+    Bills?.forEach((details) => {
+      if (details.shipping_bill_number == boe_number) {
         package_weight += parseFloat(details.package_weight) || 0;
         no_of_pkgs += parseFloat(details.no_of_packages_declared??pkg) || 0;
       }
