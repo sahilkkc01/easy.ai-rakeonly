@@ -575,6 +575,16 @@ const GridComponent = ({ index, data }) => {
                                 name="id"
                                 defaultValue={Data?.id}
                               />
+                              <input
+                                type="hidden"
+                                name="cha_code"
+                                defaultValue={Data?.carting_container?.cha_code}
+                              />
+                              <input
+                                type="hidden"
+                                name="gw_port_code"
+                                defaultValue={Data?.carting_container?.gw_port_code}
+                              />
                               <div className="col-4">
                                 <label className="form-label">
                                   Container No

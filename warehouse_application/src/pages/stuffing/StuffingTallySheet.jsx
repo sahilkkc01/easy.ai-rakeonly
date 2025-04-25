@@ -188,7 +188,7 @@ export default function StuffingTallySheet() {
                 <tr>
                   <td>Cha Code</td>
                   <td>
-                    <strong>:--</strong>
+                    <strong>:{Data.cha_code}</strong>
                   </td>
                   <td>Excess / Short Packages</td>
                   <td>
