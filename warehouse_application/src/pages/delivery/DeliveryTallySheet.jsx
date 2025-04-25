@@ -284,7 +284,7 @@ export default function DeliveryTallySheet() {
                   <td></td>
                   <td></td>
                   <td>{totalPackages}</td>
-                  <td>{totalPackagesWeight.toFixed(2)}</td>
+                  <td>{totalPackagesWeight && !isNaN(Number(totalPackagesWeight)) ? Number(totalPackagesWeight).toFixed(2) : 0}</td>
                   <td></td>
                   <td>{totalArea}</td>
                 </tr>
