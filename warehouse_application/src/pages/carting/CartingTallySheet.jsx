@@ -310,7 +310,7 @@ export default function CartingTallySheet() {
                   <td></td>
                   <td></td>
                   <td>{totalPackages}</td>
-                  <td>{totalPackagesWeight}</td>
+                  <td>{totalPackagesWeight.toFixed(2)}</td>
                   <td></td>
                   <td>{totalArea}</td>
                 </tr>
