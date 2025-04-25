@@ -340,13 +340,13 @@ export default function CartingBillDetails() {
                   type="button"
                   onClick={() => {
                     setModalIds(modalId);
-                    setGridAreas((prev) =>({...prev,[modalId]:[]}));
+                    setGridAreas((prev) => ({ ...prev, [modalId]: [] }));
                     setVisibleModals((prev) => ({ ...prev, [modalId]: true }));
                   }}
                 >
                   <i className="fa fa-map" />
                 </button>
-                
+
                 <input
                   type="text"
                   className="form-control p-2"
@@ -358,7 +358,7 @@ export default function CartingBillDetails() {
                   }
                   readOnly
                 />
-                 {/* <span>
+                {/* <span>
                   {JSON.stringify(gridAreas[modalId])}
                 </span> */}
                 <input
@@ -369,7 +369,10 @@ export default function CartingBillDetails() {
                   id={`area_${index}_${i}`}
                   defaultValue={gridAreas[modalId]?.length ?? input.area}
                   onChange={(e) => AreaHandle(index, i)}
-                  max={Number(activeGridSelections[modalId]?.total_area??20)-Number(activeGridSelections[modalId]?.occupied_area??0)}
+                  max={
+                    Number(activeGridSelections[modalId]?.total_area ?? 20) -
+                    Number(activeGridSelections[modalId]?.occupied_area ?? 0)
+                  }
                 />
                 <input
                   type="hidden"
@@ -435,16 +438,16 @@ export default function CartingBillDetails() {
       if (details.shipping_bill_number == sbill) {
         document.getElementById(
           `cargo_description_${key}`
-        ).value = `${details.commodity_description}`;
+        ).value = `${details?.commodity_description}`;
         document.getElementById(
           `no_of_pkgs_${key}`
-        ).value = `${details.no_of_packages_declared}`;
+        ).value = `${details?.no_of_packages_declared}`;
         document.getElementById(
           `pkgs_weight_${key}`
-        ).value = `${details.package_weight}`;
+        ).value = `${details?.package_weight}`;
         document.getElementById(
           `pkg_code_${key}`
-        ).value = `${details.package_code}`;
+        ).value = `${details?.package_code}`;
       }
     });
   };
@@ -456,12 +459,33 @@ export default function CartingBillDetails() {
 
     let shipping_bill_number = document.getElementById(`boe_${key}`)?.value;
 
-    Data?.carting_shipping_bill_details?.forEach((details) => {
-      if (details.shipping_bill_number == shipping_bill_number) {
-        package_weight += parseFloat(details.package_weight) || 0;
-        no_of_pkgs += parseFloat(details.no_of_packages_declared) || 0;
+    const billDetail = Data?.carting_shipping_bill_details?.find(
+      (details) => details.shipping_bill_number == shipping_bill_number
+    );
+
+    if (billDetail) {
+      package_weight = parseFloat(billDetail.package_weight) || 0;
+      if (billDetail?.no_of_packages_declared) {
+        no_of_pkgs = parseFloat(billDetail?.no_of_packages_declared) || 0;
+      } else {
+        for (let i = 0; i < Data?.carting_trucks?.length; i++) {
+          const billInput = document.getElementById(`boe_${i}`);
+          const pkgInput = document.getElementById(`no_of_pkgs_${i}`);
+
+          if (
+            billInput &&
+            pkgInput &&
+            billInput.value == shipping_bill_number
+          ) {
+            let pkgVal = parseFloat(pkgInput.value);
+            if (!isNaN(pkgVal) && pkgVal > 0) {
+              no_of_pkgs += pkgVal;
+            }
+          }
+        }
       }
-    });
+    }
+
     if (
       package_weight &&
       no_of_pkgs &&
@@ -470,19 +494,37 @@ export default function CartingBillDetails() {
     ) {
       Per_package_weight += package_weight / no_of_pkgs.toFixed(2);
     }
+    if (billDetail?.no_of_packages_declared) {
+      let weightInput = document.getElementById(`pkgs_weight_${key}`);
 
-    let weightInput = document.getElementById(`pkgs_weight_${key}`);
-
-    if (weightInput) {
-      if (pkg && pkg != 0) {
-        weightInput.value = (Per_package_weight * pkg).toFixed(2);
-      } else if (pkg == 0) {
-        weightInput.value = 0;
+      if (weightInput) {
+        if (pkg && pkg != 0) {
+          weightInput.value = (Per_package_weight * pkg).toFixed(2);
+        } else if (pkg == 0) {
+          weightInput.value = 0;
+        }
       } else {
-        weightInput.value = parseFloat(Per_package_weight) || 0;
+        console.log("Package weight input not found!");
       }
     } else {
-      console.log("Package weight input not found!");
+      for (let i = 0; i < Data?.carting_trucks?.length; i++) {
+        const billInputs = document.getElementById(`boe_${i}`);
+        if (billInputs.value == shipping_bill_number) {
+          let weightInput = document.getElementById(`pkgs_weight_${i}`);
+          let pkgInput = document.getElementById(`no_of_pkgs_${i}`);
+          let pkgValue = parseFloat(pkgInput?.value || 0);
+
+          if (weightInput) {
+            if (pkgValue && pkgValue != 0) {
+              weightInput.value = (Per_package_weight * pkgValue).toFixed(2);
+            } else if (pkgValue == 0) {
+              weightInput.value = 0;
+            }
+          } else {
+            console.log("Package weight input not found!");
+          }
+        }
+      }
     }
   };
 
@@ -513,7 +555,9 @@ export default function CartingBillDetails() {
   };
 
   useEffect(() => {
-    fetchLocationsArea();
+    if (Data) {
+      fetchLocationsArea();
+    }
   }, [searchParams, Data]);
 
   return (
@@ -784,9 +828,7 @@ export default function CartingBillDetails() {
                                       Data?.carting_trucks[i]?.sbill || ""
                                     }
                                   >
-                                    <option value="" disabled>
-                                      Select Bill
-                                    </option>
+                                    <option value="">Select Bill</option>
                                     {Data?.carting_shipping_bill_details.map(
                                       (bill, k) => (
                                         <option

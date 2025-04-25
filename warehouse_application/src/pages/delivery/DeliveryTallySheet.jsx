@@ -180,12 +180,15 @@ export default function DeliveryTallySheet() {
                   <td>Total No. of Packages Declared</td>
                   <td>
                     {/* <strong>: {totalPackages}</strong> */}
-                    <strong>
-                      {Data?.delivery_bill_details?.reduce(
-                        (sum, details) =>
-                          sum + Number(details.no_of_packages_declared || 0),
-                        0
-                      )}
+                    <strong> : 
+                      {(() => {
+                        const sum = Data?.delivery_bill_details?.reduce(
+                          (total, details) =>
+                            total + Number(details.no_of_packages_declared??0),
+                          0
+                        );
+                        return sum && sum != 0 ? sum : totalPackages;
+                      })()}
                     </strong>
                   </td>
                   <td>Excess / Short Packages</td>
