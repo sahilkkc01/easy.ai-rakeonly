@@ -291,11 +291,12 @@ export default function CartingBillDetails() {
 
   useEffect(() => {
     if (TotalTruck) {
-      if (!allGridInputs[TotalTruck - 1]) {
-        setAllGridInputs({
-          ...allGridInputs,
-          [TotalTruck - 1]: [{ id: 1, grid_location: "", area: "" }],
-        });
+        if (!allGridInputs[TotalTruck - 1]) {
+          setAllGridInputs({
+            ...allGridInputs,
+            [TotalTruck - 1]: [{ id: 1, grid_location: "", area: "" }],
+          });
+          // alert(TotalTruck);
       }
     }
   }, [TotalTruck]);
@@ -327,6 +328,7 @@ export default function CartingBillDetails() {
 
   const GridComponents = ({ index }) => {
     const gridInputs = allGridInputs[index];
+    console.log(gridInputs);
     return (
       <div className="col-md-4 col-6">
         <label className="form-label">Grid Location & Area (SQM)</label>
@@ -466,7 +468,7 @@ export default function CartingBillDetails() {
     );
 
     if (billDetail) {
-      if (billDetail.package_weight && billDetail.package_weight != "0") {
+      if (billDetail?.package_weight && billDetail?.package_weight != "0") {
         package_weight = parseFloat(billDetail.package_weight) || 0;
       } else {
         gross_weight = parseFloat(Data.gross_weight) || 0;
@@ -478,7 +480,7 @@ export default function CartingBillDetails() {
       ) {
         no_of_pkgs = parseFloat(billDetail?.no_of_packages_declared) || 0;
       } else {
-        for (let i = 0; i < Data?.carting_trucks?.length; i++) {
+        for (let i = 0; i < TotalTruck; i++) {
           const billInput = document.getElementById(`boe_${i}`);
           const pkgInput = document.getElementById(`no_of_pkgs_${i}`);
           if (pkgInput) {
@@ -498,7 +500,7 @@ export default function CartingBillDetails() {
         }
       }
     }
-    if (billDetail.package_weight && billDetail.package_weight != "0") {
+    if (billDetail?.package_weight && billDetail?.package_weight != "0") {
       if (
         package_weight &&
         no_of_pkgs &&
@@ -526,7 +528,7 @@ export default function CartingBillDetails() {
         console.log("Package weight input not found!");
       }
     } else {
-      for (let i = 0; i < Data?.carting_trucks?.length; i++) {
+      for (let i = 0; i < TotalTruck; i++) {
         const billInputs = document.getElementById(`boe_${i}`);
 
         if (billDetail.package_weight && billDetail.package_weight != "0") {
@@ -949,7 +951,6 @@ export default function CartingBillDetails() {
                           <div className="col-12 my-2 text-end">
                             <button
                               type="button"
-                              x
                               className="btn btn-sm btn-primary"
                               onClick={() => setTotalTrucks(TotalTruck + 1)}
                             >
