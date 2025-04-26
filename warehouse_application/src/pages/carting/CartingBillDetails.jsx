@@ -844,6 +844,10 @@ export default function CartingBillDetails() {
                                       Data?.carting_trucks[i]?.truck_number ??
                                       null
                                     }
+                                    onChange={(e) => {
+                                      e.target.value =
+                                        e.target.value.toUpperCase();
+                                    }}
                                   />
                                 </div>
                                 <div className="col-md-2 col-3">
