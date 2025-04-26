@@ -20,6 +20,7 @@ export default function CartingBillDetails() {
   const [TotalTruck, setTotalTrucks] = useState(1);
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFinalSubmit, setIsFinalSubmit] = useState(false);
+  const [is_part_cargo, setIs_part_cargo] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [ID, setID] = useState(false);
   const [MapName, setMapName] = useState(null);
@@ -43,10 +44,12 @@ export default function CartingBillDetails() {
       if (response.data?.status === "success") {
         setData(response.data.data);
         setID(response.data.data?.id);
-        setIsFinalSubmit(
-          response.data.data?.status === "1" ||
-            response.data.data?.status === "2"
-        );
+        if (is_part_cargo) {
+          setIsFinalSubmit(
+            response.data.data?.status === "1" ||
+              response.data.data?.status === "2"
+          );
+        }
       } else {
         throw new Error(response.data?.message || "Failed to fetch data");
       }
@@ -128,10 +131,14 @@ export default function CartingBillDetails() {
     const crn_number = searchParams.get("crn_number");
     const tallySheet = searchParams.get("tally_sheet");
     const finalSubmit = searchParams.get("isFinalSubmit");
+    const is_part_c = searchParams.get("is_part_cargo");
     const id = searchParams.get("id");
 
     if (crn_number) setCrnNo(crn_number);
     if (tallySheet) setTallySheet(tallySheet);
+    if (is_part_c) {
+      setIs_part_cargo(is_part_c);
+    }
     if (finalSubmit) setIsFinalSubmit(finalSubmit === "1");
     if (id) setID(id);
 
@@ -145,10 +152,14 @@ export default function CartingBillDetails() {
       setID(Data?.id);
       fetchLocationsName();
 
-      if (Data.status === "1" || Data.status === "2") {
-        navigate(
-          `?isFinalSubmit=1&id=${Data.id}&tally_sheet=1&crn_number=${CrnNo}`
-        );
+      if (Data.status === "1" || Data.status === "2" ) {
+        if(is_part_cargo && is_part_cargo=='1'){
+
+        }else{
+          navigate(
+            `?isFinalSubmit=1&id=${Data.id}&tally_sheet=1&crn_number=${CrnNo}`
+          );
+        }
       }
       if (Data?.carting_trucks) {
         setTotalTrucks(Data?.carting_trucks.length);
@@ -664,6 +675,7 @@ export default function CartingBillDetails() {
                       <div className="col-lg-10 col-md-11">
                         <div className="text-end">
                           {isFinalSubmit ? (
+                            <>
                             <button
                               onClick={() => {
                                 if (iframeRef.current) {
@@ -674,6 +686,13 @@ export default function CartingBillDetails() {
                             >
                               Print
                             </button>
+                            <a
+                                href={`?id=${ID}&crn_number=${CrnNo}&is_part_cargo=1`}
+                                className="btn btn-primary mb-2 ms-2"
+                              >
+                                Add Part Cargo
+                              </a>
+                            </>
                           ) : (
                             <>
                               <button
