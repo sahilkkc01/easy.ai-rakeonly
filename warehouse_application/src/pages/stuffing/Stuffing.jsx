@@ -470,8 +470,8 @@ export default function Stuffing() {
                             <label className="form-label">Handing Type</label>
                             <select
                               className="form-select p-2"
-                              name="handline_type"
-                              defaultValue={modalData?.handline_type}
+                              name="handling_type"
+                              defaultValue={modalData?.handling_type}
                             >
                               <option value="LCH">LCH</option>
                               <option value="MCH">MCH</option>

@@ -145,12 +145,25 @@ const MapAreaModal = ({
       setCol(5);
       setWidth("50px");
       setHeight("10vh");
-    } else if ( activeGridSelection?.warehouse_name == "OYC"||(activeGridSelection?.warehouse_name == "Mazzanine" &&activeGridSelection?.area_boxes !='20')) {
+    } else if ( activeGridSelection?.warehouse_name == "OYC") {
       setRow(1);
       setCol(1);
       setWidth("250px");
       setHeight("40vh");
-    }else{
+    }else if (activeGridSelection?.warehouse_name == "Mazzanine") {
+      if(activeGridSelection?.area_boxes  =='20'){
+        setRow(4);
+        setCol(5);
+      }else if(activeGridSelection?.area_boxes  =='2'){
+        setRow(1);
+        setCol(2);
+      }else{
+        setRow(1);
+        setCol(1);
+      }
+      setWidth("250px");
+      setHeight("40vh");
+    } else{
       setRow(4);
       setCol(5);
       setWidth("50px");

@@ -657,7 +657,7 @@ const GridComponent = ({ index, data }) => {
                                 </label>
                                 <select
                                   className="form-select p-2"
-                                  name="handline_type"
+                                  name="handling_type"
                                 >
                                   <option value="LCH">LCH</option>
                                   <option value="MCH">MCH</option>
