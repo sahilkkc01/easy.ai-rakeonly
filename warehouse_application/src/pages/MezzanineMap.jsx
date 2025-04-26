@@ -195,7 +195,7 @@ export default function MezzanineMap({ setActiveGridSelection,
     Data.forEach((data) => {
       if (!data?.camera_locations && !data?.location_code) return;
   
-      const location = `${data.location_code ?? data.camera_locations}`.toLowerCase();
+      const location = `${data.location_code ?? data.camera_locations}`.toLowerCase().trim();
       const grid_id = location;
       const gridElement = document.getElementById(grid_id);
       if (gridElement) {
