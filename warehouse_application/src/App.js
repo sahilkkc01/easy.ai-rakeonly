@@ -27,6 +27,7 @@ import DeStuffingCompleted from "./pages/de_stuffing/DeStuffingCompleted";
 import DeliveryCompleted from "./pages/delivery/DeliveryCompleted";
 import CartingCompleted from "./pages/carting/CartingCompleted";
 import StuffingCompleted from "./pages/stuffing/StuffingCompleted";
+import Locations from "./pages/Locations";
 
 
 
@@ -60,6 +61,8 @@ export default function App() {
           <Route path="/stuffing_completed" element={<PrivateRoute><StuffingCompleted/></PrivateRoute>} />
           <Route path="/stuffing/bill-details" element={<PrivateRoute><StuffingBillDetails/></PrivateRoute>} />
           <Route path="/stuffing/tally_sheet" element={<PrivateRoute><StuffingTallySheet/></PrivateRoute>} />
+
+          <Route path="/locations" element={<PrivateRoute><Locations/></PrivateRoute>} />
 
         </Routes>
     </Router>

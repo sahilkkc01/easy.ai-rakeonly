@@ -106,12 +106,12 @@ export default function StuffingBillDetails() {
 
   useEffect(() => {
     if (!Data) return;
-  
+
     setID(Data?.id);
     fetchLocations();
-  
+
     let defaultGridData = {};
-  
+
     const processGridItems = (billDetails, matchingTrucks) => {
       const rawGridItems = matchingTrucks.flatMap((truck) =>
         truck?.grid_area?.length > 0
@@ -122,7 +122,7 @@ export default function StuffingBillDetails() {
             }))
           : []
       );
-  
+
       const areaByLocation = {};
       rawGridItems.forEach((item) => {
         if (areaByLocation[item.grid_location]) {
@@ -135,7 +135,7 @@ export default function StuffingBillDetails() {
           };
         }
       });
-  
+
       return Object.entries(areaByLocation).map(([location, data], index) => ({
         id: index + 1,
         grid_location: location,
@@ -144,14 +144,14 @@ export default function StuffingBillDetails() {
         total_pkg: Number(data.total_pkg) || 0,
       }));
     };
-  
+
     if (Data?.stuffing_shipping_bill_details?.length > 0) {
       setTotalBills(Data.stuffing_shipping_bill_details.length);
       setBills(Data.stuffing_shipping_bill_details);
-  
+
       Data.stuffing_shipping_bill_details.forEach((billDetails, i) => {
         let gridItems = [];
-  
+
         if (billDetails?.grid_area?.length > 0) {
           gridItems = billDetails.grid_area.map((item, index) => ({
             id: item.id || index + 1,
@@ -165,34 +165,37 @@ export default function StuffingBillDetails() {
             Data?.carting_container?.carting_trucks?.filter(
               (truck) => truck.sbill == billDetails.shipping_bill_number
             ) || [];
-  
+
           gridItems = processGridItems(billDetails, matchingTrucks);
         }
-  
+
         defaultGridData[i] = gridItems;
       });
     } else if (
       Data?.carting_container?.carting_shipping_bill_details?.length > 0
     ) {
-      setTotalBills(Data.carting_container.carting_shipping_bill_details.length);
+      setTotalBills(
+        Data.carting_container.carting_shipping_bill_details.length
+      );
       setBills(Data.carting_container.carting_shipping_bill_details);
-  
-      Data.carting_container.carting_shipping_bill_details.forEach((billDetails, i) => {
-        const matchingTrucks =
-          Data.carting_container.carting_trucks?.filter(
-            (truck) => truck.sbill == billDetails.shipping_bill_number
-          ) || [];
-  
-        const gridItems = processGridItems(billDetails, matchingTrucks);
-  
-        defaultGridData[i] = gridItems;
-      });
+
+      Data.carting_container.carting_shipping_bill_details.forEach(
+        (billDetails, i) => {
+          const matchingTrucks =
+            Data.carting_container.carting_trucks?.filter(
+              (truck) => truck.sbill == billDetails.shipping_bill_number
+            ) || [];
+
+          const gridItems = processGridItems(billDetails, matchingTrucks);
+
+          defaultGridData[i] = gridItems;
+        }
+      );
     }
-  
+
     setGridData(defaultGridData);
     setGridData2(defaultGridData);
   }, [Data]);
-  
 
   const handleFinalSubmit = async () => {
     setLoading(true);
@@ -213,7 +216,7 @@ export default function StuffingBillDetails() {
       );
 
       if (response?.data?.status == "success") {
-         Swal.fire({
+        Swal.fire({
           icon: "success",
           text: response.data.message,
           timer: 2000,
@@ -279,40 +282,39 @@ export default function StuffingBillDetails() {
     }
   };
 
- 
-const GridComponent = ({ index, data }) => {
-  return (
-    <div className="col-md-3 col-5">
-      <label className="form-label">Grid Location & Area (SQM)</label>
-      {data.length > 0 ? (
-        data.map((input, i) => (
-          <div key={input.id} className="mb-2">
-            <div className="d-flex align-items-center gap-3">
-              <input
-                type="text"
-                readOnly
-                className="form-control p-2"
-                name={`grid_locations[${index}][${i}]`}
-                value={input.grid_location}
-              />
-              <input
-                type="text"
-                className="form-control p-2"
-                placeholder="Area (SQM)"
-                name={`area[${index}][${i}]`}
-                id={`area_${index}_${i}`}
-                readOnly
-                value={input.area}
-              />
+  const GridComponent = ({ index, data }) => {
+    return (
+      <div className="col-md-3 col-5">
+        <label className="form-label">Grid Location & Area (SQM)</label>
+        {data.length > 0 ? (
+          data.map((input, i) => (
+            <div key={input.id} className="mb-2">
+              <div className="d-flex align-items-center gap-3">
+                <input
+                  type="text"
+                  readOnly
+                  className="form-control p-2"
+                  name={`grid_locations[${index}][${i}]`}
+                  value={input.grid_location}
+                />
+                <input
+                  type="text"
+                  className="form-control p-2"
+                  placeholder="Area (SQM)"
+                  name={`area[${index}][${i}]`}
+                  id={`area_${index}_${i}`}
+                  readOnly
+                  value={input.area}
+                />
+              </div>
             </div>
-          </div>
-        ))
-      ) : (
-        <p className="text-muted">No Grid Data Available</p>
-      )}
-    </div>
-  );
-};
+          ))
+        ) : (
+          <p className="text-muted">No Grid Data Available</p>
+        )}
+      </div>
+    );
+  };
   const GridAreaHandle = (grid, id, key) => {
     let totalArea = 0;
     let occupied = 0;
@@ -383,11 +385,13 @@ const GridComponent = ({ index, data }) => {
     let package_weight = 0;
     let Per_package_weight = 0;
 
-    let boe_number = document.getElementById(`shipping_bill_number_${key}`)?.value;
+    let boe_number = document.getElementById(
+      `shipping_bill_number_${key}`
+    )?.value;
     Bills?.forEach((details) => {
       if (details.shipping_bill_number == boe_number) {
         package_weight += parseFloat(details.package_weight) || 0;
-        no_of_pkgs += parseFloat(details.no_of_packages_declared??pkg) || 0;
+        no_of_pkgs += parseFloat(details.no_of_packages_declared ?? pkg) || 0;
       }
     });
     if (
@@ -413,15 +417,13 @@ const GridComponent = ({ index, data }) => {
       console.log("Package weight input not found!");
     }
 
-
     const currentGrids = gridData2[key];
-
     if (currentGrids && currentGrids.length > 0 && pkg) {
       const updatedGrids = currentGrids.map((item) => {
         const totalPkg = item.total_pkg || 0;
         const totalArea = Number(item.area || 0);
 
-        let PKG = ((totalPkg/no_of_pkgs)*pkg);
+        let PKG = (totalPkg / no_of_pkgs) * pkg;
 
         if (totalPkg > 0 && totalArea > 0) {
           const perPackageArea = totalArea / totalPkg;
@@ -430,15 +432,14 @@ const GridComponent = ({ index, data }) => {
             area: Math.round(perPackageArea * PKG),
           };
         }
-        return item; 
+        return item;
       });
-      
+
       setGridData((prev) => ({
         ...prev,
         [key]: updatedGrids,
       }));
     }
-
   };
 
   useEffect(() => {
@@ -446,7 +447,9 @@ const GridComponent = ({ index, data }) => {
       setID(Data?.id);
 
       if (Data.status == "1" || Data.status == "2") {
-        navigate(`?isFinalSubmit=1&id=${ID}&tally_sheet=1&container_number=${Data.container_number}`);
+        navigate(
+          `?isFinalSubmit=1&id=${ID}&tally_sheet=1&container_number=${Data.container_number}`
+        );
       }
     }
   }, [Data]);
@@ -578,7 +581,9 @@ const GridComponent = ({ index, data }) => {
                               <input
                                 type="hidden"
                                 name="gw_port_code"
-                                defaultValue={Data?.carting_container?.gw_port_code}
+                                defaultValue={
+                                  Data?.carting_container?.gw_port_code
+                                }
                               />
                               <div className="col-4">
                                 <label className="form-label">
@@ -614,9 +619,7 @@ const GridComponent = ({ index, data }) => {
                                 />
                               </div>
                               <div className="col-4">
-                                <label className="form-label">
-                                  CRN NO 
-                                </label>
+                                <label className="form-label">CRN NO</label>
                                 <input
                                   type="text"
                                   className="form-control p-2"
@@ -663,7 +666,7 @@ const GridComponent = ({ index, data }) => {
                         </div>
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
-                        {Bills?.map((billDetails,i)=> (
+                        {Bills?.map((billDetails, i) => (
                           <div key={i} className="card card-body my-3">
                             <div className="d-flex gap-3 flex-row overflow-auto">
                               <div className="col-md-2 col-3">
@@ -706,9 +709,7 @@ const GridComponent = ({ index, data }) => {
                                   className="form-control p-2"
                                   name={`package_code[${i}]`}
                                   id={`package_code_${i}`}
-                                  defaultValue={
-                                    billDetails?.package_code
-                                  }
+                                  defaultValue={billDetails?.package_code}
                                 />
                               </div>
                               <div className="col-md-2 col-3">
@@ -733,9 +734,7 @@ const GridComponent = ({ index, data }) => {
                                   className="form-control p-2"
                                   id={`package_weight_${i}`}
                                   name={`package_weight[${i}]`}
-                                  defaultValue={
-                                    billDetails?.package_weight
-                                  }
+                                  defaultValue={billDetails?.package_weight}
                                 />
                               </div>
                               {/* <GridComponent
@@ -767,7 +766,7 @@ const GridComponent = ({ index, data }) => {
                         </div>
                         <hr />
                         <button className="btn btn-primary w-25 mt-3">
-                        Create Job
+                          Create Job
                         </button>
                       </div>
                     </form>
