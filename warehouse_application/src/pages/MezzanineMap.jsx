@@ -177,7 +177,7 @@ export default function MezzanineMap({ setActiveGridSelection,
     if (!Array.isArray(Data)) return;
     let areaSum = 0;
     const handleDoubleClick = (data) => () => {
-        if( (data.area_boxes==20 && data.occupied_area==20) || (data.area_boxes !=20 && data.occupied_area>1)){
+        if(data.area_boxes && data.area_boxes == data.occupied_area){
           onClose();
           Swal.fire({
             icon: "warning",
