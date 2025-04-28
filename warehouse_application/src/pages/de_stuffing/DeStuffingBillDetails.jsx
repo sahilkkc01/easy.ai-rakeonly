@@ -32,6 +32,7 @@ export default function DeStuffingBillDetails() {
   const [activeGridSelections, setActiveGridSelections] = useState({});
   const [gridAreas, setGridAreas] = useState({});
   const [ModalIds, setModalIds] = useState(0);
+  const [SelectedGrids, setSelectedGrids] = useState({});
 
   const fetchData = async (type, containerNo) => {
     setLoading(true);
@@ -490,6 +491,8 @@ export default function DeStuffingBillDetails() {
         setModalVisible2={(val) =>
           setVisibleAreaModals((prev) => ({ ...prev, [ModalIds]: val }))
         }
+        SelectedGrids={SelectedGrids}
+        setSelectedGrids={setSelectedGrids}
       />
 
       <MapAreaModal
@@ -511,12 +514,15 @@ export default function DeStuffingBillDetails() {
           })
         }
         gridArea={gridAreas[ModalIds] ?? []}
+        SelectedGrids={SelectedGrids}
+        setSelectedGrids={setSelectedGrids}
       />
       <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
         <div className="layout-container">
           <div className="layout-page">
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
+                {/* {JSON.stringify(SelectedGrids)} */}
                 {ContainerNo && Type && TallySheet ? (
                   <div className="row justify-content-center">
                     <div className="col-lg-10 col-md-11">

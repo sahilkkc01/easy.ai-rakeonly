@@ -10,7 +10,10 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 export default function ImportMap({  setActiveGridSelection,
   activeGridSelection,
   onClose,
-  setModalVisible2, }) {
+  setModalVisible2,
+  SelectedGrids,
+  setSelectedGrids
+}) {
   const [zoomLevel, setZoomLevel] = useState(0.5);
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -178,6 +181,17 @@ export default function ImportMap({  setActiveGridSelection,
           timer: 3000
         });
       }else{
+
+        setSelectedGrids((prev) => {
+          if (prev.hasOwnProperty(clickedData.new_location_code)) {
+            return prev;
+          }
+          return {
+            ...prev,
+            [clickedData.new_location_code]: [],
+          };
+        });
+
         setActiveGridSelection(clickedData); 
         onClose();
         setModalVisible2(true);              

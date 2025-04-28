@@ -193,13 +193,6 @@ export default function StuffingBillDetails() {
     setGridData2(defaultGridData);
   }, [Data]);
   
-   useEffect(()=>{
-    console.log('gridData',gridData);
-  },[gridData])
-
-  useEffect(()=>{
-    console.log('gridData2',gridData2);
-  },[gridData2])
 
   const handleFinalSubmit = async () => {
     setLoading(true);
@@ -427,12 +420,14 @@ const GridComponent = ({ index, data }) => {
       const updatedGrids = currentGrids.map((item) => {
         const totalPkg = item.total_pkg || 0;
         const totalArea = Number(item.area || 0);
-    
+
+        let PKG = ((totalPkg/no_of_pkgs)*pkg);
+
         if (totalPkg > 0 && totalArea > 0) {
           const perPackageArea = totalArea / totalPkg;
           return {
             ...item,
-            area: Math.round(perPackageArea * pkg),
+            area: Math.round(perPackageArea * PKG),
           };
         }
         return item; 

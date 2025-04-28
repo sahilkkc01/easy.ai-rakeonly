@@ -11,6 +11,8 @@ const MapModal = ({
   setActiveGridSelection,
   activeGridSelection,
   setModalVisible2,
+  SelectedGrids,
+  setSelectedGrids,
 }) => {
   const modalRef = useRef();
 
@@ -45,6 +47,8 @@ const MapModal = ({
             activeGridSelection={activeGridSelection}
             onClose={onClose}
             setModalVisible2={setModalVisible2}
+            SelectedGrids={SelectedGrids}
+            setSelectedGrids={setSelectedGrids}
           />
         );
       case "Export":
@@ -56,7 +60,7 @@ const MapModal = ({
             setModalVisible2={setModalVisible2}
           />
         );
-      case "Mazzanine": 
+      case "Mazzanine":
         return (
           <MezzanineMap
             setActiveGridSelection={setActiveGridSelection}
@@ -65,7 +69,7 @@ const MapModal = ({
             setModalVisible2={setModalVisible2}
           />
         );
-      case "OYC": 
+      case "OYC":
         return (
           <OycMap
             setActiveGridSelection={setActiveGridSelection}
@@ -129,6 +133,8 @@ const MapAreaModal = ({
   activeGridSelection,
   setGridArea,
   gridArea,
+  SelectedGrids,
+  setSelectedGrids,
 }) => {
   const modalRef = useRef();
   const [row, setRow] = useState(0);
@@ -145,25 +151,25 @@ const MapAreaModal = ({
       setCol(5);
       setWidth("50px");
       setHeight("10vh");
-    } else if ( activeGridSelection?.warehouse_name == "OYC") {
+    } else if (activeGridSelection?.warehouse_name == "OYC") {
       setRow(1);
       setCol(1);
       setWidth("250px");
       setHeight("40vh");
-    }else if (activeGridSelection?.warehouse_name == "Mazzanine") {
-      if(activeGridSelection?.area_boxes  =='20'){
+    } else if (activeGridSelection?.warehouse_name == "Mazzanine") {
+      if (activeGridSelection?.area_boxes == "20") {
         setRow(4);
         setCol(5);
-      }else if(activeGridSelection?.area_boxes  =='2'){
+      } else if (activeGridSelection?.area_boxes == "2") {
         setRow(1);
         setCol(2);
-      }else{
+      } else {
         setRow(1);
         setCol(1);
       }
       setWidth("250px");
       setHeight("40vh");
-    } else{
+    } else {
       setRow(4);
       setCol(5);
       setWidth("50px");
@@ -225,7 +231,7 @@ const MapAreaModal = ({
           </div>
           <div className="modal-body">
             <h2>{activeGridSelection?.location_code}</h2>
-
+            {/* <p>{JSON.stringify(gridArea)}</p> */}
             <div className="d-flex align-items-center justify-content-center">
               <div style={{ width: "260px" }}>
                 <div className="main bg-dark p-1 d-flex flex-column border-light border border-2 position-relative w-auto">
@@ -271,7 +277,10 @@ const MapAreaModal = ({
                               }
                             }}
                           >
-                            {( activeGridSelection?.warehouse_name == "OYC"||(activeGridSelection?.warehouse_name == "Mazzanine" &&activeGridSelection?.area_boxes !='20'))
+                            {activeGridSelection?.warehouse_name == "OYC" ||
+                            (activeGridSelection?.warehouse_name ==
+                              "Mazzanine" &&
+                              activeGridSelection?.area_boxes != "20")
                               ? activeGridSelection?.location_code
                               : cellValue}
                           </button>
@@ -287,7 +296,27 @@ const MapAreaModal = ({
             <button
               type="button"
               className="btn btn-secondary"
-              onClick={onClose2}
+              onClick={() => {
+                onClose2();
+                // setSelectedGrids((prev) => {
+                //   const locationCode = activeGridSelection?.new_location_code;
+                //   const SelectedAreas = gridArea;
+                //   if (!locationCode) return prev;
+                //   const existingValues = prev[locationCode] || [];
+                //   let updatedValues = [];
+                //   if (existingValues.includes(SelectedAreas)) {
+                //     updatedValues = existingValues.filter(
+                //       (v) => v !== SelectedAreas
+                //     );
+                //   } else {
+                //     updatedValues = [...existingValues, SelectedAreas];
+                //   }
+                //   return {
+                //     ...prev,
+                //     [locationCode]: updatedValues,
+                //   };
+                // });
+              }}
             >
               Save
             </button>
