@@ -4398,7 +4398,7 @@ export default function MezzanineMap({ setActiveGridSelection,
                                               </span>
 
                                               <div
-                                                id="k11_1"
+                                                id="j10_1"
                                                 className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
                                                 style={{
                                                   width: "120px",
@@ -6636,7 +6636,7 @@ export default function MezzanineMap({ setActiveGridSelection,
                                               O11
                                             </span>
                                             <div
-                                              id="o11_1"
+                                              id="n10_1"
                                               className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center p-5"
                                               style={{
                                                 width: "142px",
@@ -7775,19 +7775,19 @@ export default function MezzanineMap({ setActiveGridSelection,
                                           </div>
                                           <div className="d-flex">
                                             <div
-                                              // id='p12'
+                                              id='p12'
                                               className="position-relative bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center p-5"
                                               style={{
                                                 width: "98px",
                                                 height: "21vh",
                                               }}
                                             >
-                                              {/* <span
+                                              <span
                                                                                 className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
                                                                                 style={{ zIndex: 1, backdropFilter: 'blur(1px)' }}
                                                                             >
                                                                                 P12
-                                                                            </span> */}
+                                                                            </span>
                                             </div>
                                             <div
                                               id="q12"
