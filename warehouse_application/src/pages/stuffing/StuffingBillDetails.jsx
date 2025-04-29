@@ -454,6 +454,42 @@ export default function StuffingBillDetails() {
     }
   }, [Data]);
 
+
+
+  const handleRestData = async () => {
+    setLoading(true);
+    const url = `https://ctas.live/backend/api/stuffing/reset/data?id=${ID}&type=FCL&container_number=${ContainerNo}`;
+    try {
+      const response = await axios.get(url, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (response?.data?.status == "success") {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 2000,
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       {loading && (
@@ -510,7 +546,7 @@ export default function StuffingBillDetails() {
                                 iframeRef.current.contentWindow.print();
                               }
                             }}
-                            className="btn btn-label-primary mb-2"
+                            className="btn btn-label-primary mx-2"
                           >
                             Print
                           </button>
@@ -518,20 +554,41 @@ export default function StuffingBillDetails() {
                           <>
                             <button
                               type="button"
-                              className="btn btn-primary mb-2"
+                              className="btn btn-primary mx-2"
                               onClick={handleFinalSubmit}
                             >
                               Final Submit
                             </button>
                             <a
                               href={`?isFinalSubmit=0&id=${ID}&container_number=${ContainerNo}`}
-                              className="btn btn-primary mb-2 ms-2"
+                              className="btn btn-primary mx-2"
                             >
                               Edit
                             </a>
+                            <button
+                              type="button"
+                              className="btn btn-info mx-2"
+                              onClick={() => {
+                                Swal.fire({
+                                  title: "Are you sure?",
+                                  text: "This will reset the data.!",
+                                  icon: "warning",
+                                  showCancelButton: true,
+                                  confirmButtonColor: "#3085d6",
+                                  cancelButtonColor: "#d33",
+                                  confirmButtonText: "Yes, reset it!",
+                                }).then((result) => {
+                                  if (result.isConfirmed) {
+                                    handleRestData();
+                                  }
+                                });
+                              }}
+                            >
+                              Reset From
+                            </button>
                           </>
                         )}
-                        <a href="?" className="btn btn-primary mb-2 ms-2">
+                        <a href="?" className="btn btn-primary mx-2">
                           Search Another
                         </a>
                       </div>
@@ -553,15 +610,36 @@ export default function StuffingBillDetails() {
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
                       <div className="text-end">
-                        <a href="?" className="btn btn-primary mb-2 ms-2">
+                        <a href="?" className="btn btn-primary mx-2">
                           Search Another
                         </a>
                         <Link
                           to={"/stuffing"}
-                          className="btn btn-primary mb-2 ms-2"
+                          className="btn btn-primary mx-2"
                         >
                           Go Back
                         </Link>
+                        <button
+                              type="button"
+                              className="btn btn-info mx-2"
+                              onClick={() => {
+                                Swal.fire({
+                                  title: "Are you sure?",
+                                  text: "This will reset the data.!",
+                                  icon: "warning",
+                                  showCancelButton: true,
+                                  confirmButtonColor: "#3085d6",
+                                  cancelButtonColor: "#d33",
+                                  confirmButtonText: "Yes, reset it!",
+                                }).then((result) => {
+                                  if (result.isConfirmed) {
+                                    handleRestData();
+                                  }
+                                });
+                              }}
+                            >
+                              Reset From
+                            </button>
                       </div>
                       <div className="row">
                         <h4 className="text-primary mb-3">Container Details</h4>

@@ -229,7 +229,7 @@ export default function DeStuffingBillDetails() {
     });
   };
 
-  const GridComponents = ({ index,details }) => {
+  const GridComponents = ({ index, details }) => {
     const gridInputs = allGridInputs[index];
     return (
       <div className="col-md-4 col-6">
@@ -271,7 +271,10 @@ export default function DeStuffingBillDetails() {
                   id={`area_${index}_${i}`}
                   defaultValue={gridAreas[modalId]?.length ?? input.area}
                   onChange={(e) => AreaHandle(index, i)}
-                  max={Number(activeGridSelections[modalId]?.total_area??20)-Number(activeGridSelections[modalId]?.occupied_area??0)}
+                  max={
+                    Number(activeGridSelections[modalId]?.total_area ?? 20) -
+                    Number(activeGridSelections[modalId]?.occupied_area ?? 0)
+                  }
                 />
                 <input
                   type="hidden"
@@ -427,6 +430,40 @@ export default function DeStuffingBillDetails() {
     }
   };
 
+  const handleRestData = async () => {
+    setLoading(true);
+    const url = `https://ctas.live/backend/api/de_stuffing/reset/data?type=${Type}&container_no=${ContainerNo}`;
+    try {
+      const response = await axios.get(url, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (response?.data?.status == "success") {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 2000,
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchLocationsArea = async () => {
     setLoading(true);
     let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Import`;
@@ -534,7 +571,7 @@ export default function DeStuffingBillDetails() {
                                 iframeRef.current.contentWindow.print();
                               }
                             }}
-                            className="btn btn-label-primary mb-2"
+                            className="btn btn-label-primary mx-2"
                           >
                             Print
                           </button>
@@ -543,21 +580,43 @@ export default function DeStuffingBillDetails() {
                             <button
                               type="button"
                               //  href={`?isFinalSubmit=1&tally_sheet=1&type=${Type}&container_no=${ContainerNo}`}
-                              className="btn btn-primary mb-2"
+                              className="btn btn-primary mx-2"
                               onClick={handleFinalSubmit}
                             >
                               Final Submit
                             </button>
+
+                            <button
+                              type="button"
+                              className="btn btn-info mb-2"
+                              onClick={() => {
+                                Swal.fire({
+                                  title: "Are you sure?",
+                                  text: "This will reset the data.!",
+                                  icon: "warning",
+                                  showCancelButton: true,
+                                  confirmButtonColor: "#3085d6",
+                                  cancelButtonColor: "#d33",
+                                  confirmButtonText: "Yes, reset it!",
+                                }).then((result) => {
+                                  if (result.isConfirmed) {
+                                    handleRestData();
+                                  }
+                                });
+                              }}
+                            >
+                              Reset From
+                            </button>
                             <a
                               href={`?isFinalSubmit=0&id=${ID}&type=${Type}&container_no=${ContainerNo}`}
-                              className="btn btn-primary mb-2 ms-2"
+                              className="btn btn-primary mx-2"
                             >
                               Edit
                             </a>
                           </>
                         )}
 
-                        <a href="?" className="btn btn-primary mb-2 ms-2">
+                        <a href="?" className="btn btn-primary mx-2">
                           Search Another
                         </a>
                       </div>
@@ -579,15 +638,36 @@ export default function DeStuffingBillDetails() {
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
                       <div className="text-end">
-                        <a href="?" className="btn btn-primary mb-2 ms-2">
+                        <a href="?" className="btn btn-primary mx-2">
                           Search Another
                         </a>
                         <Link
                           to={"/de-stuffing"}
-                          className="btn btn-primary mb-2 ms-2"
+                          className="btn btn-primary mx-2"
                         >
                           Go Back
                         </Link>
+                        <button
+                          type="button"
+                          className="btn btn-info mx-2"
+                          onClick={() => {
+                            Swal.fire({
+                              title: "Are you sure?",
+                              text: "This will reset the data.!",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonColor: "#3085d6",
+                              cancelButtonColor: "#d33",
+                              confirmButtonText: "Yes, reset it!",
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                handleRestData();
+                              }
+                            });
+                          }}
+                        >
+                          Reset From
+                        </button>
                       </div>
                       <div className="row">
                         <h4 className="text-primary mb-3">Container Details</h4>
