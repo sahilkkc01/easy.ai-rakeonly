@@ -26,6 +26,7 @@ export default function CartingBillDetails() {
   const [MapName, setMapName] = useState(null);
   const [LocationNames, setLocationNames] = useState([]);
   const [LocationsArea, setLocationsArea] = useState(null);
+  const [Weight, setWeight] = useState(0);
   const today = new Date();
 
   const [visibleModals, setVisibleModals] = useState({});
@@ -394,14 +395,14 @@ export default function CartingBillDetails() {
                   value={JSON.stringify(gridAreas[modalId])}
                 />
 
-                <button
+                {/* <button
                   type="button"
                   className="btn btn-success btn-sm px-2 py-1"
                   onClick={() => addGridInput(index)}
                 >
                   +
-                </button>
-                {gridInputs.length > 1 && (
+                </button> */}
+                {/* {gridInputs.length > 1 && (
                   <button
                     type="button"
                     className="btn btn-danger btn-sm px-2 py-1"
@@ -411,7 +412,7 @@ export default function CartingBillDetails() {
                   >
                     -
                   </button>
-                )}
+                )} */}
               </div>
               <small id={`error_area_${index}_${i}`}></small>
             </div>
@@ -518,11 +519,11 @@ export default function CartingBillDetails() {
         package_weight != 0 &&
         no_of_pkgs != 0
       ) {
-        Per_package_weight = package_weight / no_of_pkgs.toFixed(2);
+        Per_package_weight = package_weight / no_of_pkgs;
       }
     } else {
       if (gross_weight && dec_pkg && gross_weight != 0 && dec_pkg != 0) {
-        Per_package_weight = gross_weight / dec_pkg.toFixed(2);
+        Per_package_weight = gross_weight / dec_pkg;
       }
     }
 
@@ -531,7 +532,7 @@ export default function CartingBillDetails() {
 
       if (weightInput) {
         if (pkg && pkg != 0) {
-          weightInput.value = (Per_package_weight * pkg).toFixed(2);
+          weightInput.value = (Per_package_weight * pkg).toFixed(5);
         } else if (pkg == 0) {
           weightInput.value = 0;
         }
@@ -550,7 +551,7 @@ export default function CartingBillDetails() {
 
             if (weightInput) {
               if (pkgValue && pkgValue != 0) {
-                weightInput.value = (Per_package_weight * pkgValue).toFixed(2);
+                weightInput.value = (Per_package_weight * pkgValue).toFixed(5);
               } else if (pkgValue == 0) {
                 weightInput.value = 0;
               }
@@ -565,7 +566,7 @@ export default function CartingBillDetails() {
 
           if (weightInput) {
             if (pkgValue && pkgValue != 0) {
-              weightInput.value = (Per_package_weight * pkgValue).toFixed(2);
+              weightInput.value = (Per_package_weight * pkgValue).toFixed(5);
             } else if (pkgValue == 0) {
               weightInput.value = 0;
             }
@@ -575,7 +576,24 @@ export default function CartingBillDetails() {
         }
       }
     }
+   
   };
+
+  const culWeight = () => {
+    let Wh=0;
+    for (let i = 0; i < TotalTruck; i++) {
+          let weightInput = document.getElementById(`pkgs_weight_${i}`);
+
+          if (weightInput) {
+             Wh+=Number(weightInput.value);
+            setWeight(Wh);
+          } else {
+            console.log("Package weight input not found!");
+          }
+     
+    }
+  };
+
 
   const fetchLocationsArea = async () => {
     setLoading(true);
@@ -874,6 +892,17 @@ export default function CartingBillDetails() {
 
                                 <div className="col-4">
                                   <label className="form-label">
+                                   Gross Weight
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control p-2"
+                                   readOnly
+                                    value={Data.gross_weight}
+                                  />
+                                </div>
+                                <div className="col-4">
+                                  <label className="form-label">
                                     Start Date Time
                                   </label>
                                   <input
@@ -1042,6 +1071,12 @@ export default function CartingBillDetails() {
                               </div>
                             </div>
                           ))}
+
+                          {/* <div className="col-12 text-center">
+                            <button type="button" onClick={culWeight}>weights</button>
+                                  <h1>weight:{Weight}</h1>
+                                
+                          </div> */}
 
                           <div className="col-12 my-2 text-end">
                             <button

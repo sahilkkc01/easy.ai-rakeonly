@@ -299,14 +299,14 @@ const GridComponent = ({ index, data }) => {
       package_weight != 0 &&
       no_of_pkgs != 0
     ) {
-      Per_package_weight += package_weight / no_of_pkgs.toFixed(2);
+      Per_package_weight += package_weight / no_of_pkgs;
     }
 
     let weightInput = document.getElementById(`pkgs_weight_${key}`);
 
     if (weightInput) {
       if (pkg && pkg != 0) {
-        weightInput.value = (Per_package_weight * pkg).toFixed(2);
+        weightInput.value = (Per_package_weight * pkg).toFixed(5);
       } else if (pkg == 0) {
         weightInput.value = 0;
       } else {
