@@ -51,31 +51,6 @@ export default function StuffingBillDetails() {
     }
   };
 
-  const fetchLocations = async () => {
-    setLoading(true);
-    const url = `https://ctas.live/backend/api/warehouse/empty/locations?type=Export`;
-    try {
-      const response = await axios.get(url);
-      if (response?.data?.status == "success") {
-        setLocations(response?.data?.data);
-      } else {
-        Swal.fire({
-          icon: response?.data?.status,
-          text: response?.data?.message,
-          timer: 3000,
-        });
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        text: `Error Fetching Data: ${error.message}`,
-        timer: 3000,
-        showConfirmButton: false,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const GetFormData = async (e) => {
     e.preventDefault();
@@ -108,7 +83,6 @@ export default function StuffingBillDetails() {
     if (!Data) return;
 
     setID(Data?.id);
-    fetchLocations();
 
     let defaultGridData = {};
 
@@ -314,26 +288,6 @@ export default function StuffingBillDetails() {
         )}
       </div>
     );
-  };
-  const GridAreaHandle = (grid, id, key) => {
-    let totalArea = 0;
-    let occupied = 0;
-    let loc_i = 1;
-    Locations?.forEach((location) => {
-      if (location.camera_locations == grid && loc_i == 1) {
-        loc_i++;
-        totalArea += parseInt(location.total_area) || 0;
-        occupied += parseInt(location.occupied_area) || 0;
-      }
-    });
-
-    let available = totalArea - occupied;
-    let areaInput = document.getElementById(`area_${id}_${key}`);
-
-    if (areaInput) {
-      areaInput.value = available >= 0 ? available : 0;
-      areaInput.max = available >= 0 ? available : 0;
-    }
   };
 
   const AreaHandle = (id, key) => {

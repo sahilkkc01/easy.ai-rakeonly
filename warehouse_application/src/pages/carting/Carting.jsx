@@ -131,9 +131,9 @@ export default function Carting() {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchLocationsArea();
-  },[data])
+  }, [data]);
 
   return (
     <>
@@ -171,9 +171,12 @@ export default function Carting() {
                     <Link to={`/`} className="btn btn-label-primary ms-2">
                       Go Back
                     </Link>
-                    <Link to={`/carting_completed`} className="btn btn-label-info ms-2">
-                        Completed Trans
-                      </Link>
+                    <Link
+                      to={`/carting_completed`}
+                      className="btn btn-label-info ms-2"
+                    >
+                      Completed Trans
+                    </Link>
                   </div>
                 </div>
                 <div className="col-md-12 px-4 mb-5">
@@ -285,9 +288,12 @@ export default function Carting() {
                                           <td>{item.type}</td>
                                           <td>{item.crn_number}</td>
                                           <td>{item.gw_port_code}</td>
-                                          <td>{formatToDateTime(item.start_time)}</td>
-                                          {/* <td>{item.end_time}</td> */}
                                           <td>
+                                            {formatToDateTime(item.start_time)}
+                                          </td>
+
+                                          <td>
+
                                             <Link
                                               to={`/carting/bill-details?crn_number=${item.crn_number}`}
                                               className="btn btn-label-primary btn-sm mx-1"
@@ -353,23 +359,32 @@ export default function Carting() {
                                               <td>Grid Location & Area</td>
                                               <td>
                                                 <strong>
-                                                {details?.grid_area?.map(
-                                                      (grid, k) => {
-                                                        if (
-                                                          grid.grid_locations
-                                                        ) {
-                                                          const matchedArea = LocationsArea?.length > 0
-                                                          ? LocationsArea.find(area => area.location_code == grid.grid_locations)
-                                                          : 0;
-                                                          return (
-                                                            <p className="mb-0">{
-                                                                grid.grid_locations
-                                                              } / {matchedArea?.ocr_occupied_area?? item.area ?? '0'}
-                                                            </p>
-                                                          );
-                                                        }
+                                                  {details?.grid_area?.map(
+                                                    (grid, k) => {
+                                                      if (grid.grid_locations) {
+                                                        const matchedArea =
+                                                          LocationsArea?.length >
+                                                          0
+                                                            ? LocationsArea.find(
+                                                                (area) =>
+                                                                  area.location_code ==
+                                                                  grid.grid_locations
+                                                              )
+                                                            : 0;
+                                                        return (
+                                                          <p className="mb-0">
+                                                            {
+                                                              grid.grid_locations
+                                                            }{" "}
+                                                            /{" "}
+                                                            {matchedArea?.ocr_occupied_area ??
+                                                              item.area ??
+                                                              "0"}
+                                                          </p>
+                                                        );
                                                       }
-                                                    )}
+                                                    }
+                                                  )}
                                                 </strong>
                                               </td>
                                             </tr>
