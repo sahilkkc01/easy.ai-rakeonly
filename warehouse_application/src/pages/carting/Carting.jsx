@@ -222,7 +222,7 @@ export default function Carting() {
                                   <td>{item.type}</td>
                                   <td>{item.crn_number}</td>
                                   <td>{item.gw_port_code}</td>
-                                  <td>{item.start_time}</td>
+                                  <td>{formatToDateTime(item.start_time)}</td>
                                   {/* <td>{item.end_time}</td> */}
                                   <td>
                                     <Link
@@ -285,7 +285,7 @@ export default function Carting() {
                                           <td>{item.type}</td>
                                           <td>{item.crn_number}</td>
                                           <td>{item.gw_port_code}</td>
-                                          <td>{item.start_time}</td>
+                                          <td>{formatToDateTime(item.start_time)}</td>
                                           {/* <td>{item.end_time}</td> */}
                                           <td>
                                             <Link

@@ -240,8 +240,8 @@ export default function StuffingCompleted() {
                                   <td>{item.container_number}</td>
                                   <td>{item.container_size}</td>
                                   <td>{item.crn_number}</td>
-                                  <td>{item.start_time}</td>
-                                  <td>{item.end_time}</td>
+                                  <td>{formatToDateTime(item.start_time)}</td>
+                                  <td>{formatToDateTime(item.end_time)}</td>
                                   <td>
                                     {/* <Link
                                       to={`/stuffing/bill-details?container_number=${item.container_number}`}
@@ -302,8 +302,8 @@ export default function StuffingCompleted() {
                                           <td>{item.container_number}</td>
                                           <td>{item.container_size}</td>
                                           <td>{item.crn_number}</td>
-                                          <td>{item.start_time}</td>
-                                          <td>{item.end_time}</td>
+                                          <td>{formatToDateTime(item.start_time)}</td>
+                                          <td>{formatToDateTime(item.end_time)}</td>
                                           <td>
                                             {/* <Link
                                               to={`/stuffing/bill-details?container_number=${item.container_number}`}
