@@ -720,7 +720,7 @@ export default function DeStuffingBillDetails() {
                                   type="datetime-local"
                                   className="form-control p-2"
                                   name="start_time"
-                                  defaultValue={formatToDateTimeLocal(today)}
+                                  defaultValue={formatToDateTimeLocal(Data.start_time??today)}
                                 />
                               </div>
                               <div className="col-4">
@@ -731,7 +731,7 @@ export default function DeStuffingBillDetails() {
                                   type="datetime-local"
                                   className="form-control p-2"
                                   name="end_time"
-                                  defaultValue={formatToDateTimeLocal(today)}
+                                  defaultValue={formatToDateTimeLocal(Data.end_time??today)}
                                 />
                               </div>
                               <div className="col-4">
