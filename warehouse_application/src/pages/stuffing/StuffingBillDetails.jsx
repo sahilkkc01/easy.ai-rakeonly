@@ -120,8 +120,8 @@ export default function StuffingBillDetails() {
     };
 
     if (Data?.stuffing_shipping_bill_details?.length > 0) {
-      setTotalBills(Data.stuffing_shipping_bill_details.length);
       setBills(Data.stuffing_shipping_bill_details);
+      setTotalBills(Data.stuffing_shipping_bill_details.length);
 
       Data.stuffing_shipping_bill_details.forEach((billDetails, i) => {
         let gridItems = [];
@@ -148,10 +148,10 @@ export default function StuffingBillDetails() {
     } else if (
       Data?.carting_container?.carting_shipping_bill_details?.length > 0
     ) {
+      setBills(Data.carting_container.carting_shipping_bill_details);
       setTotalBills(
         Data.carting_container.carting_shipping_bill_details.length
       );
-      setBills(Data.carting_container.carting_shipping_bill_details);
 
       Data.carting_container.carting_shipping_bill_details.forEach(
         (billDetails, i) => {
@@ -443,6 +443,39 @@ export default function StuffingBillDetails() {
       setLoading(false);
     }
   };
+  const handleDeleteBill = async (id,bill) => {
+    setLoading(true);
+    const url = `https://ctas.live/backend/api/stuffing/bill/delete?id=${id}&bill=${bill}`;
+    try {
+      const response = await axios.get(url, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (response?.data?.status == "success") {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 2000,
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -698,7 +731,8 @@ export default function StuffingBillDetails() {
                         </div>
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
-                        {Bills?.map((billDetails, i) => (
+                         {/* {Bills?.map((billDetails, i) => ( */}
+                              { TotalBills && TotalBills > 0 && Array.from({ length: TotalBills }, (_, i) => (
                           <div key={i} className="card card-body my-3">
                             <div className="d-flex gap-3 flex-row overflow-auto">
                               <div className="col-md-2 col-3">
@@ -714,7 +748,7 @@ export default function StuffingBillDetails() {
                                   name={`shipping_bill_number[${i}]`}
                                   id={`shipping_bill_number_${i}`}
                                   defaultValue={
-                                    billDetails?.shipping_bill_number
+                                    Bills?.[i]?.shipping_bill_number??null
                                   }
                                 />
                               </div>
@@ -728,7 +762,7 @@ export default function StuffingBillDetails() {
                                   name={`commodity_description[${i}]`}
                                   id={`commodity_description_${i}`}
                                   defaultValue={
-                                    billDetails?.commodity_description
+                                    Bills?.[i]?.commodity_description??null
                                   }
                                 />
                               </div>
@@ -741,7 +775,7 @@ export default function StuffingBillDetails() {
                                   className="form-control p-2"
                                   name={`package_code[${i}]`}
                                   id={`package_code_${i}`}
-                                  defaultValue={billDetails?.package_code}
+                                  defaultValue={Bills?.[i]?.package_code??null}
                                 />
                               </div>
                               <div className="col-md-2 col-3">
@@ -752,7 +786,7 @@ export default function StuffingBillDetails() {
                                   id={`no_of_packages_declared_${i}`}
                                   name={`no_of_packages_declared[${i}]`}
                                   defaultValue={
-                                    billDetails?.no_of_packages_declared
+                                    Bills?.[i]?.no_of_packages_declared??null
                                   }
                                   onChange={(e) =>
                                     handleBillPkgW(i, e.target.value)
@@ -766,7 +800,7 @@ export default function StuffingBillDetails() {
                                   className="form-control p-2"
                                   id={`package_weight_${i}`}
                                   name={`package_weight[${i}]`}
-                                  defaultValue={billDetails?.package_weight}
+                                  defaultValue={Bills?.[i]?.package_weight??null}
                                 />
                               </div>
                               {/* <GridComponent
@@ -783,6 +817,25 @@ export default function StuffingBillDetails() {
                                     />
                                   )}
                                 </>
+                              )}
+                              {Bills?.[i]?.id &&(
+                              <div className="col-1 d-flex align-items-center">
+                                <button className="btn btn-sm btn-danger" type="button" onClick={()=>{
+                                  Swal.fire({
+                                    title: 'Are you sure?',
+                                    text: "This will delete data.!",
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonColor: '#3085d6',
+                                    cancelButtonColor: '#d33',
+                                    confirmButtonText: 'Yes, reset it!'
+                                  }).then((result) => {
+                                    if (result.isConfirmed) {
+                                      handleDeleteBill(Bills?.[i]?.id ,Bills?.[i]?.shipping_bill_number);
+                                    }
+                                  });
+                                }} > Delete Bill</button>
+                              </div>
                               )}
                             </div>
                           </div>
