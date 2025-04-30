@@ -956,6 +956,14 @@ export default function CartingBillDetails() {
                             <div key={i} className="card card-body my-3">
                               <div className="d-flex gap-3 flex-row overflow-auto">
                                 <div className="col-md-2 col-3">
+                                  <input
+                                    type="hidden"
+                                    className="form-control p-2"
+                                    name={`sq_no[${i}]`}
+                                    defaultValue={
+                                      Data?.carting_trucks[i]?.sq_no ?? Data?.id + '_' + i
+                                    }
+                                  />
                                   <label
                                     htmlFor="truck_number"
                                     className="form-label"
