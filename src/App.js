@@ -45,6 +45,7 @@ import IndexROut from "./pages/IndexROut.jsx";
 import WTR from "./pages/WTR.jsx";
 import Inventory from "./pages/Inventory.jsx";
 import YardRowData from "./pages/YardRowData.jsx";
+import GetOcrData from "./pages/GetOcrData.jsx";
 
 export default function App() {
 
@@ -116,6 +117,7 @@ export default function App() {
           <Route path="/inventory" element={<PrivateRoute><Inventory /></PrivateRoute>} />
 
           <Route path="/yard/row/data" element={<YardRowData />} />
+          <Route path="/get/ocr/data" element={<GetOcrData/>}/>
 
           {/* 
           {/* <Route path="/EIRMain/:Permit" element={<EIRMain />} />
