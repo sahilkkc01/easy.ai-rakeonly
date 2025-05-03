@@ -79,7 +79,7 @@ export default function Locations() {
         headers: { "Content-Type": "application/json" },
       });
 
-      if (response.data && response.data.status=='success') {
+      if (response.data && response.data.status == "success") {
         Swal.fire({
           icon: response?.data?.status,
           text: response?.data?.message,
@@ -117,6 +117,25 @@ export default function Locations() {
 
   return (
     <>
+      {/* <div className="container">
+        <div className="row align-items-center justify-content-center" style={{ height: "90vh" }}>
+        {LocationNames?.map((map, i) => (
+          <div className="col-lg-3 col-md-4 col-sm-5 col-6 mb-3" key={i}>
+            <div className="card border border-primary border-2">
+              <div className="card-body">
+                <div
+                  className="d-flex align-items-center justify-content-center"
+                  style={{ height: "150px" }}
+                >
+                  <h4 className="text-primary text-nowrap">{map}</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+             ))}
+        </div>
+      </div> */}
+
       <div className="container">
         {/* {JSON.stringify(Data.data[0])} */}
         <h3 className="mt-3">Locations</h3>
@@ -148,7 +167,7 @@ export default function Locations() {
             <button className="btn btn-info mt-5" onClick={() => GetData()}>
               Submit
             </button>
-            <Link to={'/'} className="btn btn-primary mt-5 ms-3">
+            <Link to={"/"} className="btn btn-primary mt-5 ms-3">
               Go Back
             </Link>
           </div>
@@ -186,13 +205,13 @@ export default function Locations() {
                             className="btn btn-sm btn-label-primary"
                             onClick={() => {
                               Swal.fire({
-                                title: 'Are you sure?',
+                                title: "Are you sure?",
                                 text: "You want to update this grid!",
-                                icon: 'warning',
+                                icon: "warning",
                                 showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Yes, update it!',
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Yes, update it!",
                               }).then((result) => {
                                 if (result.isConfirmed) {
                                   updateGrid(item.id);

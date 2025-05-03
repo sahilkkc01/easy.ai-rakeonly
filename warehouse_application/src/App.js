@@ -41,19 +41,16 @@ export default function App() {
 
           <Route path="/de-stuffing" element={<PrivateRoute><DeStuffing/></PrivateRoute>} />
           <Route path="/de_stuffing_completed_trans" element={<PrivateRoute><DeStuffingCompleted/></PrivateRoute>} />
-
           <Route path="/de-stuffing/bill-details" element={<PrivateRoute><DeStuffingBillDetails/></PrivateRoute>} />
           <Route path="/de-stuffing/tally_sheet" element={<PrivateRoute><DeStuffingTallySheet/></PrivateRoute>} />
 
           <Route path="/delivery" element={<PrivateRoute><Delivery/></PrivateRoute>} />
           <Route path="/completed_delivery" element={<PrivateRoute><DeliveryCompleted/></PrivateRoute>} />
-          
           <Route path="/delivery/bill-details" element={<PrivateRoute><DeliveryBillDetails/></PrivateRoute>} />
           <Route path="/delivery/tally_sheet" element={<PrivateRoute><DeliveryTallySheet/></PrivateRoute>} />
 
           <Route path="/carting" element={<PrivateRoute><Carting/></PrivateRoute>} />
           <Route path="/carting_completed" element={<PrivateRoute><CartingCompleted/></PrivateRoute>} />
-          {/* CartingCompleted */}
           <Route path="/carting/bill-details" element={<PrivateRoute><CartingBillDetails/></PrivateRoute>} />
           <Route path="/carting/tally_sheet" element={<PrivateRoute><CartingTallySheet/></PrivateRoute>} />
 

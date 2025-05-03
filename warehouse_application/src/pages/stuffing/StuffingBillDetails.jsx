@@ -92,6 +92,7 @@ export default function StuffingBillDetails() {
           ? truck.grid_area.map((item) => ({
               grid_location: item.grid_locations || "NA",
               area: parseFloat(item.area) || 0,
+              grid_pkg: Number(item.pkg) || 0,
               no_of_pkgs: Number(truck?.no_of_pkgs ?? 0),
             }))
           : []
@@ -101,10 +102,12 @@ export default function StuffingBillDetails() {
       rawGridItems.forEach((item) => {
         if (areaByLocation[item.grid_location]) {
           areaByLocation[item.grid_location].area += item.area;
+          areaByLocation[item.grid_location].grid_pkg += item.grid_pkg;
           areaByLocation[item.grid_location].total_pkg += item.no_of_pkgs;
         } else {
           areaByLocation[item.grid_location] = {
             area: item.area,
+            grid_pkg: item.grid_pkg,
             total_pkg: item.no_of_pkgs,
           };
         }
@@ -115,6 +118,7 @@ export default function StuffingBillDetails() {
         grid_location: location,
         area: data.area,
         sBillNo: billDetails?.shipping_bill_number || 0,
+        grid_pkg: Number(data.grid_pkg) || 0,
         total_pkg: Number(data.total_pkg) || 0,
       }));
     };
@@ -132,6 +136,7 @@ export default function StuffingBillDetails() {
             grid_location: item.grid_locations || "NA",
             area: item.area || 0,
             sBillNo: billDetails?.shipping_bill_number || 0,
+            grid_pkg: Number(item.pkg) || 0,
             total_pkg: Number(billDetails?.no_of_packages_declared) || 0,
           }));
         } else {
@@ -265,6 +270,12 @@ export default function StuffingBillDetails() {
             <div key={input.id} className="mb-2">
               <div className="d-flex align-items-center gap-3">
                 <input
+                  type="hidden"
+                  className="form-control p-2"
+                  name={`pkg[${index}][${i}]`}
+                  value={input.grid_pkg}
+                />
+                <input
                   type="text"
                   readOnly
                   className="form-control p-2"
@@ -372,21 +383,35 @@ export default function StuffingBillDetails() {
     }
 
     const currentGrids = gridData2[key];
+    console.log(currentGrids);
     if (currentGrids && currentGrids.length > 0 && pkg) {
       const updatedGrids = currentGrids.map((item) => {
         const totalPkg = item.total_pkg || 0;
+        const gridPkg = item.grid_pkg || 0;
         const totalArea = Number(item.area || 0);
 
         let PKG = (totalPkg / no_of_pkgs) * pkg;
+        let updatedItem = { ...item };
 
         if (totalPkg > 0 && totalArea > 0) {
           const perPackageArea = totalArea / totalPkg;
-          return {
-            ...item,
-            area: Math.round(perPackageArea * PKG),
-          };
+          updatedItem.area = Math.round(perPackageArea * PKG);
         }
-        return item;
+
+        if (totalPkg > 0 && gridPkg > 0) {
+          const perAreaPackage = gridPkg / totalPkg;
+          updatedItem.grid_pkg = Math.round(perAreaPackage * PKG);
+        }
+        return updatedItem;
+
+        // if (totalPkg > 0 && totalArea > 0) {
+        //   const perPackageArea = totalArea / totalPkg;
+        //   return {
+        //     ...item,
+        //     area: Math.round(perPackageArea * PKG),
+        //   };
+        // }
+        // return item;
       });
 
       setGridData((prev) => ({
@@ -903,12 +928,9 @@ export default function StuffingBillDetails() {
                 )}
 
                 <Footer />
-                <div className="content-backdrop fade" />
               </div>
             </div>
           </div>
-          <div className="layout-overlay layout-menu-toggle"></div>
-          <div className="drag-target"></div>
         </div>
       </div>
     </>
