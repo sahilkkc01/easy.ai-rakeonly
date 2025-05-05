@@ -211,8 +211,24 @@ export default function EmptyImportMap({
         for (let i = 0; i < ocr_occupied; i++) {
           setBackgroundColor(`${data.camera_locations}_${i + 1}`, "#00b0c4");
         }
-        for (let i = 0; i < occupied; i++) {
-          setBackgroundColor(`${data.camera_locations}_${i + 1}`, "#8f51dd");
+        // for (let i = 0; i < occupied; i++) {
+        //   setBackgroundColor(`${data.camera_locations}_${i + 1}`, "#8f51dd");
+        // }
+
+        if (data.grid_allocation) {
+          Object.entries(JSON.parse(data.grid_allocation)).map(
+            ([key, value]) => {
+              console.log('key :: ', data.location_code);
+              console.log('value :: ', value);
+              JSON.parse(value)?.map((v) => {
+                console.log('value :: ID :: ', v);
+                setBackgroundColor(
+                      `${data?.camera_locations}_${v}`,
+                      "#8f51dd"
+                    );
+              });
+            }
+          );
         }
       });
 

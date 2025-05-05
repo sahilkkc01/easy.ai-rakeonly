@@ -8,7 +8,7 @@ import { ApiBaseUrl } from "../../Config";
 export default function EmptyExportMap({
   setSelectedGrid,
   setIsModalOpen,
-  setIsModalOpen2
+  setIsModalOpen2,
 }) {
   const [zoomLevel, setZoomLevel] = useState(0.4);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -146,11 +146,10 @@ export default function EmptyExportMap({
             data.camera_locations?.toLowerCase()) === locationId
       );
 
-      if(clickedData){
+      if (clickedData) {
         setSelectedGrid(clickedData);
-        setIsModalOpen(false);    
-        setIsModalOpen2(true);    
-
+        setIsModalOpen(false);
+        setIsModalOpen2(true);
       }
     },
     [Data]
@@ -179,6 +178,7 @@ export default function EmptyExportMap({
           total_area = 20,
           occupied_area = 0,
           ocr_occupied_area = 0,
+          grid_allocation = {},
         } = data;
 
         // Set display text
@@ -196,10 +196,23 @@ export default function EmptyExportMap({
             "#00b0c4"
           );
         }
-        for (let i = 0; i < occupied_area; i++) {
-          setBackgroundColor(
-            `${location_code?.toLowerCase()}_${i + 1}`,
-            "#8f51dd"
+        // for (let i = 0; i < occupied_area; i++) {
+        //   setBackgroundColor(
+        //     `${location_code?.toLowerCase()}_${i + 1}`,
+        //     "#8f51dd"
+        //   );
+        // }
+
+        if (data.grid_allocation) {
+          Object.entries(JSON.parse(data.grid_allocation)).map(
+            ([key, value]) => {
+              JSON.parse(value)?.map((v) => {
+                setBackgroundColor(
+                      `${location_code?.toLowerCase()}_${v}`,
+                      "#8f51dd"
+                    );
+              });
+            }
           );
         }
 

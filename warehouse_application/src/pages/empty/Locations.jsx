@@ -24,9 +24,7 @@ export default function Locations() {
   const fetchLocationsName = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${ApiBaseUrl}warehouse/location/name`
-      );
+      const response = await axios.get(`${ApiBaseUrl}warehouse/location/name`);
       if (response?.data?.status === "success") {
         setLocationNames(response?.data?.data);
       } else {
@@ -70,10 +68,10 @@ export default function Locations() {
     }
   };
 
-  const updateGrid = async (id) => {
+  const updateGrid = async (id, location_code,area) => {
     setLoading(true);
     try {
-      const url = `${ApiBaseUrl}warehouse/locations/empty?id=${id}`;
+      const url = `${ApiBaseUrl}warehouse/locations/empty?id=${id}&location_code=${location_code}&area=${area}`;
       const response = await axios.get(url);
 
       Swal.fire({
@@ -128,29 +126,24 @@ export default function Locations() {
     ),
   };
 
-
   const [row, setRow] = useState(0);
   const [col, setCol] = useState(0);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
   useEffect(() => {
-    if (
-      SelectedGrid?.total_area == '10') {
+    if (SelectedGrid?.total_area == "10") {
       setRow(2);
       setCol(5);
       setWidth("50px");
       setHeight("10vh");
-    }else{
+    } else {
       setRow(4);
       setCol(5);
       setWidth("50px");
       setHeight("10vh");
     }
-    
   }, [SelectedGrid]);
-
-
 
   return (
     <>
@@ -236,72 +229,97 @@ export default function Locations() {
               </div>
               <div className="modal-body">
                 <div className="container">
-                <h3 className="text-primary">
-                {MapName} :: {SelectedGrid.new_location_code}
-                <p>{JSON.stringify(SelectedArea)}</p>
-                </h3>
-                <div className="d-flex align-items-center justify-content-center">
-              <div style={{ width: "260px" }}>
-                <div className="main bg-dark p-1 d-flex flex-column border-light border border-2 position-relative w-auto">
-                  {[...Array(row)].map((_, rowIndex) => (
-                    <div key={rowIndex} className="d-flex">
-                      {[...Array(col)].map((_, colIndex) => {
-                        const cellValue = rowIndex * 5 + colIndex + 1;
-                        const isSelected = (
-                          Array.isArray(SelectedArea) ? SelectedArea : []
-                        ).includes(cellValue);
-                        let color = "bg-secondary";
-                        if (
-                          SelectedGrid?.ocr_occupied_area &&
-                          SelectedGrid?.ocr_occupied_area >= cellValue
-                        ) {
-                          color = "bg-info";
-                        }
-                        if (
-                          SelectedGrid?.occupied_area &&
-                          SelectedGrid?.occupied_area >= cellValue
-                        ) {
-                          color = "bg-primary";
-                        }
-                        if (isSelected) {
-                          color = "bg-danger";
-                        }
-                        return (
-                          <button
-                            key={colIndex}
-                            className={`border border-light rounded text-white d-flex align-items-center justify-content-center bg-secondary
+                  <h3 className="text-primary">
+                    {MapName} :: {SelectedGrid.new_location_code}
+                    <p className="d-none">{JSON.stringify(SelectedArea)}</p>
+                  </h3>
+                  <div className="d-flex align-items-center justify-content-center">
+                    <div style={{ width: "260px" }}>
+                      <div className="main bg-dark p-1 d-flex flex-column border-light border border-2 position-relative w-auto">
+                        {[...Array(row)].map((_, rowIndex) => (
+                          <div key={rowIndex} className="d-flex">
+                            {[...Array(col)].map((_, colIndex) => {
+                              const cellValue = rowIndex * 5 + colIndex + 1;
+                              const isSelected = (
+                                Array.isArray(SelectedArea) ? SelectedArea : []
+                              ).includes(cellValue);
+                              let color = "bg-secondary";
+                              if (
+                                SelectedGrid?.ocr_occupied_area &&
+                                SelectedGrid?.ocr_occupied_area >= cellValue
+                              ) {
+                                color = "bg-info";
+                              }
+                              if (
+                                SelectedGrid?.occupied_area &&
+                                SelectedGrid?.occupied_area >= cellValue
+                              ) {
+                                color = "bg-primary";
+                              }
+                              if (isSelected) {
+                                color = "bg-danger";
+                              }
+                              return (
+                                <button
+                                  key={colIndex}
+                                  className={`border border-light rounded text-white d-flex align-items-center justify-content-center bg-secondary
                                 ${color}
                                 `}
-                            style={{
-                              height: height,
-                              width: width,
-                              fontSize: "18px",
-                            }}
-                            onClick={() => {
-                              setSelectedArea((prev) =>
-                                prev.includes(cellValue)
-                                  ? prev.filter((val) => val !== cellValue)
-                                  : [...prev, cellValue]
+                                  style={{
+                                    height: height,
+                                    width: width,
+                                    fontSize: "18px",
+                                  }}
+                                  onClick={() => {
+                                    setSelectedArea((prev) =>
+                                      prev.includes(cellValue)
+                                        ? prev.filter(
+                                            (val) => val !== cellValue
+                                          )
+                                        : [...prev, cellValue]
+                                    );
+                                  }}
+                                >
+                                  {cellValue}
+                                </button>
                               );
-                            }}
-                          >
-                            {cellValue}
-                          </button>
-                        );
-                      })}
+                            })}
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+                  </div>
                 </div>
               </div>
               <div className="modal-footer bg-label-primary py-3">
                 <button
-                  className="btn btn-secondary"
+                  className="btn btn-danger"
+                  type="button"
                   onClick={() => setIsModalOpen2(false)}
                 >
-                  Close
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-secondary"
+                  type="button"
+                  onClick={() => {
+                    Swal.fire({
+                      title: "Are you sure?",
+                      text: "You want to update this grid!",
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#3085d6",
+                      cancelButtonColor: "#d33",
+                      confirmButtonText: "Yes, update it!",
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        updateGrid(SelectedGrid?.id, SelectedGrid?.new_location_code,SelectedArea.length);
+                        setIsModalOpen2(false);
+                      }
+                    });
+                  }}
+                >
+                  Save
                 </button>
               </div>
             </div>
