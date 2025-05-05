@@ -27,9 +27,7 @@ import DeStuffingCompleted from "./pages/de_stuffing/DeStuffingCompleted";
 import DeliveryCompleted from "./pages/delivery/DeliveryCompleted";
 import CartingCompleted from "./pages/carting/CartingCompleted";
 import StuffingCompleted from "./pages/stuffing/StuffingCompleted";
-import Locations from "./pages/Locations";
-
-
+import Locations from "./pages/empty/Locations";
 
 export default function App() {
   return (
