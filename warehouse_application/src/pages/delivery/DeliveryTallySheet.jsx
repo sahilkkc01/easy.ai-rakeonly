@@ -6,6 +6,7 @@ import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTime } from "../main/formatToDateTime";
+import { ApiBaseUrl } from "../../Config";
 
 export default function DeliveryTallySheet() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function DeliveryTallySheet() {
 
   const fetchData = async (gpm_number) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/delivery/de_stuffing/${gpm_number}`;
+    const url = `${ApiBaseUrl}get/delivery/de_stuffing/${gpm_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {

@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import Legend from "./Legend";
 import { Link } from "react-router-dom";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { ApiBaseUrl } from "../Config";
 
 export default function OycMap({
   setActiveGridSelection,
@@ -120,7 +121,7 @@ export default function OycMap({
     setLoading(true);
     try {
       const response = await axios.get(
-        "https://ctas.live/backend/api/export/map/data?name=OYC",
+        `${ApiBaseUrl}export/map/data?name=OYC`,
         {
           headers: { "Content-Type": "application/json" },
         }

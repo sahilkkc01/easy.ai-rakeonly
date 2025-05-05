@@ -5,6 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { ApiBaseUrl } from "../../Config";
 
 export default function EmptyImportMap({  
   setSelectedGrid,
@@ -120,7 +121,7 @@ export default function EmptyImportMap({
     setLoading(true);
     try {
       const response = await axios.get(
-         "https://ctas.live/backend/api/import/map/data?name=Import",
+         `${ApiBaseUrl}import/map/data?name=Import`,
         {
           headers: { "Content-Type": "application/json" },
         }

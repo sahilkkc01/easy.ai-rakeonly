@@ -6,6 +6,7 @@ import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTime } from "../main/formatToDateTime";
+import { ApiBaseUrl } from "../../Config";
 
 export default function StuffingTallySheet() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function StuffingTallySheet() {
 
   const fetchData = async (container_number) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/stuffing?type=FCL&container_number=${container_number}`;
+    const url = `${ApiBaseUrl}get/stuffing?type=FCL&container_number=${container_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {

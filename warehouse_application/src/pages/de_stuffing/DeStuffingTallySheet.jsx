@@ -6,6 +6,7 @@ import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTime } from "../main/formatToDateTime";
+import { ApiBaseUrl } from "../../Config";
 
 export default function DeStuffingTallySheet() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function DeStuffingTallySheet() {
 
   const fetchData = async (type, containerNo) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/de_stuffing/${type}/${containerNo}`;
+    const url = `${ApiBaseUrl}get/de_stuffing/${type}/${containerNo}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {

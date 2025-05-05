@@ -8,6 +8,7 @@ import { formatToDateTimeLocal } from "../main/formatToDateTime";
 import ExportMap from "../ExportMap";
 import MezzanineMap from "../MezzanineMap";
 import { MapAreaModal, MapModal } from "../MapModal";
+import { ApiBaseUrl } from "../../Config";
 
 export default function CartingBillDetails() {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ export default function CartingBillDetails() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://ctas.live/backend/api/get/carting?crn_number=${crn_number}`
+        `${ApiBaseUrl}get/carting?crn_number=${crn_number}`
       );
 
       if (response.data?.status === "success") {
@@ -68,7 +69,7 @@ export default function CartingBillDetails() {
 
   const fetchLocations = async () => {
     setLoading(true);
-    let url = `https://ctas.live/backend/api/warehouse/locations?type=Export`;
+    let url = `${ApiBaseUrl}warehouse/locations?type=Export`;
     if (MapName) {
       url += `&warehouse_name=${MapName}`;
     }
@@ -97,7 +98,7 @@ export default function CartingBillDetails() {
 
   const fetchLocationsName = async () => {
     setLoading(true);
-    let url = `https://ctas.live/backend/api/warehouse/location/name?warehouse_type=Export`;
+    let url = `${ApiBaseUrl}warehouse/location/name?warehouse_type=Export`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -183,7 +184,7 @@ export default function CartingBillDetails() {
   const handleFinalSubmit = async () => {
     setLoading(true);
     try {
-      const url = `https://ctas.live/backend/api/carting/final/submit?id=${ID}&crn_number=${CrnNo}`;
+      const url = `${ApiBaseUrl}carting/final/submit?id=${ID}&crn_number=${CrnNo}`;
       const response = await axios.get(
         url,
         {
@@ -234,7 +235,7 @@ export default function CartingBillDetails() {
     try {
       const formData = new FormData(e.target);
       const response = await axios.post(
-        "https://ctas.live/backend/api/carting/update",
+        `${ApiBaseUrl}carting/update`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -383,9 +384,8 @@ export default function CartingBillDetails() {
                   id={`area_${index}_${i}`}
                   defaultValue={gridAreas[modalId]?.length ?? input.area}
                   onChange={(e) => AreaHandle(index, i)}
-                  max={
-                    Number(activeGridSelections[modalId]?.total_area ?? 20) -
-                    Number(activeGridSelections[modalId]?.occupied_area ?? 0)
+                  max={(activeGridSelections[modalId]?.warehouse_name=='OYC')?( Number(100000)):( Number(activeGridSelections[modalId]?.total_area ?? 20) -
+                    Number(activeGridSelections[modalId]?.occupied_area ?? 0))
                   }
                 />
                 <input
@@ -597,7 +597,7 @@ export default function CartingBillDetails() {
 
   const fetchLocationsArea = async () => {
     setLoading(true);
-    let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Export`;
+    let url = `${ApiBaseUrl}warehouse/location/ocr_area?warehouse_type=Export`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -630,7 +630,7 @@ export default function CartingBillDetails() {
 
   const handleRestData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/carting/reset/data?id=${ID}&crn_number=${CrnNo}`;
+    const url = `${ApiBaseUrl}carting/reset/data?id=${ID}&crn_number=${CrnNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },

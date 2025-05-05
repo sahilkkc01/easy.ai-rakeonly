@@ -10,6 +10,7 @@ import { formatToDateTimeLocal } from "../main/formatToDateTime";
 import ImportMap from "../ImportMap";
 import $ from "jquery";
 import { MapAreaModal, MapModal } from "../MapModal";
+import { ApiBaseUrl } from "../../Config";
 
 export default function DeStuffingBillDetails() {
   const [isFinalSubmit, setIsFinalSubmit] = useState(false);
@@ -36,7 +37,7 @@ export default function DeStuffingBillDetails() {
 
   const fetchData = async (type, containerNo) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/de_stuffing/${type}/${containerNo}`;
+    const url = `${ApiBaseUrl}get/de_stuffing/${type}/${containerNo}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
@@ -62,7 +63,7 @@ export default function DeStuffingBillDetails() {
 
   const fetchLocations = async () => {
     setLoading(true);
-    let url = `https://ctas.live/backend/api/warehouse/locations?warehouse_type=Import`;
+    let url = `${ApiBaseUrl}warehouse/locations?warehouse_type=Import`;
     if (MapName) {
       url += `&warehouse_name=${MapName}`;
     }
@@ -138,7 +139,7 @@ export default function DeStuffingBillDetails() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    const url = `https://ctas.live/backend/api/de_stuffing/update`;
+    const url = `${ApiBaseUrl}de_stuffing/update`;
     try {
       const response = await axios.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -394,7 +395,7 @@ export default function DeStuffingBillDetails() {
   const handleFinalSubmit = async () => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}`;
+    const url = `${ApiBaseUrl}de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -432,7 +433,7 @@ export default function DeStuffingBillDetails() {
 
   const handleRestData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/de_stuffing/reset/data?type=${Type}&container_no=${ContainerNo}`;
+    const url = `${ApiBaseUrl}de_stuffing/reset/data?type=${Type}&container_no=${ContainerNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -466,7 +467,7 @@ export default function DeStuffingBillDetails() {
 
   const fetchLocationsArea = async () => {
     setLoading(true);
-    let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Import`;
+    let url = `${ApiBaseUrl}warehouse/location/ocr_area?warehouse_type=Import`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {

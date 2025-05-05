@@ -250,7 +250,7 @@ const MapAreaModal = ({
                           color = "bg-info";
                         }
                         if (
-                          activeGridSelection?.occupied_area &&
+                          activeGridSelection?.occupied_area && activeGridSelection?.warehouse_name!='OYC' && 
                           activeGridSelection?.occupied_area >= cellValue
                         ) {
                           color = "bg-primary";
@@ -270,11 +270,12 @@ const MapAreaModal = ({
                               fontSize: "18px",
                             }}
                             onClick={() => {
-                              if (
-                                activeGridSelection?.occupied_area < cellValue
-                              ) {
-                                setGridArea(cellValue);
-                              }
+                                if (
+                                  activeGridSelection?.warehouse_name == 'OYC' ||
+                                  activeGridSelection?.occupied_area < cellValue 
+                                ) {
+                                  setGridArea(cellValue);
+                                }
                             }}
                           >
                             {activeGridSelection?.warehouse_name == "OYC" ||

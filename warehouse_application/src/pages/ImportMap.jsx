@@ -123,7 +123,7 @@ export default function ImportMap({  setActiveGridSelection,
     setLoading(true);
     try {
       const response = await axios.get(
-         "https://ctas.live/backend/api/import/map/data?name=Import",
+         `${ApiBaseUrl}import/map/data?name=Import`,
         {
           headers: { "Content-Type": "application/json" },
         }

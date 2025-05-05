@@ -6,6 +6,7 @@ import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTimeLocal } from "../main/formatToDateTime";
+import { ApiBaseUrl } from "../../Config";
 
 export default function DeliveryBillDetails() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function DeliveryBillDetails() {
 
   const fetchData = async (gpm_number) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/delivery/de_stuffing/${gpm_number}`;
+    const url = `${ApiBaseUrl}get/delivery/de_stuffing/${gpm_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status == "success") {
@@ -112,7 +113,7 @@ export default function DeliveryBillDetails() {
     setLoading(true);
 
     try {
-      const url = `https://ctas.live/backend/api/delivery/final/submit?id=${ID}&gpm_number=${GpmNo}`;
+      const url = `${ApiBaseUrl}delivery/final/submit?id=${ID}&gpm_number=${GpmNo}`;
       const response = await axios.get(
         url,
         {
@@ -160,7 +161,7 @@ export default function DeliveryBillDetails() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    const url = `https://ctas.live/backend/api/delivery/de_stuffing/update`;
+    const url = `${ApiBaseUrl}delivery/de_stuffing/update`;
 
     try {
       const response = await axios.post(url, formData, {
@@ -367,7 +368,7 @@ const GridComponent = ({ index, data }) => {
 
   const handleRestData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/delivery/reset/data?id=${ID}&gpm_number=${GpmNo}`;
+    const url = `${ApiBaseUrl}delivery/reset/data?id=${ID}&gpm_number=${GpmNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },

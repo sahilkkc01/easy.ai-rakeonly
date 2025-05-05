@@ -10,6 +10,7 @@ import {
   formatToDateTime,
   formatToDateTimeLocal,
 } from "../main/formatToDateTime";
+import { ApiBaseUrl } from "../../Config";
 
 export default function CartingCompleted() {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function CartingCompleted() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://ctas.live/backend/api/carting/live/data"
+        `${ApiBaseUrl}carting/live/data`
       );
       if (response.data.completed_data && Array.isArray(response.data.completed_data)) {
         setData(response.data.completed_data);
@@ -56,7 +57,7 @@ export default function CartingCompleted() {
   ) => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/carting/final/submit?id=${ID}&crn_number=${crn_number}&start_time=${start_time}&end_time=${end_time}&handline_type=${handline_type}`;
+    const url = `${ApiBaseUrl}carting/final/submit?id=${ID}&crn_number=${crn_number}&start_time=${start_time}&end_time=${end_time}&handline_type=${handline_type}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -107,7 +108,7 @@ export default function CartingCompleted() {
 
   const fetchLocationsArea = async () => {
     setLoading(true);
-    let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Export`;
+    let url = `${ApiBaseUrl}warehouse/location/ocr_area?warehouse_type=Export`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {

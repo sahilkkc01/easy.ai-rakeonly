@@ -11,6 +11,7 @@ import {
   formatToDateTime,
   formatToDateTimeLocal,
 } from "../main/formatToDateTime";
+import { ApiBaseUrl } from "../../Config";
 
 export default function DeliveryCompleted() {
 
@@ -25,7 +26,7 @@ export default function DeliveryCompleted() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://ctas.live/backend/api/delivery/live/data"
+        `${ApiBaseUrl}delivery/live/data`
       );
 
       if (response.data.completed_data && Array.isArray(response.data.completed_data)) {
@@ -62,7 +63,7 @@ export default function DeliveryCompleted() {
   ) => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/delivery/final/submit?id=${ID}&gpm_number=${GpmNo}&start_time=${start_time}&end_time=${end_time}&handling_type=${handling_type}`;
+    const url = `${ApiBaseUrl}delivery/final/submit?id=${ID}&gpm_number=${GpmNo}&start_time=${start_time}&end_time=${end_time}&handling_type=${handling_type}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },

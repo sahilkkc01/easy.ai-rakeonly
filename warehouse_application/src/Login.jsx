@@ -9,6 +9,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import Swal from "sweetalert2";
+import { ApiBaseUrl } from "./Config";
 
 export default function Login() {
   const [passwordShow, setPasswordShow] = useState(false);
@@ -57,7 +58,7 @@ export default function Login() {
     // console.log(formValues);
     if (formValues.user_name && formValues.password) {
       try {
-        const response = await axios.post(`https://ctas.live/backend/api/user/login`, formValues);
+        const response = await axios.post(`${ApiBaseUrl}user/login`, formValues);
 
         if (response?.data?.status == "success") {
 

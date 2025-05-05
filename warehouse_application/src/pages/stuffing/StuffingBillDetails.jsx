@@ -6,6 +6,7 @@ import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTimeLocal } from "../main/formatToDateTime";
+import { ApiBaseUrl } from "../../Config";
 
 export default function StuffingBillDetails() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function StuffingBillDetails() {
 
   const fetchData = async (container_number) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/stuffing?type=FCL&container_number=${container_number}`;
+    const url = `${ApiBaseUrl}get/stuffing?type=FCL&container_number=${container_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status == "success") {
@@ -179,7 +180,7 @@ export default function StuffingBillDetails() {
   const handleFinalSubmit = async () => {
     setLoading(true);
     try {
-      const url = `https://ctas.live/backend/api/stuffing/final/submit?id=${ID}&container_number=${ContainerNo}`;
+      const url = `${ApiBaseUrl}stuffing/final/submit?id=${ID}&container_number=${ContainerNo}`;
       const response = await axios.get(
         url,
         {
@@ -228,7 +229,7 @@ export default function StuffingBillDetails() {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData(e.target);
-    const url = `https://ctas.live/backend/api/stuffing/update`;
+    const url = `${ApiBaseUrl}stuffing/update`;
     try {
       const response = await axios.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -437,7 +438,7 @@ export default function StuffingBillDetails() {
 
   const handleRestData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/stuffing/reset/data?id=${ID}&type=FCL&container_number=${ContainerNo}`;
+    const url = `${ApiBaseUrl}stuffing/reset/data?id=${ID}&type=FCL&container_number=${ContainerNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -470,7 +471,7 @@ export default function StuffingBillDetails() {
   };
   const handleDeleteBill = async (id,bill) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/stuffing/bill/delete?id=${id}&bill=${bill}`;
+    const url = `${ApiBaseUrl}stuffing/bill/delete?id=${id}&bill=${bill}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },

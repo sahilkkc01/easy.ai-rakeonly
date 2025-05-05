@@ -3,6 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { ApiBaseUrl } from "../../Config";
 
 export default function EmptyMezzanineMap({ 
   setSelectedGrid,
@@ -89,7 +90,7 @@ export default function EmptyMezzanineMap({
 
   const GetData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/export/map/data?name=Mazzanine`;
+    const url = `${ApiBaseUrl}export/map/data?name=Mazzanine`;
     try {
       const response = await axios.get(url, {
         headers: {

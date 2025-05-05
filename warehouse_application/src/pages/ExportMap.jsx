@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import Swal from "sweetalert2";
 import Legend from "./Legend";
+import { ApiBaseUrl } from "../Config";
 
 export default function ExportMap({
   setActiveGridSelection,
@@ -98,7 +99,7 @@ export default function ExportMap({
 
   const GetData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/export/map/data?name=Export`;
+    const url = `${ApiBaseUrl}export/map/data?name=Export`;
     try {
       const response = await axios.get(url, {
         headers: {

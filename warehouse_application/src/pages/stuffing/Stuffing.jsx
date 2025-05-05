@@ -11,6 +11,7 @@ import {
   formatToDateTime,
   formatToDateTimeLocal,
 } from "../main/formatToDateTime";
+import { ApiBaseUrl } from "../../Config";
 
 export default function Stuffing() {
   const containerModalRef = useRef(null);
@@ -43,7 +44,7 @@ export default function Stuffing() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://ctas.live/backend/api/stuffing/live/data"
+        `${ApiBaseUrl}stuffing/live/data`
       );
 
       if (response.data.data && Array.isArray(response.data.data)) {
@@ -71,7 +72,7 @@ export default function Stuffing() {
   const GetFormData = async (e) => {
     e.preventDefault();
 
-    const url = `https://ctas.live/backend/api/get/de_stuffing_data/LCL/${e.target.container_no.value}`;
+    const url = `${ApiBaseUrl}get/de_stuffing_data/LCL/${e.target.container_no.value}`;
     try {
       const response = await axios.post(url);
       if (response?.data?.status == "success") {
@@ -105,7 +106,7 @@ export default function Stuffing() {
   ) => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/stuffing/final/submit?id=${ID}&container_number=${container_number}&start_time=${start_time}&end_time=${end_time}`;
+    const url = `${ApiBaseUrl}stuffing/final/submit?id=${ID}&container_number=${container_number}&start_time=${start_time}&end_time=${end_time}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },

@@ -10,6 +10,7 @@ import {
   formatToDateTime,
   formatToDateTimeLocal,
 } from "../main/formatToDateTime";
+import { ApiBaseUrl } from "../../Config";
 
 export default function DeStuffingCompleted() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function DeStuffingCompleted() {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://ctas.live/backend/api/de_stuffing/live/data"
+        `${ApiBaseUrl}de_stuffing/live/data`
       );
       // console.log("API Response:", response.data); // Debugging
 
@@ -64,7 +65,7 @@ export default function DeStuffingCompleted() {
   ) => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}&start_time=${start_time}&end_time=${end_time}&handling_type=${handling_type}`;
+    const url = `${ApiBaseUrl}de_stuffing/final/submit?id=${ID}&container_no=${ContainerNo}&start_time=${start_time}&end_time=${end_time}&handling_type=${handling_type}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -125,7 +126,7 @@ export default function DeStuffingCompleted() {
 
   const fetchLocationsArea = async () => {
     setLoading(true);
-    let url = `https://ctas.live/backend/api/warehouse/location/ocr_area?warehouse_type=Import`;
+    let url = `${ApiBaseUrl}warehouse/location/ocr_area?warehouse_type=Import`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {

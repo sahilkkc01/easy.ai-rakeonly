@@ -6,6 +6,7 @@ import Header from "../main/header";
 import Nav from "../main/nav";
 import Footer from "../main/footer";
 import { formatToDateTime } from "../main/formatToDateTime";
+import { ApiBaseUrl } from "../../Config";
 
 export default function CartingTallySheet() {
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ export default function CartingTallySheet() {
 
   const fetchData = async (crn_number) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/carting?crn_number=${crn_number}`;
+    const url = `${ApiBaseUrl}get/carting?crn_number=${crn_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status === "success") {
