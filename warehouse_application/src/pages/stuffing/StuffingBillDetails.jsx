@@ -23,7 +23,6 @@ export default function StuffingBillDetails() {
   const [ID, setID] = useState(null);
   const [gridData, setGridData] = useState({});
   const [gridData2, setGridData2] = useState({});
-
   const today = new Date();
 
   const fetchData = async (container_number) => {
@@ -51,7 +50,6 @@ export default function StuffingBillDetails() {
       setLoading(false);
     }
   };
-
 
   const GetFormData = async (e) => {
     e.preventDefault();
@@ -94,6 +92,7 @@ export default function StuffingBillDetails() {
               grid_location: item.grid_locations || "NA",
               area: parseFloat(item.area) || 0,
               grid_pkg: Number(item.pkg) || 0,
+              grid_pkgs_weight: Number(item.pkgs_weight) || 0,
               no_of_pkgs: Number(truck?.no_of_pkgs ?? 0),
             }))
           : []
@@ -104,11 +103,13 @@ export default function StuffingBillDetails() {
         if (areaByLocation[item.grid_location]) {
           areaByLocation[item.grid_location].area += item.area;
           areaByLocation[item.grid_location].grid_pkg += item.grid_pkg;
+          areaByLocation[item.grid_location].grid_pkgs_weight += item.grid_pkgs_weight;
           areaByLocation[item.grid_location].total_pkg += item.no_of_pkgs;
         } else {
           areaByLocation[item.grid_location] = {
             area: item.area,
             grid_pkg: item.grid_pkg,
+            grid_pkgs_weight: item.grid_pkgs_weight,
             total_pkg: item.no_of_pkgs,
           };
         }
@@ -120,6 +121,7 @@ export default function StuffingBillDetails() {
         area: data.area,
         sBillNo: billDetails?.shipping_bill_number || 0,
         grid_pkg: Number(data.grid_pkg) || 0,
+        grid_pkgs_weight: Number(data.grid_pkgs_weight) || 0,
         total_pkg: Number(data.total_pkg) || 0,
       }));
     };
@@ -138,6 +140,7 @@ export default function StuffingBillDetails() {
             area: item.area || 0,
             sBillNo: billDetails?.shipping_bill_number || 0,
             grid_pkg: Number(item.pkg) || 0,
+            grid_pkgs_weight: Number(item.pkgs_weight) || 0,
             total_pkg: Number(billDetails?.no_of_packages_declared) || 0,
           }));
         } else {
@@ -434,8 +437,6 @@ export default function StuffingBillDetails() {
     }
   }, [Data]);
 
-
-
   const handleRestData = async () => {
     setLoading(true);
     const url = `${ApiBaseUrl}stuffing/reset/data?id=${ID}&type=FCL&container_number=${ContainerNo}`;
@@ -469,6 +470,7 @@ export default function StuffingBillDetails() {
       setLoading(false);
     }
   };
+
   const handleDeleteBill = async (id,bill) => {
     setLoading(true);
     const url = `${ApiBaseUrl}stuffing/bill/delete?id=${id}&bill=${bill}`;

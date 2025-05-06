@@ -147,6 +147,7 @@ export default function Locations() {
 
   return (
     <>
+    <div className="d-none">
       {/* Grid Map Selector */}
       <div className="container">
         <div
@@ -326,7 +327,7 @@ export default function Locations() {
           </div>
         </div>
       )}
-
+</div>
       {/* Filter & Table */}
       <div className="container">
         <h3 className="mt-3">Locations</h3>
