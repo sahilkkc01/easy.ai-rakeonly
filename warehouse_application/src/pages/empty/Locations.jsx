@@ -406,7 +406,7 @@ export default function Locations() {
                                 cancelButtonColor: "#d33",
                                 confirmButtonText: "Yes, update it!",
                               }).then((result) => {
-                                if (result.isConfirmed) updateGrid(item.id);
+                                if (result.isConfirmed) updateGrid(item.id,item.new_location_code);
                               });
                             }}
                           >
