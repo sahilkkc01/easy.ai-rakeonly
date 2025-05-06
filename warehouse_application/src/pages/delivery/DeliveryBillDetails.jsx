@@ -212,6 +212,8 @@ export default function DeliveryBillDetails() {
             id: item.id || index + 1,
             grid_location: item.grid_locations || "NA",
             area: item.area || "NA",
+            girdPkg: item.no_of_package || 0,
+            girdPkgWeight: item.package_weight || 0,
             sBillNo: truck.boe,
             total_pkg: Number(truck.no_of_pkgs) || 0,
           };
@@ -252,6 +254,8 @@ export default function DeliveryBillDetails() {
                         id: i + 1,
                         grid_location: item.grid_locations || "NA",
                         area: item.area || 0,
+                        girdPkg: item.no_of_package || 0,
+                        girdPkgWeight: item.package_weight || 0,
                         sBillNo: sBillNo || 0,
                         total_pkg: Number(detail?.no_of_packages_declared) || 0,
                       })) || []
@@ -281,6 +285,18 @@ const GridComponent = ({ index, data }) => {
         data.map((input, i) => (
           <div key={input.id} className="mb-2">
             <div className="d-flex align-items-center gap-3">
+            <input
+                type="hidden"
+                className="form-control p-2"
+                name={`no_of_package[${index}][${i}]`}
+                value={input.no_of_package}
+              />
+               <input
+                type="hidden"
+                className="form-control p-2"
+                name={`package_weight[${index}][${i}]`}
+                value={input.package_weight}
+              />
               <input
                 type="text"
                 readOnly

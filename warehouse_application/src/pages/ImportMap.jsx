@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import Legend from "./Legend";
 import { Link } from "react-router-dom";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { ApiBaseUrl } from "../Config";
 
 export default function ImportMap({  setActiveGridSelection,
   activeGridSelection,
