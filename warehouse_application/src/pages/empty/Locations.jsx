@@ -68,7 +68,7 @@ export default function Locations() {
     }
   };
 
-  const updateGrid = async (id, location_code,area) => {
+  const updateGrid = async (id, location_code,area=0) => {
     setLoading(true);
     try {
       const url = `${ApiBaseUrl}warehouse/locations/empty?id=${id}&location_code=${location_code}&area=${area}`;
