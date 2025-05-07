@@ -416,7 +416,7 @@ export default function StuffingBillDetails() {
 
         if (totalPkg > 0 && gridPkgW > 0) {
           const perAreaPackageW = gridPkgW / totalPkg;
-          updatedItem.grid_pkgs_weight = Math.round(perAreaPackageW * PKG);
+          updatedItem.grid_pkgs_weight = (perAreaPackageW * PKG).toFixed(5);
         }
 
         return updatedItem;
