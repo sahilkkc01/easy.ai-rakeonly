@@ -6,10 +6,14 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import Legend from "./Legend";
 import { ApiBaseUrl } from "../Config";
 
-export default function MezzanineMap({ setActiveGridSelection,
+export default function MezzanineMap({
+  setActiveGridSelection,
   activeGridSelection,
   onClose,
-  setModalVisible2}) {
+  setModalVisible2,
+  SelectedGrids,
+  setSelectedGrids
+}) {
   const [zoomLevel, setZoomLevel] = useState(0.5);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -128,52 +132,6 @@ export default function MezzanineMap({ setActiveGridSelection,
   const [modalData, setModalData] = useState(null);
   const [TotalArea, setTotalArea] = useState(0);
 
-  // useEffect(() => {
-  //   if (!Array.isArray(Data)) return;
-  //   let areaSum = 0;
-  //   const handleDoubleClick = (data) => () => {
-  //     if (data) {
-  //       setActiveGridSelection(data); 
-  //       setModalVisible2(true);              
-  //       onClose();
-  //     }
-  //   };
-
-  //   Data.forEach((data) => {
-  //     if (!data?.camera_locations) return;
-  //     const location = `${data.location_code ?? data.camera_locations}`;
-  //     const grid_id = location.toLowerCase();
-  //     let grid = document.getElementById(grid_id);
-
-  //     if (grid) {
-  //       grid.addEventListener("click", handleDoubleClick(data));
-  //     }
-
-  //     const total_area = data?.total_area ?? 20;
-  //     const occupied = data?.occupied_area ?? 0;
-  //     const ocr_occupied = data?.ocr_occupied_area ?? 0;
-
-  //     areaSum += Number(total_area);
-
-  //     const setBackgroundColor = (id, color) => {
-  //       const element = document.getElementById(id);
-  //       if (element) {
-  //         element.style.setProperty("background-color", color, "important");
-  //       }
-  //     };
-  //     setBackgroundColor(`${grid_id}`, `${occupied > 0 && "#8f51dd"}`);
-  //     setBackgroundColor(`${grid_id}`, `${ocr_occupied > 0 && "#00b0c4"}`);
-
-  //     Array.from({ length: ocr_occupied }, (_, id) =>
-  //       setBackgroundColor(`${grid_id}_${id + 1}`, "#00b0c4")
-  //     );
-  //     Array.from({ length: occupied }, (_, id) =>
-  //       setBackgroundColor(`${grid_id}_${id + 1}`, "#8f51dd")
-  //     );
-  //   });
-  //   setTotalArea(areaSum);
-  // }, [Data]);
-
   useEffect(() => {
     if (!Array.isArray(Data)) return;
     let areaSum = 0;
@@ -186,6 +144,15 @@ export default function MezzanineMap({ setActiveGridSelection,
             timer: 3000
           });
         }else{
+          setSelectedGrids((prev) => {
+            if (prev.hasOwnProperty(data.new_location_code)) {
+              return prev;
+            }
+            return {
+              ...prev,
+              [data.new_location_code]: [],
+            };
+          });
           setActiveGridSelection(data); 
           setModalVisible2(true);              
           onClose();
@@ -241,6 +208,18 @@ export default function MezzanineMap({ setActiveGridSelection,
           eventListeners.push({ element: boxElement, handler });
         }
       }
+
+      if(SelectedGrids && SelectedGrids[data.new_location_code]){
+        if(!data.area_boxes || data.area_boxes!='20'){
+          setBackgroundColor(`${data.location_code?.toLowerCase().trim()}`, "#ff4c52");
+        }
+        SelectedGrids[data.new_location_code]?.map((sc)=>{
+          setBackgroundColor(`${data.location_code?.toLowerCase().trim()}_${sc}`, "#ff4c52");
+        }
+        );
+      }
+
+
     });
   
     setTotalArea(areaSum);

@@ -8,7 +8,8 @@ import { Link } from "react-router-dom";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { ApiBaseUrl } from "../Config";
 
-export default function ImportMap({  setActiveGridSelection,
+export default function ImportMap({ 
+   setActiveGridSelection,
   activeGridSelection,
   onClose,
   setModalVisible2,
@@ -239,6 +240,15 @@ export default function ImportMap({  setActiveGridSelection,
         }
         for (let i = 0; i < occupied; i++) {
           setBackgroundColor(`${data.camera_locations}_${i + 1}`, "#8f51dd");
+        }
+
+        if(SelectedGrids && SelectedGrids[data.new_location_code]){
+
+          SelectedGrids[data.new_location_code]?.map((sc)=>{
+
+            setBackgroundColor(`${data.camera_locations}_${sc}`, "#ff4c52");
+          }
+          );
         }
       });
 

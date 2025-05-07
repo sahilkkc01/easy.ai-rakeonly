@@ -11,6 +11,8 @@ export default function ExportMap({
   activeGridSelection,
   onClose,
   setModalVisible2,
+  SelectedGrids,
+  setSelectedGrids
 }) {
   const [zoomLevel, setZoomLevel] = useState(0.4);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -159,6 +161,16 @@ export default function ExportMap({
             timer: 3000,
           });
         } else {
+          setSelectedGrids((prev) => {
+            if (prev.hasOwnProperty(clickedData.new_location_code)) {
+              return prev;
+            }
+            return {
+              ...prev,
+              [clickedData.new_location_code]: [],
+            };
+          });
+
           setActiveGridSelection(clickedData);
           onClose();
           setModalVisible2(true);
@@ -212,6 +224,14 @@ export default function ExportMap({
           setBackgroundColor(
             `${location_code?.toLowerCase()}_${i + 1}`,
             "#8f51dd"
+          );
+        }
+        if(SelectedGrids && SelectedGrids[data.new_location_code]){
+
+          SelectedGrids[data.new_location_code]?.map((sc)=>{
+
+            setBackgroundColor(`${location_code?.toLowerCase()}_${sc}`, "#ff4c52");
+          }
           );
         }
 

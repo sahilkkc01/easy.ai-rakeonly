@@ -13,6 +13,8 @@ export default function OycMap({
   activeGridSelection,
   onClose,
   setModalVisible2,
+  SelectedGrids,
+  setSelectedGrids
 }) {
   const [zoomLevel, setZoomLevel] = useState(0.5);
   const [isDragging, setIsDragging] = useState(false);

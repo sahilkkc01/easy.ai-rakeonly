@@ -54,28 +54,34 @@ const MapModal = ({
       case "Export":
         return (
           <ExportMap
-            setActiveGridSelection={setActiveGridSelection}
-            activeGridSelection={activeGridSelection}
-            onClose={onClose}
-            setModalVisible2={setModalVisible2}
+          setActiveGridSelection={setActiveGridSelection}
+          activeGridSelection={activeGridSelection}
+          onClose={onClose}
+          setModalVisible2={setModalVisible2}
+          SelectedGrids={SelectedGrids}
+          setSelectedGrids={setSelectedGrids}
           />
         );
       case "Mazzanine":
         return (
           <MezzanineMap
-            setActiveGridSelection={setActiveGridSelection}
-            activeGridSelection={activeGridSelection}
-            onClose={onClose}
-            setModalVisible2={setModalVisible2}
+          setActiveGridSelection={setActiveGridSelection}
+          activeGridSelection={activeGridSelection}
+          onClose={onClose}
+          setModalVisible2={setModalVisible2}
+          SelectedGrids={SelectedGrids}
+          setSelectedGrids={setSelectedGrids}
           />
         );
       case "OYC":
         return (
           <OycMap
-            setActiveGridSelection={setActiveGridSelection}
-            activeGridSelection={activeGridSelection}
-            onClose={onClose}
-            setModalVisible2={setModalVisible2}
+          setActiveGridSelection={setActiveGridSelection}
+          activeGridSelection={activeGridSelection}
+          onClose={onClose}
+          setModalVisible2={setModalVisible2}
+          SelectedGrids={SelectedGrids}
+          setSelectedGrids={setSelectedGrids}
           />
         );
       default:
@@ -111,7 +117,10 @@ const MapModal = ({
               aria-label="Close"
             />
           </div>
-          <div className="modal-body">{renderMap()}</div>
+          <div className="modal-body">
+            {/* <p>{JSON.stringify(SelectedGrids)}</p> */}
+            {renderMap()}
+          </div>
           <div className="modal-footer bg-label-primary py-2">
             <button
               type="button"
@@ -160,15 +169,19 @@ const MapAreaModal = ({
       if (activeGridSelection?.area_boxes == "20") {
         setRow(4);
         setCol(5);
+        setWidth("50px");
+        setHeight("10vh");
       } else if (activeGridSelection?.area_boxes == "2") {
         setRow(1);
         setCol(2);
+        setWidth("250px");
+        setHeight("40vh");
       } else {
         setRow(1);
         setCol(1);
+        setWidth("250px");
+        setHeight("40vh");
       }
-      setWidth("250px");
-      setHeight("40vh");
     } else {
       setRow(4);
       setCol(5);
@@ -231,7 +244,8 @@ const MapAreaModal = ({
           </div>
           <div className="modal-body">
             <h2>{activeGridSelection?.location_code}</h2>
-            {/* <p>{JSON.stringify(gridArea)}</p> */}
+            {/* <p>{JSON.stringify(gridArea)}</p>
+            <p>{JSON.stringify(SelectedGrids)}</p> */}
             <div className="d-flex align-items-center justify-content-center">
               <div style={{ width: "260px" }}>
                 <div className="main bg-dark p-1 d-flex flex-column border-light border border-2 position-relative w-auto">
@@ -250,13 +264,31 @@ const MapAreaModal = ({
                           color = "bg-info";
                         }
                         if (
-                          activeGridSelection?.occupied_area && activeGridSelection?.warehouse_name!='OYC' && 
+                          activeGridSelection?.occupied_area &&
+                          activeGridSelection?.warehouse_name != "OYC" &&
                           activeGridSelection?.occupied_area >= cellValue
                         ) {
                           color = "bg-primary";
                         }
-                        if (isSelected) {
+                        if (isSelected && activeGridSelection?.warehouse_name != "OYC") {
+                          color = "bg-success";
+                        }
+                        if (isSelected && activeGridSelection?.warehouse_name == "OYC") {
                           color = "bg-danger";
+                        }
+
+                        if (
+                          SelectedGrids &&
+                          SelectedGrids[activeGridSelection?.new_location_code]
+                          && activeGridSelection?.warehouse_name != "OYC"
+                        ) {
+                          let sc =
+                            SelectedGrids[
+                              activeGridSelection?.new_location_code
+                            ]?.includes(cellValue);
+                          if (sc) {
+                            color = "bg-danger";
+                          }
                         }
                         return (
                           <button
@@ -270,12 +302,38 @@ const MapAreaModal = ({
                               fontSize: "18px",
                             }}
                             onClick={() => {
+                              let newLoc=activeGridSelection?.new_location_code;
+                              if (
+                                SelectedGrids[newLoc] &&
+                                SelectedGrids[newLoc].includes(cellValue) &&
+                                !gridArea.includes(cellValue) && activeGridSelection?.warehouse_name != "OYC"
+                              ) {
+                                alert('this is already selected.!');
+                              }else{
                                 if (
-                                  activeGridSelection?.warehouse_name == 'OYC' ||
-                                  activeGridSelection?.occupied_area < cellValue 
+                                  activeGridSelection?.warehouse_name == "OYC" ||
+                                  activeGridSelection?.occupied_area < cellValue
                                 ) {
                                   setGridArea(cellValue);
+  
+                                  setSelectedGrids((prev) => {
+                                    const locationCode =
+                                      activeGridSelection?.new_location_code;
+                                    const current = prev[locationCode] || [];
+  
+                                    const exists = current.includes(cellValue);
+                                    const updated = exists
+                                      ? current.filter((val) => val !== cellValue)
+                                      : [...current, cellValue];
+  
+                                    return {
+                                      ...prev,
+                                      [locationCode]: updated,
+                                    };
+                                  });
                                 }
+                              }
+
                             }}
                           >
                             {activeGridSelection?.warehouse_name == "OYC" ||

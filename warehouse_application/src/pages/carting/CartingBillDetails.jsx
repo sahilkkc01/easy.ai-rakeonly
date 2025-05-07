@@ -35,6 +35,7 @@ export default function CartingBillDetails() {
   const [activeGridSelections, setActiveGridSelections] = useState({});
   const [gridAreas, setGridAreas] = useState({});
   const [ModalIds, setModalIds] = useState(0);
+  const [SelectedGrids, setSelectedGrids] = useState({});
 
   const fetchData = async (crn_number) => {
     setLoading(true);
@@ -154,10 +155,9 @@ export default function CartingBillDetails() {
       setID(Data?.id);
       fetchLocationsName();
 
-      if (Data.status === "1" || Data.status === "2" ) {
-        if(is_part_cargo && is_part_cargo=='1'){
-
-        }else{
+      if (Data.status === "1" || Data.status === "2") {
+        if (is_part_cargo && is_part_cargo == "1") {
+        } else {
           navigate(
             `?isFinalSubmit=1&id=${Data.id}&tally_sheet=1&crn_number=${CrnNo}`
           );
@@ -304,12 +304,12 @@ export default function CartingBillDetails() {
 
   useEffect(() => {
     if (TotalTruck) {
-        if (!allGridInputs[TotalTruck - 1]) {
-          setAllGridInputs({
-            ...allGridInputs,
-            [TotalTruck - 1]: [{ id: 1, grid_location: "", area: "" }],
-          });
-          // alert(TotalTruck);
+      if (!allGridInputs[TotalTruck - 1]) {
+        setAllGridInputs({
+          ...allGridInputs,
+          [TotalTruck - 1]: [{ id: 1, grid_location: "", area: "" }],
+        });
+        // alert(TotalTruck);
       }
     }
   }, [TotalTruck]);
@@ -384,8 +384,15 @@ export default function CartingBillDetails() {
                   id={`area_${index}_${i}`}
                   defaultValue={gridAreas[modalId]?.length ?? input.area}
                   onChange={(e) => AreaHandle(index, i)}
-                  max={(activeGridSelections[modalId]?.warehouse_name=='OYC')?( Number(100000)):( Number(activeGridSelections[modalId]?.total_area ?? 20) -
-                    Number(activeGridSelections[modalId]?.occupied_area ?? 0))
+                  max={
+                    activeGridSelections[modalId]?.warehouse_name == "OYC"
+                      ? Number(100000)
+                      : Number(
+                          activeGridSelections[modalId]?.total_area ?? 20
+                        ) -
+                        Number(
+                          activeGridSelections[modalId]?.occupied_area ?? 0
+                        )
                   }
                 />
                 <input
@@ -576,24 +583,21 @@ export default function CartingBillDetails() {
         }
       }
     }
-   
   };
 
   const culWeight = () => {
-    let Wh=0;
+    let Wh = 0;
     for (let i = 0; i < TotalTruck; i++) {
-          let weightInput = document.getElementById(`pkgs_weight_${i}`);
+      let weightInput = document.getElementById(`pkgs_weight_${i}`);
 
-          if (weightInput) {
-             Wh+=Number(weightInput.value);
-            setWeight(Wh);
-          } else {
-            console.log("Package weight input not found!");
-          }
-     
+      if (weightInput) {
+        Wh += Number(weightInput.value);
+        setWeight(Wh);
+      } else {
+        console.log("Package weight input not found!");
+      }
     }
   };
-
 
   const fetchLocationsArea = async () => {
     setLoading(true);
@@ -626,7 +630,6 @@ export default function CartingBillDetails() {
       fetchLocationsArea();
     }
   }, [searchParams, Data]);
-
 
   const handleRestData = async () => {
     setLoading(true);
@@ -694,6 +697,8 @@ export default function CartingBillDetails() {
         setModalVisible2={(val) =>
           setVisibleAreaModals((prev) => ({ ...prev, [ModalIds]: val }))
         }
+        SelectedGrids={SelectedGrids}
+        setSelectedGrids={setSelectedGrids}
       />
 
       <MapAreaModal
@@ -715,6 +720,8 @@ export default function CartingBillDetails() {
           })
         }
         gridArea={gridAreas[ModalIds] ?? []}
+        SelectedGrids={SelectedGrids}
+        setSelectedGrids={setSelectedGrids}
       />
       <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
         <div className="layout-container">
@@ -728,17 +735,17 @@ export default function CartingBillDetails() {
                         <div className="text-end">
                           {isFinalSubmit ? (
                             <>
-                            <button
-                              onClick={() => {
-                                if (iframeRef.current) {
-                                  iframeRef.current.contentWindow.print();
-                                }
-                              }}
-                              className="btn btn-label-primary mx-2"
-                            >
-                              Print
-                            </button>
-                            <a
+                              <button
+                                onClick={() => {
+                                  if (iframeRef.current) {
+                                    iframeRef.current.contentWindow.print();
+                                  }
+                                }}
+                                className="btn btn-label-primary mx-2"
+                              >
+                                Print
+                              </button>
+                              <a
                                 href={`?id=${ID}&crn_number=${CrnNo}&is_part_cargo=1`}
                                 className="btn btn-primary mx-2"
                               >
@@ -761,26 +768,26 @@ export default function CartingBillDetails() {
                                 Edit
                               </a>
                               <button
-                              type="button"
-                              className="btn btn-info mx-2"
-                              onClick={() => {
-                                Swal.fire({
-                                  title: "Are you sure?",
-                                  text: "This will reset the data.!",
-                                  icon: "warning",
-                                  showCancelButton: true,
-                                  confirmButtonColor: "#3085d6",
-                                  cancelButtonColor: "#d33",
-                                  confirmButtonText: "Yes, reset it!",
-                                }).then((result) => {
-                                  if (result.isConfirmed) {
-                                    handleRestData();
-                                  }
-                                });
-                              }}
-                            >
-                              Reset From
-                            </button>
+                                type="button"
+                                className="btn btn-info mx-2"
+                                onClick={() => {
+                                  Swal.fire({
+                                    title: "Are you sure?",
+                                    text: "This will reset the data.!",
+                                    icon: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonColor: "#3085d6",
+                                    cancelButtonColor: "#d33",
+                                    confirmButtonText: "Yes, reset it!",
+                                  }).then((result) => {
+                                    if (result.isConfirmed) {
+                                      handleRestData();
+                                    }
+                                  });
+                                }}
+                              >
+                                Reset From
+                              </button>
                             </>
                           )}
                           <a href="?" className="btn btn-primary mx-2">
@@ -815,26 +822,26 @@ export default function CartingBillDetails() {
                             Go Back
                           </Link>
                           <button
-                              type="button"
-                              className="btn btn-info mx-2"
-                              onClick={() => {
-                                Swal.fire({
-                                  title: "Are you sure?",
-                                  text: "This will reset the data.!",
-                                  icon: "warning",
-                                  showCancelButton: true,
-                                  confirmButtonColor: "#3085d6",
-                                  cancelButtonColor: "#d33",
-                                  confirmButtonText: "Yes, reset it!",
-                                }).then((result) => {
-                                  if (result.isConfirmed) {
-                                    handleRestData();
-                                  }
-                                });
-                              }}
-                            >
-                              Reset From
-                            </button>
+                            type="button"
+                            className="btn btn-info mx-2"
+                            onClick={() => {
+                              Swal.fire({
+                                title: "Are you sure?",
+                                text: "This will reset the data.!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Yes, reset it!",
+                              }).then((result) => {
+                                if (result.isConfirmed) {
+                                  handleRestData();
+                                }
+                              });
+                            }}
+                          >
+                            Reset From
+                          </button>
                         </div>
                         <div className="row">
                           <h4 className="text-primary mb-3">
@@ -892,12 +899,12 @@ export default function CartingBillDetails() {
 
                                 <div className="col-4">
                                   <label className="form-label">
-                                   Gross Weight
+                                    Gross Weight
                                   </label>
                                   <input
                                     type="text"
                                     className="form-control p-2"
-                                   readOnly
+                                    readOnly
                                     value={Data.gross_weight}
                                   />
                                 </div>
@@ -909,7 +916,9 @@ export default function CartingBillDetails() {
                                     type="datetime-local"
                                     className="form-control p-2"
                                     name="start_time"
-                                    defaultValue={formatToDateTimeLocal(Data?.start_time??today)}
+                                    defaultValue={formatToDateTimeLocal(
+                                      Data?.start_time ?? today
+                                    )}
                                   />
                                 </div>
                                 <div className="col-4">
@@ -920,7 +929,9 @@ export default function CartingBillDetails() {
                                     type="datetime-local"
                                     className="form-control p-2"
                                     name="end_time"
-                                    defaultValue={formatToDateTimeLocal(Data?.end_time??today)}
+                                    defaultValue={formatToDateTimeLocal(
+                                      Data?.end_time ?? today
+                                    )}
                                   />
                                 </div>
                                 <div className="col-4">
@@ -961,7 +972,8 @@ export default function CartingBillDetails() {
                                     className="form-control p-2"
                                     name={`sq_no[${i}]`}
                                     defaultValue={
-                                      Data?.carting_trucks[i]?.sq_no ?? Data?.id + '_' + i
+                                      Data?.carting_trucks[i]?.sq_no ??
+                                      Data?.id + "_" + i
                                     }
                                   />
                                   <label

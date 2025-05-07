@@ -555,6 +555,7 @@ export default function DeStuffingBillDetails() {
         SelectedGrids={SelectedGrids}
         setSelectedGrids={setSelectedGrids}
       />
+      
       <div className="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
         <div className="layout-container">
           <div className="layout-page">
