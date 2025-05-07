@@ -280,6 +280,12 @@ export default function StuffingBillDetails() {
                   value={input.grid_pkg}
                 />
                 <input
+                  type="hidden"
+                  className="form-control p-2"
+                  name={`pkgs_weight[${index}][${i}]`}
+                  value={input.grid_pkgs_weight}
+                />
+                <input
                   type="text"
                   readOnly
                   className="form-control p-2"
@@ -392,6 +398,7 @@ export default function StuffingBillDetails() {
       const updatedGrids = currentGrids.map((item) => {
         const totalPkg = item.total_pkg || 0;
         const gridPkg = item.grid_pkg || 0;
+        const gridPkgW = item.grid_pkgs_weight || 0;
         const totalArea = Number(item.area || 0);
 
         let PKG = (totalPkg / no_of_pkgs) * pkg;
@@ -406,6 +413,12 @@ export default function StuffingBillDetails() {
           const perAreaPackage = gridPkg / totalPkg;
           updatedItem.grid_pkg = Math.round(perAreaPackage * PKG);
         }
+
+        if (totalPkg > 0 && gridPkgW > 0) {
+          const perAreaPackageW = gridPkgW / totalPkg;
+          updatedItem.grid_pkgs_weight = Math.round(perAreaPackageW * PKG);
+        }
+
         return updatedItem;
 
         // if (totalPkg > 0 && totalArea > 0) {
