@@ -127,52 +127,6 @@ export default function EmptyMezzanineMap({
   const [modalData, setModalData] = useState(null);
   const [TotalArea, setTotalArea] = useState(0);
 
-  // useEffect(() => {
-  //   if (!Array.isArray(Data)) return;
-  //   let areaSum = 0;
-  //   const handleDoubleClick = (data) => () => {
-  //     if (data) {
-  //       setActiveGridSelection(data); 
-  //       setModalVisible2(true);              
-  //       onClose();
-  //     }
-  //   };
-
-  //   Data.forEach((data) => {
-  //     if (!data?.camera_locations) return;
-  //     const location = `${data.location_code ?? data.camera_locations}`;
-  //     const grid_id = location.toLowerCase();
-  //     let grid = document.getElementById(grid_id);
-
-  //     if (grid) {
-  //       grid.addEventListener("click", handleDoubleClick(data));
-  //     }
-
-  //     const total_area = data?.total_area ?? 20;
-  //     const occupied = data?.occupied_area ?? 0;
-  //     const ocr_occupied = data?.ocr_occupied_area ?? 0;
-
-  //     areaSum += Number(total_area);
-
-  //     const setBackgroundColor = (id, color) => {
-  //       const element = document.getElementById(id);
-  //       if (element) {
-  //         element.style.setProperty("background-color", color, "important");
-  //       }
-  //     };
-  //     setBackgroundColor(`${grid_id}`, `${occupied > 0 && "#8f51dd"}`);
-  //     setBackgroundColor(`${grid_id}`, `${ocr_occupied > 0 && "#00b0c4"}`);
-
-  //     Array.from({ length: ocr_occupied }, (_, id) =>
-  //       setBackgroundColor(`${grid_id}_${id + 1}`, "#00b0c4")
-  //     );
-  //     Array.from({ length: occupied }, (_, id) =>
-  //       setBackgroundColor(`${grid_id}_${id + 1}`, "#8f51dd")
-  //     );
-  //   });
-  //   setTotalArea(areaSum);
-  // }, [Data]);
-
   useEffect(() => {
     if (!Array.isArray(Data)) return;
     let areaSum = 0;

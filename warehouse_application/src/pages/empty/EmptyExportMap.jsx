@@ -196,25 +196,25 @@ export default function EmptyExportMap({
             "#00b0c4"
           );
         }
-        // for (let i = 0; i < occupied_area; i++) {
-        //   setBackgroundColor(
-        //     `${location_code?.toLowerCase()}_${i + 1}`,
-        //     "#8f51dd"
-        //   );
-        // }
-
-        if (data.grid_allocation) {
-          Object.entries(JSON.parse(data.grid_allocation)).map(
-            ([key, value]) => {
-              JSON.parse(value)?.map((v) => {
-                setBackgroundColor(
-                      `${location_code?.toLowerCase()}_${v}`,
-                      "#8f51dd"
-                    );
-              });
-            }
+        for (let i = 0; i < occupied_area; i++) {
+          setBackgroundColor(
+            `${location_code?.toLowerCase()}_${i + 1}`,
+            "#8f51dd"
           );
         }
+
+        // if (data.grid_allocation) {
+        //   Object.entries(JSON.parse(data.grid_allocation)).map(
+        //     ([key, value]) => {
+        //       JSON.parse(value)?.map((v) => {
+        //         setBackgroundColor(
+        //               `${location_code?.toLowerCase()}_${v}`,
+        //               "#8f51dd"
+        //             );
+        //       });
+        //     }
+        //   );
+        // }
 
         areaSum += Number(total_area);
       });

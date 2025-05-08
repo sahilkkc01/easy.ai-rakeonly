@@ -97,6 +97,15 @@ export default function Locations() {
   }, []);
 
   useEffect(() => {
+    setSelectedGrid(null);
+  setSelectedArea([]);
+  }, [MapName]);
+
+  useEffect(() => {
+  setSelectedArea([]);
+  }, [SelectedGrid]);
+
+  useEffect(() => {
     if (LocationNames.length > 0) {
       setMapName(LocationNames[0]);
     }
@@ -147,8 +156,7 @@ export default function Locations() {
 
   return (
     <>
-      <div className="d-none">
-        {/* Grid Map Selector */}
+      <div className="">
         <div className="container">
           <div
             className="row justify-content-center align-items-center"
@@ -232,7 +240,6 @@ export default function Locations() {
                   <div className="container">
                     <h3 className="text-primary">
                       {MapName} :: {SelectedGrid.new_location_code}
-                      <p className="d-none">{JSON.stringify(SelectedArea)}</p>
                     </h3>
                     <div className="d-flex align-items-center justify-content-center">
                       <div style={{ width: "260px" }}>
@@ -274,13 +281,15 @@ export default function Locations() {
                                       fontSize: "18px",
                                     }}
                                     onClick={() => {
-                                      setSelectedArea((prev) =>
-                                        prev.includes(cellValue)
-                                          ? prev.filter(
-                                              (val) => val !== cellValue
-                                            )
-                                          : [...prev, cellValue]
-                                      );
+                                      if(SelectedGrid?.occupied_area >= cellValue){
+                                        setSelectedArea((prev) =>
+                                          prev.includes(cellValue)
+                                            ? prev.filter(
+                                                (val) => val !== cellValue
+                                              )
+                                            : [...prev, cellValue]
+                                        );
+                                      }
                                     }}
                                   >
                                     {cellValue}
@@ -306,6 +315,7 @@ export default function Locations() {
                     className="btn btn-secondary"
                     type="button"
                     onClick={() => {
+                      setIsModalOpen2(false);
                       Swal.fire({
                         title: "Are you sure?",
                         text: "You want to update this grid!",
@@ -321,7 +331,6 @@ export default function Locations() {
                             SelectedGrid?.new_location_code,
                             SelectedArea.length
                           );
-                          setIsModalOpen2(false);
                         }
                       });
                     }}
@@ -336,6 +345,7 @@ export default function Locations() {
       </div>
       {/* Filter & Table */}
       <div className="container">
+        <hr />
         <h3 className="mt-3">Locations</h3>
         <div className="row mt-4">
           <div className="col-md-3">
