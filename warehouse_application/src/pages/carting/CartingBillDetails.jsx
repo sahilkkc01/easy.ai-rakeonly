@@ -286,11 +286,12 @@ export default function CartingBillDetails() {
                     (area) => area.location_code === item.grid_locations
                   )
                 : null;
+                
 
             return {
               id: i + 1,
               grid_location: item.grid_locations || "",
-              area: matchedArea?.ocr_occupied_area ?? item.area ?? "",
+              area: item.area ?? "",
             };
           });
         } else {

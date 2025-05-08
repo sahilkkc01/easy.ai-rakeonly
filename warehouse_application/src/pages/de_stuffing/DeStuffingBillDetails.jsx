@@ -193,7 +193,7 @@ export default function DeStuffingBillDetails() {
             return {
               id: i + 1,
               grid_location: item.grid_locations || "",
-              area: matchedArea?.ocr_occupied_area ?? item.area ?? "",
+              area: item.area ?? "",
             };
           });
         } else {
@@ -321,7 +321,7 @@ export default function DeStuffingBillDetails() {
         loc_i++;
         totalArea += parseInt(location.total_area) || 0;
         occupied +=
-          parseInt(location.ocr_occupied_area ?? location.occupied_area) || 0;
+          parseInt(location.occupied_area) || 0;
       }
     });
 
