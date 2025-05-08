@@ -7021,7 +7021,7 @@ export default function EmptyImportMap({
                                                                     key={
                                                                       boxNumber
                                                                     }
-                                                                    id={`y12_${boxNumber}`}
+                                                                    id={`Z10C3__${boxNumber}`}
                                                                     className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
                                                                     style={{
                                                                       height:
