@@ -476,7 +476,7 @@ export default function IndexR() {
                                     className="form-control p-2 mb-2"
                                     required
                                   >
-                                    <option>Select ITV </option>
+                                    <option> --Select ITV-- </option>
                                     {Array.from({ length: 30 }, (_, index) => {
                                       const value = `itv${String(
                                         index + 1
@@ -491,40 +491,6 @@ export default function IndexR() {
                                   <label htmlFor="itv_name">Select ITV</label>
                                 </div>
                               </div>
-
-                              {/* <div className="col-sm-6 mb-4">
-                                <div className="form-floating form-floating-outline">
-                                  <select
-                                    name="equipment_name"
-                                    id="equipment_name"
-                                    className="form-control p-2 mb-2"
-                                    required
-                                  >
-                                    <option value="" selected disable>
-                                      Select Equipment Name
-                                    </option>
-                                    <option value="RTG9">RTG9</option>
-                                    <option value="RTG8">RTG8</option>
-                                    <option value="RTG7">RTG7</option>
-                                    <option value="RTG6">RTG6</option>
-                                    <option value="R-S3">R-S3</option>
-                                    <option value="R-S2">R-S2</option>
-                                    <option value="R-S1">R-S1</option>
-                                    <option value="RH03">RH03</option>
-                                    <option value="RH04">RH04</option>
-                                    <option value="RH05">RH05</option>
-                                    <option value="RH06">RH06</option>
-                                    <option value="RH07">RH07</option>
-                                    <option value="RH08">RH08</option>
-                                    <option value="RH10">RH10</option>
-                                    <option value="RH12">RH12</option>
-                                    <option value="RH13">RH13</option>
-                                  </select>
-                                  <label htmlFor="equipment_name">
-                                    Select Equipment Name
-                                  </label>
-                                </div>
-                              </div> */}
 
                               <div className="col-sm-6 mb-4">
                                 <div className="form-floating form-floating-outline">

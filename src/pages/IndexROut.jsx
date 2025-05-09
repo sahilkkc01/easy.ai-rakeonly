@@ -482,8 +482,9 @@ export default function IndexROut() {
                                     name="itv_name"
                                     id="itv_name"
                                     className="form-control p-2 mb-2"
+                                    required
                                   >
-                                    <option>Select ITV </option>
+                                    <option> --Select ITV-- </option>
                                     {Array.from({ length: 30 }, (_, index) => {
                                       const value = `itv${String(
                                         index + 1
