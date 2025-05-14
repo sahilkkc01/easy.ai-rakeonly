@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Header from "./main/header";
+import { formatToDateTime } from "./main/formatToDateTime";
 
 export default function CisfOut() {
   const navigate = useNavigate();
@@ -148,7 +149,7 @@ export default function CisfOut() {
                           <div className="card-body">
                             <div className="row align-item-center">
                               <div className="col">
-                              <div className="mb-2">
+                                <div className="mb-2">
                                   <p className="mb-0">Gate Number :</p>
                                   <p className="mb-0 fw-bold text-uppercase">
                                     {row.gate_no}
@@ -262,7 +263,17 @@ export default function CisfOut() {
                                     )}
                                   </>
                                 )}
-
+                                <div className="mb-2">
+                                  <p className="mb-0">Survey Time :</p>
+                                  <p className="mb-0 fw-bold text-uppercase">
+                                    {" "}
+                                    {formatToDateTime(
+                                      row.survey_start_time
+                                    )}{" "}
+                                    &nbsp;&nbsp;
+                                    {formatToDateTime(row.survey_end_time)}
+                                  </p>
+                                </div>
                                 <div className="mb-2">
                                   <p className="mb-0">Surveyor Name :</p>
                                   <p className="mb-0 fw-bold text-uppercase">

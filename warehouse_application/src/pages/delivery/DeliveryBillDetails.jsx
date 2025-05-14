@@ -380,6 +380,105 @@ const GridComponent = ({ index, data }) => {
         [key]: updatedGrids,
       }));
     }
+
+
+
+
+
+    // const currentGrids = gridData2[key];
+
+    // if (currentGrids && currentGrids.length > 0 && pkg) {
+      // const updatedGrids = currentGrids.map((item) => {
+      //   const totalPkg = item.total_pkg || 0;
+      //   const totalArea = Number(item.area || 0);
+    
+      //   if (totalPkg > 0 && totalArea > 0) {
+      //     const perPackageArea = totalArea / totalPkg;
+      //     return {
+      //       ...item,
+      //       area: Math.round(perPackageArea * pkg),
+      //     };
+      //   }
+      //   return item; 
+      // });
+
+    //   setGridData((prev) => ({
+    //     ...prev,
+    //     [key]: updatedGrids,
+    //   }));
+    // }
+
+    // const currentGrids = gridData2[key];
+
+    // if (currentGrids && currentGrids.length > 0 && pkg) {
+    //   // Calculate total area from the grid data before the update
+    //   let TotalArea = currentGrids.reduce(
+    //     (sum, item) => sum + (Number(item.area) || 0),
+    //     0
+    //   );
+  
+    //   // Calculate the updated grids based on the per-package area
+    //   const updatedGrids = currentGrids.map((item) => {
+    //     const totalPkg = item.total_pkg || 0;
+    //     const totalArea = Number(item.area || 0);
+  
+    //     // Check if it's the grid with the original area you want to limit
+    //     if (item.grid_locations === "ZG92") {
+    //       // For ZG92, ensure that the area does not exceed 2
+    //       const maxArea = 2;
+    //       const perPackageArea = totalArea / totalPkg;
+    //       const newArea = Math.min(Math.round(perPackageArea * pkg), maxArea);
+    //       return {
+    //         ...item,
+    //         area: newArea,
+    //       };
+    //     }
+  
+    //     // For other grids, calculate the area based on the packages
+    //     if (totalPkg > 0 && totalArea > 0) {
+    //       const perPackageArea = totalArea / totalPkg;
+    //       const newArea = Math.round(perPackageArea * pkg);
+    //       return {
+    //         ...item,
+    //         area: newArea,
+    //       };
+    //     }
+        
+    //     return item;
+    //   });
+  
+    //   // Calculate the updated total area from the updated grids
+    //   const updatedTotalArea = updatedGrids.reduce(
+    //     (sum, item) => sum + item.area,
+    //     0
+    //   );
+  
+    //   // Calculate the discrepancy
+    //   const diff = TotalArea - updatedTotalArea;
+  
+    //   // If there's a discrepancy, distribute it across the grids
+    //   if (diff !== 0) {
+    //     const adjustmentPerGrid = diff / updatedGrids.length;
+  
+    //     const adjustedGrids = updatedGrids.map((item) => {
+    //       const adjustedArea = item.area + adjustmentPerGrid;
+    //       return {
+    //         ...item,
+    //         area: Math.round(adjustedArea), // Ensure the area is rounded after adjustment
+    //       };
+    //     });
+  
+    //     setGridData((prev) => ({
+    //       ...prev,
+    //       [key]: adjustedGrids,
+    //     }));
+    //   } else {
+    //     setGridData((prev) => ({
+    //       ...prev,
+    //       [key]: updatedGrids,
+    //     }));
+    //   }
+    // }
   };
 
   const handleRestData = async () => {

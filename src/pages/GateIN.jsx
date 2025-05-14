@@ -2347,11 +2347,14 @@ export default function GateIN() {
               </div>
 
               <Footer />
-              {/* <div className="content-backdrop fade"></div> */}
+              <div className="position-absolute top-0 end-0 p-3">
+        <Link to={'/Logout'} className="btn btn-danger">
+          Logout
+        </Link>
+      </div>
             </div>
           </div>
         </div>
-        <div className="drag-target"></div>
       </div>
     </>
   );
