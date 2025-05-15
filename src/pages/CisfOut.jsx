@@ -269,9 +269,7 @@ export default function CisfOut() {
                                     {" "}
                                     {formatToDateTime(
                                       row.survey_start_time
-                                    )}{" "}
-                                    &nbsp;&nbsp;
-                                    {formatToDateTime(row.survey_end_time)}
+                                    )}
                                   </p>
                                 </div>
                                 <div className="mb-2">

@@ -273,8 +273,7 @@ export default function CisfIn() {
                                   <p className="mb-0">Survey Time :</p>
                                   <p className="mb-0 fw-bold text-uppercase">
                                     {" "}
-                                    {formatToDateTime(row.survey_start_time)} &nbsp;&nbsp;
-                                    {formatToDateTime(row.survey_end_time)}
+                                    {formatToDateTime(row.survey_start_time)}
                                   </p>
                                 </div>
                                 <div className="mb-2">
