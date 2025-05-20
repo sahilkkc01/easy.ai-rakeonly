@@ -86,43 +86,6 @@ export default function Nav() {
           className="navbar-nav-right d-flex align-items-center"
           id="navbar-collapse"
         >
-          {/* <!-- Search --> */}
-          {/* <div className="navbar-nav align-items-center gap-2">
-            <div className="nav-item navbar-search-wrapper mb-0">
-              <div className="d-none d-md-inline-block text-muted ms-1_5">
-                <a
-                  href="http://gate.easyaiconnect.com/"
-                  className="btn btn-outline-primary waves-effect waves-light me-2"
-                >
-                  Gate
-                </a>
-                <a
-                  href="http://rake.easyaiconnect.com/"
-                  className="btn btn-outline-primary waves-effect waves-light me-2"
-                >
-                  Rake
-                </a>
-                <a
-                  href="http://yard.easyaiconnect.com/"
-                  className="btn btn-outline-primary waves-effect waves-light me-2"
-                >
-                  Yard
-                </a>
-                <a
-                  href="http://warehouse.easyaiconnect.com/"
-                  className="btn btn-primary waves-effect waves-light me-2"
-                >
-                  Warehouse
-                </a>
-                <a
-                  href="http://equipment.easyaiconnect.com/"
-                  className="btn btn-outline-primary waves-effect waves-light me-2"
-                >
-                  Equipment
-                </a>
-              </div>
-            </div>
-          </div> */}
           <ul className="navbar-nav flex-row align-items-center ms-auto">
             <li className="nav-item ">
               <h4 className="mb-0 me-4">{time.toLocaleTimeString()}</h4>
