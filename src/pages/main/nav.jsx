@@ -134,6 +134,14 @@ export default function Nav() {
               </Link>
             </li>
 
+            <li className="nav-item me-3">
+              <Link to={'/Profile'} className="nav-link">
+               <button className="btn btn-sm btn-outline-danger text-nowrap mx-2">
+               Reset Password
+               </button>
+              </Link>
+            </li>
+
             <li className="nav-item">
               <Link
                 to={"/Logout"}

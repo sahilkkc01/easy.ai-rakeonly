@@ -28,6 +28,7 @@ import DeliveryCompleted from "./pages/delivery/DeliveryCompleted";
 import CartingCompleted from "./pages/carting/CartingCompleted";
 import StuffingCompleted from "./pages/stuffing/StuffingCompleted";
 import Locations from "./pages/empty/Locations";
+import Profile from "./pages/main/Profile";
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/Profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
           <Route path="/" element={<PrivateRoute><Index /></PrivateRoute>} />
 
           <Route path="/de-stuffing" element={<PrivateRoute><DeStuffing/></PrivateRoute>} />

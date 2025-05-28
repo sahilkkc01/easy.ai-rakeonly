@@ -46,6 +46,7 @@ import WTR from "./pages/WTR.jsx";
 import Inventory from "./pages/Inventory.jsx";
 import YardRowData from "./pages/YardRowData.jsx";
 import GetOcrData from "./pages/GetOcrData.jsx";
+import Profile from "./Profile.jsx";
 
 export default function App() {
 
@@ -81,6 +82,7 @@ export default function App() {
           {/* Login - Logout */}
           <Route path="/" element={<Login />} />
           <Route path="/Logout" element={<Logout />} />
+          <Route path="/Profile" element={<Profile />} />
 
           {/* GATE */}
           <Route path="/Gate" element={<PrivateRoute ><GateIN /></PrivateRoute>} />
