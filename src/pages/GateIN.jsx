@@ -1441,8 +1441,7 @@ export default function GateIN() {
                                               name={`container_no_${index + 1}`}
                                               defaultValue={
                                                 index === 0
-                                                  ? PermitData?.data
-                                                      ?.ContainerNumber
+                                                  ? PermitData?.data['tns:ContainerNumber']
                                                   : ""
                                               }
                                               placeholder="Container Number"
