@@ -33,7 +33,7 @@ export default function GateIN() {
 
   useEffect(() => {
     if (showScreen && type && gate_no && lane_no) GetLIveData();
-  }, [showScreen, type, gate_no, lane_no]);
+  }, [type, gate_no, lane_no]);
 
   const [EditVehicleNo, setEditVehicleNo] = useState(null);
   const [EditVehicleID, setEditVehicleID] = useState(null);
@@ -1257,9 +1257,9 @@ export default function GateIN() {
                                     }
                                   />
                                   <span className="mt-2 text-primary fw-bold">
-                                    {PermitData?.data?.IsPermitValid
+                                    {PermitData?.data['tns:IsPermitValid']
                                       ? formatToDateTime(
-                                          PermitData?.data?.IsPermitValid
+                                          PermitData?.data['tns:IsPermitValid']
                                         )
                                       : ""}
                                   </span>
@@ -1441,8 +1441,7 @@ export default function GateIN() {
                                               name={`container_no_${index + 1}`}
                                               defaultValue={
                                                 index === 0
-                                                  ? PermitData?.data
-                                                      ?.ContainerNumber
+                                                  ? PermitData?.data['tns:ContainerNumber']
                                                   : ""
                                               }
                                               placeholder="Container Number"
