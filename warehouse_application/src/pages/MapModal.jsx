@@ -3,6 +3,7 @@ import ExportMap from "./ExportMap";
 import MezzanineMap from "./MezzanineMap";
 import ImportMap from "./ImportMap";
 import OycMap from "./OycMap";
+import { OcrImgBaseUrl } from "../Config";
 
 const MapModal = ({
   isVisible,
@@ -349,6 +350,9 @@ const MapAreaModal = ({
                   ))}
                 </div>
               </div>
+            </div>
+            <div className="col-md-12 my-4">
+              <img src={OcrImgBaseUrl+activeGridSelection?.ocr_image} className="w-50" alt="" />
             </div>
           </div>
           <div className="modal-footer bg-label-primary py-2">
