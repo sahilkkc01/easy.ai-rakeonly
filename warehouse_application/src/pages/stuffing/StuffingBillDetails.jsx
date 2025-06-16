@@ -103,7 +103,8 @@ export default function StuffingBillDetails() {
         if (areaByLocation[item.grid_location]) {
           areaByLocation[item.grid_location].area += item.area;
           areaByLocation[item.grid_location].grid_pkg += item.grid_pkg;
-          areaByLocation[item.grid_location].grid_pkgs_weight += item.grid_pkgs_weight;
+          areaByLocation[item.grid_location].grid_pkgs_weight +=
+            item.grid_pkgs_weight;
           areaByLocation[item.grid_location].total_pkg += item.no_of_pkgs;
         } else {
           areaByLocation[item.grid_location] = {
@@ -484,7 +485,7 @@ export default function StuffingBillDetails() {
     }
   };
 
-  const handleDeleteBill = async (id,bill) => {
+  const handleDeleteBill = async (id, bill) => {
     setLoading(true);
     const url = `${ApiBaseUrl}stuffing/bill/delete?id=${id}&bill=${bill}`;
     try {
@@ -641,33 +642,30 @@ export default function StuffingBillDetails() {
                         <a href="?" className="btn btn-primary mx-2">
                           Search Another
                         </a>
-                        <Link
-                          to={"/stuffing"}
-                          className="btn btn-primary mx-2"
-                        >
+                        <Link to={"/stuffing"} className="btn btn-primary mx-2">
                           Go Back
                         </Link>
                         <button
-                              type="button"
-                              className="btn btn-info mx-2"
-                              onClick={() => {
-                                Swal.fire({
-                                  title: "Are you sure?",
-                                  text: "This will reset the data.!",
-                                  icon: "warning",
-                                  showCancelButton: true,
-                                  confirmButtonColor: "#3085d6",
-                                  cancelButtonColor: "#d33",
-                                  confirmButtonText: "Yes, reset it!",
-                                }).then((result) => {
-                                  if (result.isConfirmed) {
-                                    handleRestData();
-                                  }
-                                });
-                              }}
-                            >
-                              Reset From
-                            </button>
+                          type="button"
+                          className="btn btn-info mx-2"
+                          onClick={() => {
+                            Swal.fire({
+                              title: "Are you sure?",
+                              text: "This will reset the data.!",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonColor: "#3085d6",
+                              cancelButtonColor: "#d33",
+                              confirmButtonText: "Yes, reset it!",
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                handleRestData();
+                              }
+                            });
+                          }}
+                        >
+                          Reset From
+                        </button>
                       </div>
                       <div className="row">
                         <h4 className="text-primary mb-3">Container Details</h4>
@@ -741,7 +739,9 @@ export default function StuffingBillDetails() {
                                   type="datetime-local"
                                   className="form-control p-2"
                                   name="start_time"
-                                  defaultValue={formatToDateTimeLocal(Data?.start_time??today)}
+                                  defaultValue={formatToDateTimeLocal(
+                                    Data?.start_time ?? today
+                                  )}
                                 />
                               </div>
                               <div className="col-4">
@@ -752,7 +752,9 @@ export default function StuffingBillDetails() {
                                   type="datetime-local"
                                   className="form-control p-2"
                                   name="end_time"
-                                  defaultValue={formatToDateTimeLocal(Data?.end_time??today)}
+                                  defaultValue={formatToDateTimeLocal(
+                                    Data?.end_time ?? today
+                                  )}
                                 />
                               </div>
                               <div className="col-4">
@@ -772,115 +774,149 @@ export default function StuffingBillDetails() {
                         </div>
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
-                         {/* {Bills?.map((billDetails, i) => ( */}
-                              { TotalBills && TotalBills > 0 && Array.from({ length: TotalBills }, (_, i) => (
-                          <div key={i} className="card card-body my-3">
-                            <div className="d-flex gap-3 flex-row overflow-auto">
-                              <div className="col-md-2 col-3">
-                                <label
-                                  htmlFor="shipping_bill_number"
-                                  className="form-label"
-                                >
-                                  Bill Number
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control p-2"
-                                  name={`shipping_bill_number[${i}]`}
-                                  id={`shipping_bill_number_${i}`}
-                                  defaultValue={
-                                    Bills?.[i]?.shipping_bill_number??null
-                                  }
-                                />
-                              </div>
-                              <div className="col-md-3 col-4">
-                                <label className="form-label">
-                                  Cargo Description
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control p-2"
-                                  name={`commodity_description[${i}]`}
-                                  id={`commodity_description_${i}`}
-                                  defaultValue={
-                                    Bills?.[i]?.commodity_description??null
-                                  }
-                                />
-                              </div>
-                              <div className="col-md-3 col-4">
-                                <label className="form-label">
-                                  Package Code
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control p-2"
-                                  name={`package_code[${i}]`}
-                                  id={`package_code_${i}`}
-                                  defaultValue={Bills?.[i]?.package_code??null}
-                                />
-                              </div>
-                              <div className="col-md-2 col-3">
-                                <label className="form-label">No of Pkgs</label>
-                                <input
-                                  type="number"
-                                  className="form-control p-2"
-                                  id={`no_of_packages_declared_${i}`}
-                                  name={`no_of_packages_declared[${i}]`}
-                                  defaultValue={
-                                    Bills?.[i]?.no_of_packages_declared??null
-                                  }
-                                  onChange={(e) =>
-                                    handleBillPkgW(i, e.target.value)
-                                  }
-                                />
-                              </div>
-                              <div className="col-md-2 col-3">
-                                <label className="form-label">Pkg Weight</label>
-                                <input
-                                  type="text"
-                                  className="form-control p-2"
-                                  id={`package_weight_${i}`}
-                                  name={`package_weight[${i}]`}
-                                  defaultValue={Bills?.[i]?.package_weight??null}
-                                />
-                              </div>
-                              {/* <GridComponent
-                                index={i}
-                                data={Data?.stuffing_shipping_bill_details?.[i] ?? { grid_area: [] }}
-                              /> */}
-
-                              {Data?.carting_container && (
-                                <>
-                                  {gridData[i] && (
-                                    <GridComponent
-                                      index={i}
-                                      data={gridData[i]}
-                                    />
-                                  )}
-                                </>
-                              )}
-                              {Bills?.[i]?.id &&(
-                              <div className="col-1 d-flex align-items-center">
-                                <button className="btn btn-sm btn-danger" type="button" onClick={()=>{
-                                  Swal.fire({
-                                    title: 'Are you sure?',
-                                    text: "This will delete data.!",
-                                    icon: 'warning',
-                                    showCancelButton: true,
-                                    confirmButtonColor: '#3085d6',
-                                    cancelButtonColor: '#d33',
-                                    confirmButtonText: 'Yes, reset it!'
-                                  }).then((result) => {
-                                    if (result.isConfirmed) {
-                                      handleDeleteBill(Bills?.[i]?.id ,Bills?.[i]?.shipping_bill_number);
+                        {/* {Bills?.map((billDetails, i) => ( */}
+                        {TotalBills &&
+                          TotalBills > 0 &&
+                          Array.from({ length: TotalBills }, (_, i) => (
+                            <div key={i} className="card card-body my-3">
+                              <div className="d-flex gap-3 flex-row overflow-auto">
+                                <div className="col-md-2 col-3">
+                                  <label
+                                    htmlFor="shipping_bill_number"
+                                    className="form-label"
+                                  >
+                                    Bill Number
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control p-2"
+                                    name={`shipping_bill_number[${i}]`}
+                                    id={`shipping_bill_number_${i}`}
+                                    defaultValue={
+                                      Bills?.[i]?.shipping_bill_number ?? null
                                     }
-                                  });
-                                }} > Delete Bill</button>
+                                  />
+                                </div>
+                                <div className="col-md-3 col-4">
+                                  <label className="form-label">
+                                    Cargo Description
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control p-2"
+                                    name={`commodity_description[${i}]`}
+                                    id={`commodity_description_${i}`}
+                                    defaultValue={
+                                      Bills?.[i]?.commodity_description ??
+                                      Data?.carting_container?.carting_trucks?.find(
+                                        (b) =>
+                                          b.sbill ===
+                                          Bills?.[i]?.shipping_bill_number
+                                      )?.cargo_description ??
+                                      null
+                                    }
+                                  />
+                                </div>
+                                <div className="col-md-3 col-4">
+                                  <label className="form-label">
+                                    Package Code
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control p-2"
+                                    name={`package_code[${i}]`}
+                                    id={`package_code_${i}`}
+                                    defaultValue={
+                                      Bills?.[i]?.package_code ?? null
+                                    }
+                                  />
+                                </div>
+                                <div className="col-md-2 col-3">
+                                  <label className="form-label">
+                                    No of Pkgs
+                                  </label>
+                                  <input
+                                    type="number"
+                                    className="form-control p-2"
+                                    id={`no_of_packages_declared_${i}`}
+                                    name={`no_of_packages_declared[${i}]`}
+                                    defaultValue={
+                                      Bills?.[i]?.no_of_packages_declared ??
+                                      Data?.carting_container?.carting_trucks?.find(
+                                        (b) =>
+                                          b.sbill ===
+                                          Bills?.[i]?.shipping_bill_number
+                                      )?.no_of_pkgs ??
+                                      null
+                                    }
+                                    onChange={(e) =>
+                                      handleBillPkgW(i, e.target.value)
+                                    }
+                                  />
+                                </div>
+                                <div className="col-md-2 col-3">
+                                  <label className="form-label">
+                                    Pkg Weight
+                                  </label>
+                                  <input
+                                    type="text"
+                                    className="form-control p-2"
+                                    id={`package_weight_${i}`}
+                                    name={`package_weight[${i}]`}
+                                    defaultValue={
+                                      Bills?.[i]?.package_weight ??
+                                      Data?.carting_container?.carting_trucks?.find(
+                                        (b) =>
+                                          b.sbill ===
+                                          Bills?.[i]?.shipping_bill_number
+                                      )?.pkgs_weight ??
+                                      null
+                                    }
+                                  />
+                                </div>
+
+                                {Data?.carting_container && (
+                                  <>
+                                    {gridData[i] && (
+                                      <GridComponent
+                                        index={i}
+                                        data={gridData[i]}
+                                      />
+                                    )}
+                                  </>
+                                )}
+                                {Bills?.[i]?.id && (
+                                  <div className="col-1 d-flex align-items-center">
+                                    <button
+                                      className="btn btn-sm btn-danger"
+                                      type="button"
+                                      onClick={() => {
+                                        Swal.fire({
+                                          title: "Are you sure?",
+                                          text: "This will delete data.!",
+                                          icon: "warning",
+                                          showCancelButton: true,
+                                          confirmButtonColor: "#3085d6",
+                                          cancelButtonColor: "#d33",
+                                          confirmButtonText: "Yes, reset it!",
+                                        }).then((result) => {
+                                          if (result.isConfirmed) {
+                                            handleDeleteBill(
+                                              Bills?.[i]?.id,
+                                              Bills?.[i]?.shipping_bill_number
+                                            );
+                                          }
+                                        });
+                                      }}
+                                    >
+                                      {" "}
+                                      Delete Bill
+                                    </button>
+                                  </div>
+                                )}
                               </div>
-                              )}
                             </div>
-                          </div>
-                        ))}
+                          ))}
                         <div className="col-12 my-2 text-end">
                           <button
                             type="button"
