@@ -515,36 +515,36 @@ export default function StuffingBillDetails() {
     }
   };
 
-  // useEffect(() => {
-  //   if (!Data || !Bills) return;
-  //   const updatedBills = Bills.map((details, i) => {
-  //     const relatedTrucks = Data?.carting_container?.carting_trucks?.filter(
-  //       (b) => b.sbill === details.shipping_bill_number
-  //     ) || [];
+  useEffect(() => {
+    if (!Data || !Bills) return;
+    const updatedBills = Bills.map((details, i) => {
+      const relatedTrucks = Data?.carting_container?.carting_trucks?.filter(
+        (b) => b.sbill === details.shipping_bill_number
+      ) || [];
   
-  //     const firstTruck = relatedTrucks[0] || {};
+      const firstTruck = relatedTrucks[0] || {};
   
-  //     const totalPackages = relatedTrucks.reduce(
-  //       (sum, truck) => sum + (Number(truck.no_of_pkgs) || 0),
-  //       0
-  //     );
+      const totalPackages = relatedTrucks.reduce(
+        (sum, truck) => sum + (Number(truck.no_of_pkgs) || 0),
+        0
+      );
   
-  //     const totalWeight = relatedTrucks.reduce(
-  //       (sum, truck) => sum + (Number(truck.pkgs_weight) || 0),
-  //       0
-  //     );
+      const totalWeight = relatedTrucks.reduce(
+        (sum, truck) => sum + (Number(truck.pkgs_weight) || 0),
+        0
+      );
   
-  //     return {
-  //       ...details,
-  //       commodity_description: details.commodity_description ?? firstTruck.cargo_description ?? null,
-  //       package_code: details.package_code ?? firstTruck.pkg_code ?? null,
-  //       no_of_packages_declared: details.no_of_packages_declared ?? totalPackages ?? null,
-  //       package_weight: details.package_weight ?? totalWeight ?? null,
-  //     };
-  //   });
+      return {
+        ...details,
+        commodity_description: details.commodity_description ?? firstTruck.cargo_description ?? null,
+        package_code: details.package_code ?? firstTruck.pkg_code ?? null,
+        no_of_packages_declared: details.no_of_packages_declared ?? totalPackages ?? null,
+        package_weight: details.package_weight ?? totalWeight ?? null,
+      };
+    });
   
-  //   setBills(updatedBills);
-  // }, [Data]);
+    setBills(updatedBills);
+  }, [Data]);
   
   return (
     <>
@@ -874,20 +874,7 @@ export default function StuffingBillDetails() {
                                     id={`no_of_packages_declared_${i}`}
                                     name={`no_of_packages_declared[${i}]`}
                                     defaultValue={
-                                      Bills?.[i]?.no_of_packages_declared ??
-                                      Data?.carting_container?.carting_trucks
-                                        ?.filter(
-                                          (b) =>
-                                            b.sbill ==
-                                            Bills?.[i]?.shipping_bill_number
-                                        )
-                                        ?.reduce(
-                                          (sum, truck) =>
-                                            sum +
-                                            (Number(truck.no_of_pkgs) || 0),
-                                          0
-                                        ) ??
-                                      null
+                                      Bills?.[i]?.no_of_packages_declared ??null
                                     }
                                     onChange={(e) =>
                                       handleBillPkgW(i, e.target.value)
@@ -904,20 +891,7 @@ export default function StuffingBillDetails() {
                                     id={`package_weight_${i}`}
                                     name={`package_weight[${i}]`}
                                     defaultValue={
-                                      Bills?.[i]?.package_weight ??
-                                      Data?.carting_container?.carting_trucks
-                                        ?.filter(
-                                          (b) =>
-                                            b.sbill ==
-                                            Bills?.[i]?.shipping_bill_number
-                                        )
-                                        ?.reduce(
-                                          (sum, truck) =>
-                                            sum +
-                                            (Number(truck.pkgs_weight) || 0),
-                                          0
-                                        ) ??
-                                      null
+                                      Bills?.[i]?.package_weight ??null
                                     }
                                   />
                                 </div>
