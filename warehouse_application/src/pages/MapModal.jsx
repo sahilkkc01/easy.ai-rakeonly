@@ -170,7 +170,7 @@ const MapAreaModal = ({
       setHeight("40vh");
     } else if (activeGridSelection?.warehouse_name == "Mazzanine") {
       if (activeGridSelection?.area_boxes == "20") {
-        setRow(4);
+        setRow(5);
         setCol(4);
         setWidth("70px");
         setHeight("10vh");
