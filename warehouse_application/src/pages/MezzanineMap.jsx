@@ -134,74 +134,62 @@ export default function MezzanineMap({
 
   useEffect(() => {
     if (!Array.isArray(Data)) return;
-    let areaSum = 0;
+
+    let TotalAreaSum = 0;
     const handleDoubleClick = (data) => () => {
-        if(data.area_boxes && data.area_boxes == data.occupied_area){
-          onClose();
-          Swal.fire({
-            icon: "warning",
-            text: `This Area Occupied`,
-            timer: 3000
-          });
-        }else{
-          setSelectedGrids((prev) => {
-            if (prev.hasOwnProperty(data.new_location_code)) {
-              return prev;
-            }
-            return {
-              ...prev,
-              [data.new_location_code]: [],
-            };
-          });
-          setActiveGridSelection(data); 
-          setModalVisible2(true);              
-          onClose();
-        }
-    };
-  
-    const eventListeners = [];
+
+        setSelectedGrids((prev) => {
+          if (prev.hasOwnProperty(data.new_location_code)) {
+            return prev;
+          }
+          return {
+            ...prev,
+            [data.new_location_code]: [],
+          };
+        });
+        setActiveGridSelection(data); 
+        setModalVisible2(true);              
+        onClose();
+  };
+
+    const eventListeners = []; 
     Data.forEach((data) => {
       if (!data?.camera_locations && !data?.location_code) return;
-  
-      const location = `${data.location_code ?? data.camera_locations}`.toLowerCase().trim();
+
+      const location = `${data.location_code ?? data.camera_locations}`
+        .toLowerCase()
+        .trim();
       const grid_id = location;
+
       const gridElement = document.getElementById(grid_id);
       if (gridElement) {
         const handler = handleDoubleClick(data);
         gridElement.addEventListener("click", handler);
         eventListeners.push({ element: gridElement, handler });
       }
-  
-      const total_area = data?.total_area ?? 20;
-      const occupied = data?.occupied_area ?? 0;
-      const ocr_occupied = data?.ocr_occupied_area ?? 0;
-  
-      areaSum += Number(total_area);
-  
+
+      const total_area = Number(data?.total_area ?? 20);
+      const occupied = Number(data?.occupied_area ?? 0);
+      const ocr_occupied = Number(data?.ocr_occupied_area ?? 0);
+      const grid_allocation = JSON.parse(data?.grid_allocation) ?? {};
+      const carting_data = data?.carting_data ?? [];
+
+      const ocr_grid_wise_occupied =
+        JSON.parse(data?.ocr_grid_wise_occupied) ?? {};
+
+        TotalAreaSum += Number(total_area);
+
       const setBackgroundColor = (id, color) => {
         const el = document.getElementById(id);
         if (el) {
           el.style.setProperty("background-color", color, "important");
         }
       };
-  
-      // Set background on parent box
-      setBackgroundColor(grid_id, occupied > 0 ? "#8f51dd" : "");
-      setBackgroundColor(grid_id, ocr_occupied > 0 ? "#00b0c4" : "");
-  
-      // Apply to inner boxes + add click listeners to each
+
       for (let i = 1; i <= total_area; i++) {
         const boxId = `${grid_id}_${i}`;
         const boxElement = document.getElementById(boxId);
-  
-        // Priority: ocr_occupied first, then occupied
-        if (i <= ocr_occupied) {
-          setBackgroundColor(boxId, "#00b0c4");
-        } else if (i <= occupied) {
-          setBackgroundColor(boxId, "#8f51dd");
-        }
-  
-        // Add modal click for each inner box
+
         if (boxElement) {
           const handler = handleDoubleClick(data);
           boxElement.addEventListener("click", handler);
@@ -209,28 +197,63 @@ export default function MezzanineMap({
         }
       }
 
-      if(SelectedGrids && SelectedGrids[data.new_location_code]){
-        if(!data.area_boxes || data.area_boxes!='20'){
-          setBackgroundColor(`${data.location_code?.toLowerCase().trim()}`, "#ff4c52");
+      if (ocr_occupied > 0) {
+        {
+          Object.entries(ocr_grid_wise_occupied?.data).forEach(
+            ([key, value]) => {
+              if (!value) return;
+              key = Number(key);
+              if (value == "F") {
+                const box_id = `${grid_id}_${key + 1}`;
+                setBackgroundColor(grid_id, "#00b0c4");
+                setBackgroundColor(box_id, "#00b0c4");
+              }
+            }
+          );
         }
-        SelectedGrids[data.new_location_code]?.map((sc)=>{
-          setBackgroundColor(`${data.location_code?.toLowerCase().trim()}_${sc}`, "#ff4c52");
-        }
-        );
       }
 
-
+      if (ocr_occupied > 0 && occupied > 0 && carting_data?.length > 0) {
+        {
+          Object.entries(grid_allocation).forEach(([key, value]) => {
+            if (!value) return;
+            let parsedValues = [];
+            if (Array.isArray(value)) {
+              parsedValues = value;
+            }
+            if (!Array.isArray(value)) {
+              try {
+                parsedValues = JSON.parse(value);
+              } catch (error) {
+                return;
+              }
+            }
+            if (!Array.isArray(parsedValues)) {
+              try {
+                parsedValues = JSON.parse(parsedValues);
+              } catch (error) {
+                return;
+              }
+            }
+            parsedValues.forEach((v) => {
+              const box_id = `${grid_id}_${v}`;
+              setBackgroundColor(grid_id, "#8f51dd");
+              setBackgroundColor(box_id, "#8f51dd");
+            });
+          });
+        }
+      }
     });
-  
-    setTotalArea(areaSum);
-  
-    // Cleanup listeners on unmount
+
+    setTotalArea(TotalAreaSum);
+
     return () => {
       eventListeners.forEach(({ element, handler }) => {
         element.removeEventListener("click", handler);
       });
     };
   }, [Data]);
+
   return (
     <>
       {loading && (

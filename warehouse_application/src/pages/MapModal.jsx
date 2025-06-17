@@ -55,34 +55,34 @@ const MapModal = ({
       case "Export":
         return (
           <ExportMap
-          setActiveGridSelection={setActiveGridSelection}
-          activeGridSelection={activeGridSelection}
-          onClose={onClose}
-          setModalVisible2={setModalVisible2}
-          SelectedGrids={SelectedGrids}
-          setSelectedGrids={setSelectedGrids}
+            setActiveGridSelection={setActiveGridSelection}
+            activeGridSelection={activeGridSelection}
+            onClose={onClose}
+            setModalVisible2={setModalVisible2}
+            SelectedGrids={SelectedGrids}
+            setSelectedGrids={setSelectedGrids}
           />
         );
       case "Mazzanine":
         return (
           <MezzanineMap
-          setActiveGridSelection={setActiveGridSelection}
-          activeGridSelection={activeGridSelection}
-          onClose={onClose}
-          setModalVisible2={setModalVisible2}
-          SelectedGrids={SelectedGrids}
-          setSelectedGrids={setSelectedGrids}
+            setActiveGridSelection={setActiveGridSelection}
+            activeGridSelection={activeGridSelection}
+            onClose={onClose}
+            setModalVisible2={setModalVisible2}
+            SelectedGrids={SelectedGrids}
+            setSelectedGrids={setSelectedGrids}
           />
         );
       case "OYC":
         return (
           <OycMap
-          setActiveGridSelection={setActiveGridSelection}
-          activeGridSelection={activeGridSelection}
-          onClose={onClose}
-          setModalVisible2={setModalVisible2}
-          SelectedGrids={SelectedGrids}
-          setSelectedGrids={setSelectedGrids}
+            setActiveGridSelection={setActiveGridSelection}
+            activeGridSelection={activeGridSelection}
+            onClose={onClose}
+            setModalVisible2={setModalVisible2}
+            SelectedGrids={SelectedGrids}
+            setSelectedGrids={setSelectedGrids}
           />
         );
       default:
@@ -103,7 +103,7 @@ const MapModal = ({
         style={{ zIndex: 1 }}
       ></div>
       <div
-        className="modal-dialog modal-xl"
+        className="modal-dialog modal-fullscreen"
         ref={modalRef}
         tabIndex={-1}
         style={{ zIndex: 99 }}
@@ -152,14 +152,16 @@ const MapAreaModal = ({
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
+  const [OcrOccupied, setOcrOccupied] = useState({});
+  const [Occupied, setOccupied] = useState([]);
   useEffect(() => {
     if (
       activeGridSelection?.warehouse_name == "Export" ||
       activeGridSelection?.warehouse_name == "Import"
     ) {
-      setRow(4);
-      setCol(5);
-      setWidth("50px");
+      setRow(5);
+      setCol(4);
+      setWidth("70px");
       setHeight("10vh");
     } else if (activeGridSelection?.warehouse_name == "OYC") {
       setRow(1);
@@ -169,8 +171,8 @@ const MapAreaModal = ({
     } else if (activeGridSelection?.warehouse_name == "Mazzanine") {
       if (activeGridSelection?.area_boxes == "20") {
         setRow(4);
-        setCol(5);
-        setWidth("50px");
+        setCol(4);
+        setWidth("70px");
         setHeight("10vh");
       } else if (activeGridSelection?.area_boxes == "2") {
         setRow(1);
@@ -188,6 +190,55 @@ const MapAreaModal = ({
       setCol(5);
       setWidth("50px");
       setHeight("10vh");
+    }
+    if (
+      activeGridSelection?.ocr_grid_wise_occupied &&
+      activeGridSelection?.ocr_occupied_area > 0
+    ) {
+      setOcrOccupied(
+        JSON.parse(activeGridSelection?.ocr_grid_wise_occupied) ?? {}
+      );
+    }
+
+    if (
+      activeGridSelection?.ocr_occupied_area > 0 &&
+      activeGridSelection?.occupied_area > 0 &&
+      activeGridSelection?.grid_allocation &&
+      activeGridSelection?.destuffing_data?.length > 0
+    ) {
+      let grid_allocation =
+        JSON.parse(activeGridSelection?.grid_allocation) ?? {};
+      let gridAllocation = [];
+      {
+        Object.entries(grid_allocation).forEach(([key, value]) => {
+          if (!value) return;
+          let parsedValues = [];
+          if (Array.isArray(value)) {
+            parsedValues = value;
+          }
+          if (!Array.isArray(value)) {
+            try {
+              parsedValues = JSON.parse(value);
+            } catch (error) {
+              return;
+            }
+          }
+          if (!Array.isArray(parsedValues)) {
+            try {
+              parsedValues = JSON.parse(parsedValues);
+            } catch (error) {
+              return;
+            }
+          }
+          if (Array.isArray(parsedValues)) {
+            gridAllocation.push(parsedValues);
+          }
+        });
+      }
+      if (gridAllocation) {
+        gridAllocation = gridAllocation.flat() ?? [];
+        setOccupied(gridAllocation);
+      }
     }
   }, [activeGridSelection]);
 
@@ -226,7 +277,7 @@ const MapAreaModal = ({
         style={{ zIndex: 1 }}
       ></div>
       <div
-        className="modal-dialog"
+        className="modal-dialog modal-lg"
         ref={modalRef}
         tabIndex={-1}
         style={{ zIndex: 99 }}
@@ -245,43 +296,52 @@ const MapAreaModal = ({
           </div>
           <div className="modal-body">
             <h2>{activeGridSelection?.location_code}</h2>
-            {/* <p>{JSON.stringify(gridArea)}</p>
-            <p>{JSON.stringify(SelectedGrids)}</p> */}
+            {/* <p>{JSON.stringify(gridArea)}</p> 
+            <p>{JSON.stringify(SelectedGrids)}</p>*/}
             <div className="d-flex align-items-center justify-content-center">
               <div style={{ width: "260px" }}>
                 <div className="main bg-dark p-1 d-flex flex-column border-light border border-2 position-relative w-auto">
                   {[...Array(row)].map((_, rowIndex) => (
                     <div key={rowIndex} className="d-flex">
                       {[...Array(col)].map((_, colIndex) => {
-                        const cellValue = rowIndex * 5 + colIndex + 1;
+                        const cellValue = rowIndex * 4 + colIndex + 1;
                         const isSelected = (
                           Array.isArray(gridArea) ? gridArea : []
                         ).includes(cellValue);
                         let color = "bg-secondary";
                         if (
-                          activeGridSelection?.ocr_occupied_area &&
-                          activeGridSelection?.ocr_occupied_area >= cellValue
+                          OcrOccupied &&
+                          OcrOccupied?.data?.[cellValue - 1] &&
+                          OcrOccupied?.data?.[cellValue - 1] == "F"
                         ) {
                           color = "bg-info";
                         }
                         if (
-                          activeGridSelection?.occupied_area &&
-                          activeGridSelection?.warehouse_name != "OYC" &&
-                          activeGridSelection?.occupied_area >= cellValue
+                          Occupied &&
+                          Occupied.includes(cellValue) &&
+                          activeGridSelection?.warehouse_name != "OYC"
                         ) {
                           color = "bg-primary";
                         }
-                        if (isSelected && activeGridSelection?.warehouse_name != "OYC") {
+                        if (
+                          isSelected &&
+                          activeGridSelection?.warehouse_name != "OYC"
+                        ) {
                           color = "bg-success";
                         }
-                        if (isSelected && activeGridSelection?.warehouse_name == "OYC") {
+                        if (
+                          isSelected &&
+                          activeGridSelection?.warehouse_name == "OYC"
+                        ) {
                           color = "bg-danger";
                         }
 
                         if (
                           SelectedGrids &&
-                          SelectedGrids[activeGridSelection?.new_location_code]
-                          && activeGridSelection?.warehouse_name != "OYC"
+                          SelectedGrids[
+                            activeGridSelection?.new_location_code
+                          ] &&
+                          activeGridSelection?.warehouse_name != "OYC"
                         ) {
                           let sc =
                             SelectedGrids[
@@ -303,30 +363,35 @@ const MapAreaModal = ({
                               fontSize: "18px",
                             }}
                             onClick={() => {
-                              let newLoc=activeGridSelection?.new_location_code;
+                              let newLoc =
+                                activeGridSelection?.new_location_code;
                               if (
                                 SelectedGrids[newLoc] &&
                                 SelectedGrids[newLoc].includes(cellValue) &&
-                                !gridArea.includes(cellValue) && activeGridSelection?.warehouse_name != "OYC"
+                                !gridArea.includes(cellValue) &&
+                                activeGridSelection?.warehouse_name != "OYC"
                               ) {
-                                alert('this is already selected.!');
-                              }else{
+                                alert("this is already selected.!");
+                              } else {
                                 if (
-                                  activeGridSelection?.warehouse_name == "OYC" ||
-                                  activeGridSelection?.occupied_area < cellValue
+                                  activeGridSelection?.warehouse_name ==
+                                    "OYC" ||
+                                  !Occupied.includes(cellValue)
                                 ) {
                                   setGridArea(cellValue);
-  
+
                                   setSelectedGrids((prev) => {
                                     const locationCode =
                                       activeGridSelection?.new_location_code;
                                     const current = prev[locationCode] || [];
-  
+
                                     const exists = current.includes(cellValue);
                                     const updated = exists
-                                      ? current.filter((val) => val !== cellValue)
+                                      ? current.filter(
+                                          (val) => val !== cellValue
+                                        )
                                       : [...current, cellValue];
-  
+
                                     return {
                                       ...prev,
                                       [locationCode]: updated,
@@ -334,7 +399,6 @@ const MapAreaModal = ({
                                   });
                                 }
                               }
-
                             }}
                           >
                             {activeGridSelection?.warehouse_name == "OYC" ||
@@ -352,7 +416,11 @@ const MapAreaModal = ({
               </div>
             </div>
             <div className="col-md-12 my-4">
-              <img src={OcrImgBaseUrl+activeGridSelection?.ocr_image} className="w-50" alt="" />
+              <img
+                src={OcrImgBaseUrl + activeGridSelection?.ocr_image}
+                className="w-50"
+                alt=""
+              />
             </div>
           </div>
           <div className="modal-footer bg-label-primary py-2">
@@ -361,24 +429,6 @@ const MapAreaModal = ({
               className="btn btn-secondary"
               onClick={() => {
                 onClose2();
-                // setSelectedGrids((prev) => {
-                //   const locationCode = activeGridSelection?.new_location_code;
-                //   const SelectedAreas = gridArea;
-                //   if (!locationCode) return prev;
-                //   const existingValues = prev[locationCode] || [];
-                //   let updatedValues = [];
-                //   if (existingValues.includes(SelectedAreas)) {
-                //     updatedValues = existingValues.filter(
-                //       (v) => v !== SelectedAreas
-                //     );
-                //   } else {
-                //     updatedValues = [...existingValues, SelectedAreas];
-                //   }
-                //   return {
-                //     ...prev,
-                //     [locationCode]: updatedValues,
-                //   };
-                // });
               }}
             >
               Save
@@ -389,5 +439,257 @@ const MapAreaModal = ({
     </div>
   );
 };
+// const MapAreaModal = ({
+//   isVisible2,
+//   onClose2,
+//   activeGridSelection,
+//   setGridArea,
+//   gridArea,
+//   SelectedGrids,
+//   setSelectedGrids,
+// }) => {
+//   const modalRef = useRef();
+//   const [row, setRow] = useState(0);
+//   const [col, setCol] = useState(0);
+//   const [width, setWidth] = useState(0);
+//   const [height, setHeight] = useState(0);
+
+//   useEffect(() => {
+//     if (
+//       activeGridSelection?.warehouse_name == "Export" ||
+//       activeGridSelection?.warehouse_name == "Import"
+//     ) {
+//       setRow(4);
+//       setCol(5);
+//       setWidth("50px");
+//       setHeight("10vh");
+//     } else if (activeGridSelection?.warehouse_name == "OYC") {
+//       setRow(1);
+//       setCol(1);
+//       setWidth("250px");
+//       setHeight("40vh");
+//     } else if (activeGridSelection?.warehouse_name == "Mazzanine") {
+//       if (activeGridSelection?.area_boxes == "20") {
+//         setRow(4);
+//         setCol(5);
+//         setWidth("50px");
+//         setHeight("10vh");
+//       } else if (activeGridSelection?.area_boxes == "2") {
+//         setRow(1);
+//         setCol(2);
+//         setWidth("250px");
+//         setHeight("40vh");
+//       } else {
+//         setRow(1);
+//         setCol(1);
+//         setWidth("250px");
+//         setHeight("40vh");
+//       }
+//     } else {
+//       setRow(4);
+//       setCol(5);
+//       setWidth("50px");
+//       setHeight("10vh");
+//     }
+//   }, [activeGridSelection]);
+
+//   useEffect(() => {
+//     const handleKeyDown = (e) => {
+//       if (e.key === "Escape") onClose2();
+//     };
+
+//     if (isVisible2) {
+//       document.addEventListener("keydown", handleKeyDown);
+//     }
+
+//     return () => {
+//       document.removeEventListener("keydown", handleKeyDown);
+//     };
+//   }, [isVisible2, onClose2]);
+
+//   useEffect(() => {
+//     if (isVisible2 && modalRef.current) {
+//       modalRef.current.focus();
+//     }
+//   }, [isVisible2]);
+
+//   if (!isVisible2) return null;
+
+//   return (
+//     <div
+//       className="modal fade show d-block"
+//       tabIndex={-1}
+//       aria-modal="true"
+//       role="dialog"
+//     >
+//       <div
+//         className="modal-backdrop fade show"
+//         onClick={onClose2}
+//         style={{ zIndex: 1 }}
+//       ></div>
+//       <div
+//         className="modal-dialog"
+//         ref={modalRef}
+//         tabIndex={-1}
+//         style={{ zIndex: 99 }}
+//       >
+//         <div className="modal-content">
+//           <div className="modal-header bg-label-primary py-2">
+//             <h1 className="modal-title fs-5">
+//               {activeGridSelection?.location_code} Map
+//             </h1>
+//             <button
+//               type="button"
+//               className="btn-close"
+//               onClick={onClose2}
+//               aria-label="Close"
+//             />
+//           </div>
+//           <div className="modal-body">
+//             <h2>{activeGridSelection?.location_code}</h2>
+//             {/* <p>{JSON.stringify(gridArea)}</p>
+//             <p>{JSON.stringify(SelectedGrids)}</p> */}
+//             <div className="d-flex align-items-center justify-content-center">
+//               <div style={{ width: "260px" }}>
+//                 <div className="main bg-dark p-1 d-flex flex-column border-light border border-2 position-relative w-auto">
+//                   {[...Array(row)].map((_, rowIndex) => (
+//                     <div key={rowIndex} className="d-flex">
+//                       {[...Array(col)].map((_, colIndex) => {
+//                         const cellValue = rowIndex * 5 + colIndex + 1;
+//                         const isSelected = (
+//                           Array.isArray(gridArea) ? gridArea : []
+//                         ).includes(cellValue);
+//                         let color = "bg-secondary";
+//                         if (
+//                           activeGridSelection?.ocr_occupied_area &&
+//                           activeGridSelection?.ocr_occupied_area >= cellValue
+//                         ) {
+//                           color = "bg-info";
+//                         }
+//                         if (
+//                           activeGridSelection?.occupied_area &&
+//                           activeGridSelection?.warehouse_name != "OYC" &&
+//                           activeGridSelection?.occupied_area >= cellValue
+//                         ) {
+//                           color = "bg-primary";
+//                         }
+//                         if (isSelected && activeGridSelection?.warehouse_name != "OYC") {
+//                           color = "bg-success";
+//                         }
+//                         if (isSelected && activeGridSelection?.warehouse_name == "OYC") {
+//                           color = "bg-danger";
+//                         }
+
+//                         if (
+//                           SelectedGrids &&
+//                           SelectedGrids[activeGridSelection?.new_location_code]
+//                           && activeGridSelection?.warehouse_name != "OYC"
+//                         ) {
+//                           let sc =
+//                             SelectedGrids[
+//                               activeGridSelection?.new_location_code
+//                             ]?.includes(cellValue);
+//                           if (sc) {
+//                             color = "bg-danger";
+//                           }
+//                         }
+//                         return (
+//                           <button
+//                             key={colIndex}
+//                             className={`border border-light rounded text-white d-flex align-items-center justify-content-center bg-secondary
+//                                 ${color}
+//                                 `}
+//                             style={{
+//                               height: height,
+//                               width: width,
+//                               fontSize: "18px",
+//                             }}
+//                             onClick={() => {
+//                               let newLoc=activeGridSelection?.new_location_code;
+//                               if (
+//                                 SelectedGrids[newLoc] &&
+//                                 SelectedGrids[newLoc].includes(cellValue) &&
+//                                 !gridArea.includes(cellValue) && activeGridSelection?.warehouse_name != "OYC"
+//                               ) {
+//                                 alert('this is already selected.!');
+//                               }else{
+//                                 if (
+//                                   activeGridSelection?.warehouse_name == "OYC" ||
+//                                   activeGridSelection?.occupied_area < cellValue
+//                                 ) {
+//                                   setGridArea(cellValue);
+
+//                                   setSelectedGrids((prev) => {
+//                                     const locationCode =
+//                                       activeGridSelection?.new_location_code;
+//                                     const current = prev[locationCode] || [];
+
+//                                     const exists = current.includes(cellValue);
+//                                     const updated = exists
+//                                       ? current.filter((val) => val !== cellValue)
+//                                       : [...current, cellValue];
+
+//                                     return {
+//                                       ...prev,
+//                                       [locationCode]: updated,
+//                                     };
+//                                   });
+//                                 }
+//                               }
+
+//                             }}
+//                           >
+//                             {activeGridSelection?.warehouse_name == "OYC" ||
+//                             (activeGridSelection?.warehouse_name ==
+//                               "Mazzanine" &&
+//                               activeGridSelection?.area_boxes != "20")
+//                               ? activeGridSelection?.location_code
+//                               : cellValue}
+//                           </button>
+//                         );
+//                       })}
+//                     </div>
+//                   ))}
+//                 </div>
+//               </div>
+//             </div>
+//             <div className="col-md-12 my-4">
+//               <img src={OcrImgBaseUrl+activeGridSelection?.ocr_image} className="w-50" alt="" />
+//             </div>
+//           </div>
+//           <div className="modal-footer bg-label-primary py-2">
+//             <button
+//               type="button"
+//               className="btn btn-secondary"
+//               onClick={() => {
+//                 onClose2();
+//                 // setSelectedGrids((prev) => {
+//                 //   const locationCode = activeGridSelection?.new_location_code;
+//                 //   const SelectedAreas = gridArea;
+//                 //   if (!locationCode) return prev;
+//                 //   const existingValues = prev[locationCode] || [];
+//                 //   let updatedValues = [];
+//                 //   if (existingValues.includes(SelectedAreas)) {
+//                 //     updatedValues = existingValues.filter(
+//                 //       (v) => v !== SelectedAreas
+//                 //     );
+//                 //   } else {
+//                 //     updatedValues = [...existingValues, SelectedAreas];
+//                 //   }
+//                 //   return {
+//                 //     ...prev,
+//                 //     [locationCode]: updatedValues,
+//                 //   };
+//                 // });
+//               }}
+//             >
+//               Save
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 
 export { MapModal, MapAreaModal };

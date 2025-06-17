@@ -175,15 +175,6 @@ export default function ImportMap({
         (data) => data.camera_locations === locationId
       );
 
-      if(clickedData.occupied_area==20){
-        onClose();
-        Swal.fire({
-          icon: "warning",
-          text: `This Area Occupied`,
-          timer: 3000
-        });
-      }else{
-
         setSelectedGrids((prev) => {
           if (prev.hasOwnProperty(clickedData.new_location_code)) {
             return prev;
@@ -197,7 +188,6 @@ export default function ImportMap({
         setActiveGridSelection(clickedData); 
         onClose();
         setModalVisible2(true);              
-      }
     },
     [Data]
   );
@@ -224,23 +214,86 @@ export default function ImportMap({
           document.removeEventListener("click", handleGridClick)
         );
 
+        // const total_area = data?.total_area ?? 20;
+        // const occupied = data?.occupied_area ?? 0;
+        // const ocr_occupied = data?.ocr_occupied_area ?? 0;
+
+        // areaSum += Number(total_area);
+
+        // let myGrid = document.getElementById(String(data.camera_locations));
+        // if (myGrid) {
+        //     myGrid.textContent = data.location_code ?? data.camera_locations;
+        // }
+
+        // for (let i = 0; i < ocr_occupied; i++) {
+        //   setBackgroundColor(`${data.camera_locations}_${i + 1}`, "#00b0c4");
+        // }
+        // for (let i = 0; i < occupied; i++) {
+        //   setBackgroundColor(`${data.camera_locations}_${i + 1}`, "#8f51dd");
+        // }
+
+
         const total_area = data?.total_area ?? 20;
         const occupied = data?.occupied_area ?? 0;
         const ocr_occupied = data?.ocr_occupied_area ?? 0;
+        const grid_allocation = JSON.parse(data?.grid_allocation) ?? {};
+        const destuffing_data = data?.destuffing_data ?? [];
+
+        const ocr_grid_wise_occupied =
+          JSON.parse(data?.ocr_grid_wise_occupied) ?? {};
+        const hold_cargo_area = data?.hold_cargo_area ?? 0;
 
         areaSum += Number(total_area);
 
         let myGrid = document.getElementById(String(data.camera_locations));
         if (myGrid) {
-            myGrid.textContent = data.location_code ?? data.camera_locations;
+          myGrid.textContent = data.location_code ?? data.camera_locations;
         }
 
-        for (let i = 0; i < ocr_occupied; i++) {
-          setBackgroundColor(`${data.camera_locations}_${i + 1}`, "#00b0c4");
+        if (ocr_occupied > 0) {
+          {
+            Object.entries(ocr_grid_wise_occupied?.data).forEach(
+              ([key, value]) => {
+                if (!value) return;
+                key = Number(key);
+                if (value == "F") {
+                  setBackgroundColor(
+                    `${data.camera_locations}_${key + 1}`,
+                    "#00b0c4"
+                  );
+                }
+              }
+            );
+          }
         }
-        for (let i = 0; i < occupied; i++) {
-          setBackgroundColor(`${data.camera_locations}_${i + 1}`, "#8f51dd");
+
+        if (ocr_occupied > 0 && occupied > 0 &&  destuffing_data?.length>0) {
+          {
+            Object.entries(grid_allocation).forEach(([key, value]) => {
+              if (!value) return;
+              let parsedValues = [];
+              try {
+                parsedValues = JSON.parse(value);
+              } catch (error) {
+                return;
+              }
+              if (!Array.isArray(parsedValues)) {
+                try {
+                  parsedValues = JSON.parse(parsedValues);
+                } catch (error) {
+                  return;
+                }
+              }
+
+              parsedValues.forEach((v) => {
+                setBackgroundColor(`${data.camera_locations}_${v}`, "#8f51dd");
+              });
+            });
+          }
         }
+        // for (let i = 0; i < hold_cargo_area; i++) {
+        //   setBackgroundColor(`${data.camera_locations}_${i + 1}`, "#dd5187");
+        // }
 
         if(SelectedGrids && SelectedGrids[data.new_location_code]){
 

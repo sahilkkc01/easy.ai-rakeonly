@@ -153,14 +153,6 @@ export default function ExportMap({
       );
 
       if (clickedData) {
-        if (clickedData.occupied_area == 20) {
-          onClose();
-          Swal.fire({
-            icon: "warning",
-            text: `This Area Occupied`,
-            timer: 3000,
-          });
-        } else {
           setSelectedGrids((prev) => {
             if (prev.hasOwnProperty(clickedData.new_location_code)) {
               return prev;
@@ -175,7 +167,6 @@ export default function ExportMap({
           onClose();
           setModalVisible2(true);
         }
-      }
     },
     [Data]
   );
@@ -190,7 +181,7 @@ export default function ExportMap({
   useEffect(() => {
     if (!Array.isArray(Data)) return;
 
-    let areaSum = 0;
+    let TotalAreaSum = 0;
     const cleanup = [];
 
     const updateColors = () => {
@@ -205,7 +196,10 @@ export default function ExportMap({
           ocr_occupied_area = 0,
         } = data;
 
-        // Set display text
+        const grid_allocation = JSON.parse(data?.grid_allocation) ?? {};
+        const carting_data = data?.carting_data ?? [];
+        const ocr_grid_wise_occupied =
+          JSON.parse(data?.ocr_grid_wise_occupied) ?? {};
         const myGrid = document.getElementById(
           String(location_code ?? camera_locations)
         );
@@ -213,32 +207,64 @@ export default function ExportMap({
           myGrid.textContent = location_code ?? camera_locations;
         }
 
-        // Set background colors
-        for (let i = 0; i < ocr_occupied_area; i++) {
-          setBackgroundColor(
-            `${location_code?.toLowerCase()}_${i + 1}`,
-            "#00b0c4"
-          );
-        }
-        for (let i = 0; i < occupied_area; i++) {
-          setBackgroundColor(
-            `${location_code?.toLowerCase()}_${i + 1}`,
-            "#8f51dd"
-          );
-        }
-        if(SelectedGrids && SelectedGrids[data.new_location_code]){
 
-          SelectedGrids[data.new_location_code]?.map((sc)=>{
-
-            setBackgroundColor(`${location_code?.toLowerCase()}_${sc}`, "#ff4c52");
+        if (ocr_occupied_area > 0) {
+          {
+            Object.entries(ocr_grid_wise_occupied?.data).forEach(
+              ([key, value]) => {
+                if (!value) return;
+                key = Number(key);
+                if (value == "F") {
+                  setBackgroundColor(
+                    `${location_code?.toLowerCase()}_${key + 1}`,
+                    "#00b0c4"
+                  );
+                }
+              }
+            );
           }
-          );
         }
 
-        areaSum += Number(total_area);
+        if (
+          ocr_occupied_area > 0 &&
+          occupied_area > 0 &&
+          carting_data?.length > 0
+        ) {
+          {
+            Object.entries(grid_allocation).forEach(([key, value]) => {
+              if (!value) return;
+              let parsedValues = [];
+              if (Array.isArray(value)) {
+                parsedValues = value;
+              }
+              if (!Array.isArray(value)) {
+                try {
+                  parsedValues = JSON.parse(value);
+                } catch (error) {
+                  return;
+                }
+              }
+
+              if (!Array.isArray(parsedValues)) {
+                try {
+                  parsedValues = JSON.parse(parsedValues);
+                } catch (error) {
+                  return;
+                }
+              }
+              parsedValues.forEach((v) => {
+                setBackgroundColor(
+                  `${location_code?.toLowerCase()}_${v}`,
+                  "#8f51dd"
+                );
+              });
+            });
+          }
+        }
+        TotalAreaSum += Number(total_area);
       });
 
-      setTotalArea(areaSum);
+      setTotalArea(TotalAreaSum);
     };
 
     document.addEventListener("click", handleGridClick);
