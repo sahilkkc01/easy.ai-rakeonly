@@ -55,7 +55,6 @@ export default function Login() {
     setLoading(true);
     const formData = new FormData(e.target);
     const formValues = Object.fromEntries(formData.entries());
-    // console.log(formValues);
     if (formValues.user_name && formValues.password) {
       try {
         const response = await axios.post(`${ApiBaseUrl}user/login`, formValues);

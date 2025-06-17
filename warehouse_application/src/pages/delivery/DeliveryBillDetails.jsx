@@ -354,9 +354,7 @@ const GridComponent = ({ index, data }) => {
       } else {
         weightInput.value = parseFloat(Per_package_weight) || 0;
       }
-    } else {
-      console.log("Package weight input not found!");
-    }
+    } 
 
     const currentGrids = gridData2[key];
 

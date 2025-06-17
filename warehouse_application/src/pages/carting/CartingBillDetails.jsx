@@ -342,7 +342,6 @@ export default function CartingBillDetails() {
 
   const GridComponents = ({ index }) => {
     const gridInputs = allGridInputs[index];
-    console.log(gridInputs);
     return (
       <div className="col-md-4 col-6">
         <label className="form-label">Grid Location & Area (SQM)</label>
@@ -544,8 +543,6 @@ export default function CartingBillDetails() {
         } else if (pkg == 0) {
           weightInput.value = 0;
         }
-      } else {
-        console.log("Package weight input not found!");
       }
     } else {
       for (let i = 0; i < TotalTruck; i++) {
@@ -563,9 +560,7 @@ export default function CartingBillDetails() {
               } else if (pkgValue == 0) {
                 weightInput.value = 0;
               }
-            } else {
-              console.log("Package weight input not found!");
-            }
+            } 
           }
         } else {
           let weightInput = document.getElementById(`pkgs_weight_${i}`);
@@ -578,9 +573,7 @@ export default function CartingBillDetails() {
             } else if (pkgValue == 0) {
               weightInput.value = 0;
             }
-          } else {
-            console.log("Package weight input not found!");
-          }
+          } 
         }
       }
     }
@@ -594,9 +587,7 @@ export default function CartingBillDetails() {
       if (weightInput) {
         Wh += Number(weightInput.value);
         setWeight(Wh);
-      } else {
-        console.log("Package weight input not found!");
-      }
+      } 
     }
   };
 

@@ -61,7 +61,6 @@ const compressImage = (file, targetSize = 50 * 1024) => {
                 lastModified: Date.now(),
               });
 
-              console.log("Final File Name:", compressedFile.name); // Debug
               resolve(compressedFile);
             },
             "image/jpeg",

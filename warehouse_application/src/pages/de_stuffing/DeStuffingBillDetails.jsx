@@ -144,7 +144,6 @@ export default function DeStuffingBillDetails() {
       const response = await axios.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      // console.log(response.data);
       if (response?.data?.status === "success") {
         Swal.fire({
           icon: response?.data?.status,
@@ -387,9 +386,7 @@ export default function DeStuffingBillDetails() {
       } else {
         weightInput.value = parseFloat(Per_package_weight) || 0;
       }
-    } else {
-      console.log("Package weight input not found!");
-    }
+    } 
   };
 
   const handleFinalSubmit = async () => {
@@ -400,7 +397,6 @@ export default function DeStuffingBillDetails() {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      // console.log(response.data);
       if (response?.data?.status === "success") {
         Swal.fire({
           icon: response?.data?.status,

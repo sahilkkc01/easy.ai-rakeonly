@@ -22,7 +22,6 @@ export default function Profile() {
     e.preventDefault();
     const formData = new FormData(e.target);
     const formValues = Object.fromEntries(formData.entries());
-    console.log(formValues);
     if (formValues.id && formValues.user_name && formValues.new_password) {
       setLoading(true);
       try {

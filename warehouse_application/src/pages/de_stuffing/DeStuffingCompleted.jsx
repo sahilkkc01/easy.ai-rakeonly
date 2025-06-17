@@ -28,8 +28,6 @@ export default function DeStuffingCompleted() {
       const response = await axios.get(
         `${ApiBaseUrl}de_stuffing/live/data`
       );
-      // console.log("API Response:", response.data); // Debugging
-
       if (response.data && Array.isArray(response.data.completed_data)) {
         setData(response.data.completed_data); // Ensure we're setting an array
         setCompletedData(response.data.completed_data);
@@ -70,7 +68,6 @@ export default function DeStuffingCompleted() {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      // console.log(response.data);
       if (response?.data?.status === "success") {
         fetchData();
         Swal.fire({

@@ -238,7 +238,6 @@ export default function StuffingBillDetails() {
       const response = await axios.post(url, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      // console.log(response.data);
       if (response?.data?.status == "success") {
         Swal.fire({
           icon: response?.data?.status,
@@ -389,12 +388,9 @@ export default function StuffingBillDetails() {
       } else {
         weightInput.value = parseFloat(Per_package_weight) || 0;
       }
-    } else {
-      console.log("Package weight input not found!");
     }
 
     const currentGrids = gridData2[key];
-    console.log(currentGrids);
     if (currentGrids && currentGrids.length > 0 && pkg) {
       const updatedGrids = currentGrids.map((item) => {
         const totalPkg = item.total_pkg || 0;
