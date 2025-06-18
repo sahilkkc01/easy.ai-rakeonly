@@ -7,6 +7,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Header from "./main/header";
 import Select from "react-select";
+import { ApiBaseUrl } from "../Config";
 
 export default function RakeOutWordWTR() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -49,9 +50,11 @@ export default function RakeOutWordWTR() {
     // const url = `https://ctas.live/backend/api/rake/outword/wtr/data`;
     let url;
     if (rakeId) {
-      url = `https://ctas.live/backend/api/rake/outword/wtr/data?id=${rakeId}`;
+      // url = `https://ctas.live/backend/api/rake/outword/wtr/data?id=${rakeId}`;
+      url = `${ApiBaseUrl}/rake/outword/wtr/data?id=${rakeId}`;
     } else {
-      url = `https://ctas.live/backend/api/rake/outword/wtr/data`;
+      // url = `https://ctas.live/backend/api/rake/outword/wtr/data`;
+      url = `${ApiBaseUrl}/rake/outword/wtr/data`;
     }
     try {
       const response = await axios.get(url, {
@@ -149,7 +152,8 @@ export default function RakeOutWordWTR() {
       wagon_id: id,
       rake_id: ModalRakeID,
     };
-    const url = `https://ctas.live/backend/api/rake/wtr/wagon/delete`;
+    // const url = `https://ctas.live/backend/api/rake/wtr/wagon/delete`;
+    const url = `${ApiBaseUrl}/rake/wtr/wagon/delete`;
     try {
       const response = await axios.post(url, payload, {
         headers: { "Content-Type": "application/json" },
@@ -182,7 +186,8 @@ export default function RakeOutWordWTR() {
     const formData = new FormData(e.target);
     let formValues = Object.fromEntries(formData.entries());
 
-    const url = `https://ctas.live/backend/api/rake/wtr/wagon/add`;
+    // const url = `https://ctas.live/backend/api/rake/wtr/wagon/add`;
+    const url = `${ApiBaseUrl}/rake/wtr/wagon/add`;
     try {
       const response = await axios.post(url, formValues, {
         headers: { "Content-Type": "application/json" },
@@ -215,7 +220,8 @@ export default function RakeOutWordWTR() {
       wagon_id: wagon_id,
     };
 
-    const url = `https://ctas.live/backend/api/rake/outword/wtr/wagon/assign`;
+    // const url = `https://ctas.live/backend/api/rake/outword/wtr/wagon/assign`;
+    const url = `${ApiBaseUrl}/rake/outword/wtr/wagon/assign`;
     try {
       const response = await axios.post(url, formValues, {
         headers: { "Content-Type": "application/json" },
@@ -240,7 +246,8 @@ export default function RakeOutWordWTR() {
       wagon_id: wagon_id,
     };
 
-    const url = `https://ctas.live/backend/api/rake/outword/wtr/wagon/remove`;
+    // const url = `https://ctas.live/backend/api/rake/outword/wtr/wagon/remove`;
+    const url = `${ApiBaseUrl}/rake/outword/wtr/wagon/remove`;
     try {
       const response = await axios.post(url, formValues, {
         headers: { "Content-Type": "application/json" },
@@ -264,7 +271,8 @@ export default function RakeOutWordWTR() {
     const formData = new FormData(e.target);
     let formValues = Object.fromEntries(formData.entries());
 
-    const url = `https://ctas.live/backend/api/rake/wagon/create_update`;
+    // const url = `https://ctas.live/backend/api/rake/wagon/create_update`;
+    const url = `${ApiBaseUrl}/rake/wagon/create_update`;
     try {
       const response = await axios.post(url, formValues, {
         headers: { "Content-Type": "application/json" },
@@ -291,7 +299,8 @@ export default function RakeOutWordWTR() {
     const formData = new FormData(e.target);
     let formValues = Object.fromEntries(formData.entries());
 
-    const url = `https://ctas.live/backend/api/rake/outword/wagon/s_no_update`;
+    // const url = `https://ctas.live/backend/api/rake/outword/wagon/s_no_update`;
+    const url = `${ApiBaseUrl}/rake/outword/wagon/s_no_update`;
     try {
       const response = await axios.post(url, formValues, {
         headers: { "Content-Type": "application/json" },

@@ -5,6 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { formatToDateTime } from "./main/formatToDateTime";
 import { Link } from "react-router-dom";
+import { ApiBaseUrl } from "../Config";
 // Link
 
 function Rst() {
@@ -18,7 +19,8 @@ function Rst() {
   const GetData = async () => {
     // setLoading(true);
     // const url = `http://192.168.1.4:8000/api/get/rst/application/jobs?equipment_id=${equipment_id}`;
-    const url = `https://ctas.live/backend/api/get/rst/application/jobs/v2?equipment_id=${equipment_id}`;
+    // const url = `https://ctas.live/backend/api/get/rst/application/jobs/v2?equipment_id=${equipment_id}`;
+    const url = `${ApiBaseUrl}/get/rst/application/jobs/v2?equipment_id=${equipment_id}`;
     try {
       const response = await axios.get(url);
       if (response.data && response.data.status == "success") {
@@ -67,7 +69,8 @@ function Rst() {
 
   const GetEquipment = async () => {
     setLoading(true);
-    let url = `https://ctas.live/backend/api/get/equipments`;
+    // let url = `https://ctas.live/backend/api/get/equipments`;
+    let url = `${ApiBaseUrl}/get/equipments`;
 
     try {
       const response = await axios.get(url);

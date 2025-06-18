@@ -10,6 +10,7 @@ import "../Pages.css";
 import { compressImage } from "./main/formatToDateTime";
 import EIRMain from "./EIRMain";
 import { useReactToPrint } from "react-to-print";
+import { ApiBaseUrl } from "../Config";
 
 export default function IndexR() {
   const NewUser = localStorage.getItem("user");
@@ -36,7 +37,8 @@ export default function IndexR() {
   const fetchData = async () => {
     setLoading(true);
     let url;
-    url = `https://ctas.live/backend/api/rake/survey/train/data/inword`;
+    // url = `https://ctas.live/backend/api/rake/survey/train/data/inword`;
+    url = `${ApiBaseUrl}/rake/survey/train/data/inword`;
     if (train) {
       url += `/${train}`;
     }
@@ -94,7 +96,8 @@ export default function IndexR() {
   };
 
   const submitData = async (payload) => {
-    const url = `https://ctas.live/backend/api/rake/survey/train/data/inword/post`;
+    // const url = `https://ctas.live/backend/api/rake/survey/train/data/inword/post`;
+    const url = `${ApiBaseUrl}/rake/survey/train/data/inword/post`;
 
     try {
       const response = await axios.post(url, payload, {
@@ -211,7 +214,8 @@ export default function IndexR() {
       }
     }
 
-    const url = `https://ctas.live/backend/api/text/extract/vision`;
+    // const url = `https://ctas.live/backend/api/text/extract/vision`;
+    const url = `${ApiBaseUrl}/text/extract/vision`;
 
     try {
       const response = await axios.post(url, formData, {

@@ -9,6 +9,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import Swal from "sweetalert2";
+import { ApiBaseUrl } from "../../../../src/Config";
 
 export default function Profile() {
   const [oldPasswordShow, setOldPasswordShow] = useState(false);
@@ -24,9 +25,11 @@ export default function Profile() {
     const formValues = Object.fromEntries(formData.entries());
     if (formValues.id && formValues.user_name && formValues.new_password) {
       setLoading(true);
+      // let url = `https://ctas.live/backend/api/change/user/password`
+      let url = `${ApiBaseUrl}/change/user/password`
+
       try {
-        const response = await axios.post(
-          "https://ctas.live/backend/api/change/user/password",
+        const response = await axios.post(url,
           formValues
         );
 

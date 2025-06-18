@@ -4,6 +4,7 @@ import Nav from "./main/nav";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { ApiBaseUrl } from "../Config";
 
 export default function Inventory() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -28,7 +29,8 @@ export default function Inventory() {
 
     console.log(formEntries);
 
-    const url = `https://ctas.live/backend/api/yard/inventory/update`;
+    // const url = `https://ctas.live/backend/api/yard/inventory/update`;
+    const url = `${ApiBaseUrl}/yard/inventory/update`;
 
     try {
       const response = await axios.post(url, formEntries, {
@@ -66,7 +68,8 @@ export default function Inventory() {
 
   const GetData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/yard/inventory/data?container_no=${containerNo}`;
+    // const url = `https://ctas.live/backend/api/get/yard/inventory/data?container_no=${containerNo}`;
+    const url = `${ApiBaseUrl}/get/yard/inventory/data?container_no=${containerNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -95,7 +98,8 @@ export default function Inventory() {
   };
   const GetStackData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/yard/stack/data`;
+    // const url = `https://ctas.live/backend/api/get/yard/stack/data`;
+    const url = `${ApiBaseUrl}/get/yard/stack/data`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -173,7 +177,8 @@ export default function Inventory() {
 
   const GetUpdatedData = async (page = 1) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/yard/inventory/updated/data?page=${page}`;
+    // const url = `https://ctas.live/backend/api/get/yard/inventory/updated/data?page=${page}`;
+    const url = `${ApiBaseUrl}/get/yard/inventory/updated/data?page=${page}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },

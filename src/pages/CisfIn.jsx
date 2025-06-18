@@ -6,6 +6,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Header from "./main/header";
 import { formatToDateTime } from "./main/formatToDateTime";
+import { ApiBaseUrl, ImgBaseUrl, OcrImgBaseUrl } from "../Config";
 
 export default function CisfIn() {
   const navigate = useNavigate();
@@ -28,7 +29,8 @@ export default function CisfIn() {
 
   const GetData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/gate/cisf/data?type=${type}&gate_name=${gate_name}`;
+    // const url = `https://ctas.live/backend/api/gate/cisf/data?type=${type}&gate_name=${gate_name}`;
+    const url = `${ApiBaseUrl}/gate/cisf/data?type=${type}&gate_name=${gate_name}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -57,7 +59,8 @@ export default function CisfIn() {
 
   const handleApprove = async (id, type) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/gate/cisf/status/update`;
+    // const url = `https://ctas.live/backend/api/gate/cisf/status/update`;
+    const url = `${ApiBaseUrl}/gate/cisf/status/update`;
     let payload = {
       id: id,
       type: type,
@@ -167,7 +170,7 @@ export default function CisfIn() {
                                     {row.vehicle_no}
                                     <img
                                       src={
-                                        "https://ctas.live/ocr_backend/uploads/" +
+                                        `${OcrImgBaseUrl}/uploads/` +
                                         row.ocr_vehicle_data?.vehicle_no_img
                                       }
                                       alt=""
@@ -176,7 +179,7 @@ export default function CisfIn() {
                                       data-bs-target="#exampleModal"
                                       onClick={() =>
                                         setImageView(
-                                          "https://ctas.live/ocr_backend/uploads/" +
+                                          `${OcrImgBaseUrl}/uploads/` +
                                             row.ocr_vehicle_data?.vehicle_no_img
                                         )
                                       }
@@ -197,16 +200,15 @@ export default function CisfIn() {
                                         {row.seal_1_no}
                                         <img
                                           src={
-                                            "https://ctas.live/backend/Seal/" +
+                                            `${ImgBaseUrl}uploads/` +
                                             row.seal_1_image
                                           }
-                                          alt=""
                                           style={{ width: "50px" }}
                                           data-bs-toggle="modal"
                                           data-bs-target="#exampleModal"
                                           onClick={() =>
                                             setImageView(
-                                              "https://ctas.live/backend/Seal/" +
+                                              `${ImgBaseUrl}uploads/` +
                                                 row.seal_1_image
                                             )
                                           }
@@ -219,7 +221,7 @@ export default function CisfIn() {
                                         {row.seal_2_no}
                                         <img
                                           src={
-                                            "https://ctas.live/backend/Seal/" +
+                                            `${ImgBaseUrl}uploads/` +
                                             row.seal_2_image
                                           }
                                           alt=""
@@ -228,7 +230,7 @@ export default function CisfIn() {
                                           data-bs-target="#exampleModal"
                                           onClick={() =>
                                             setImageView(
-                                              "https://ctas.live/backend/Seal/" +
+                                              `${ImgBaseUrl}uploads/` +
                                                 row.seal_2_image
                                             )
                                           }
@@ -247,7 +249,7 @@ export default function CisfIn() {
                                           {row.seal_2_no}
                                           <img
                                             src={
-                                              "https://ctas.live/backend/uploads/" +
+                                              `${ImgBaseUrl}uploads/` +
                                               row.empty_container_image_1
                                             }
                                             alt=""
@@ -256,7 +258,7 @@ export default function CisfIn() {
                                             data-bs-target="#exampleModal"
                                             onClick={() =>
                                               setImageView(
-                                                "https://ctas.live/backend/uploads/" +
+                                                `${ImgBaseUrl}uploads/` +
                                                   row.empty_container_image_1
                                               )
                                             }
@@ -295,7 +297,7 @@ export default function CisfIn() {
                                         {row.container_no}
                                         <img
                                           src={
-                                            "https://ctas.live/ocr_backend/uploads/" +
+                                            `${OcrImgBaseUrl}uploads/` +
                                             row.ocr_container_data
                                               ?.container_image
                                           }
@@ -305,7 +307,7 @@ export default function CisfIn() {
                                           data-bs-target="#exampleModal"
                                           onClick={() =>
                                             setImageView(
-                                              "https://ctas.live/ocr_backend/uploads/" +
+                                              `${OcrImgBaseUrl}uploads/` +
                                                 row.ocr_container_data
                                                   ?.container_image
                                             )
@@ -313,7 +315,7 @@ export default function CisfIn() {
                                         />
                                         <img
                                           src={
-                                            "https://ctas.live/ocr_backend/uploads/" +
+                                            `${OcrImgBaseUrl}uploads/` +
                                             row.container_image
                                           }
                                           alt=""
@@ -322,7 +324,7 @@ export default function CisfIn() {
                                           data-bs-target="#exampleModal"
                                           onClick={() =>
                                             setImageView(
-                                              "https://ctas.live/ocr_backend/uploads/" +
+                                              `${OcrImgBaseUrl}uploads/` +
                                                 row.container_image
                                             )
                                           }
@@ -347,7 +349,7 @@ export default function CisfIn() {
                                     <div className="mb-2">
                                       <img
                                         src={
-                                          "https://ctas.live/backend/Seal/" +
+                                          `${ImgBaseUrl}/uploads/` +
                                           row?.driver_photo
                                         }
                                         alt=""
@@ -356,7 +358,7 @@ export default function CisfIn() {
                                         data-bs-target="#exampleModal"
                                         onClick={() =>
                                           setImageView(
-                                            "https://ctas.live/backend/Seal/" +
+                                            `${ImgBaseUrl}/uploads/`+
                                               row?.driver_photo
                                           )
                                         }

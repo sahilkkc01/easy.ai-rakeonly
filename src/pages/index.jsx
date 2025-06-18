@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "./main/header";
 import { compressImage, formatToDateTimeLocal } from "./main/formatToDateTime";
+import { ApiBaseUrl } from "../Config";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -129,7 +130,8 @@ export default function Index() {
     const newDate = new Date();
     const date = formatToDateTimeLocal(newDate);
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/permit_detail/${decodedText}?created_by=${user.id}&gate_name=${GateName}&scan_time=${date}&type=${Type}`;
+    // const url = `https://ctas.live/backend/api/get/permit_detail/${decodedText}?created_by=${user.id}&gate_name=${GateName}&scan_time=${date}&type=${Type}`;
+    const url = `${ApiBaseUrl}/get/permit_detail/${decodedText}?created_by=${user.id}&gate_name=${GateName}&scan_time=${date}&type=${Type}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -194,7 +196,8 @@ export default function Index() {
   const handlePostSubmit = async (payload) => {
     setLoading(true);
 
-    const url = `https://ctas.live/backend/api/gate_transection/update`;
+    // const url = `https://ctas.live/backend/api/gate_transection/update`;
+    const url = `${ApiBaseUrl}/gate_transection/update`;
     try {
       const response = await axios.post(url, payload, {
         headers: { "Content-Type": "multipart/form-data" },

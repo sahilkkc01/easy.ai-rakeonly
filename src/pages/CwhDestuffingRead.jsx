@@ -8,6 +8,7 @@ import LinksButtons from "./main/LinksButtons";
 import TallySheetDeStuffingFCL from "./TallySheetDeStuffingFCL";
 import Header from "./main/header";
 import { formatToDateTimeLocal } from "./main/formatToDateTime";
+import { ApiBaseUrl } from "../Config";
 
 export default function CWHDestuffingRead() {
   const [Data, setData] = useState([]);
@@ -19,7 +20,8 @@ export default function CWHDestuffingRead() {
   const [DisAbled, setDisAbled] = useState(false);
 
   const GetData = async () => {
-    const url = `https://ctas.live/backend/api/get/de_stuffing_data/FCL/${ContainerNo}`;
+    // const url = `https://ctas.live/backend/api/get/de_stuffing_data/FCL/${ContainerNo}`;
+    const url = `${ApiBaseUrl}/get/de_stuffing_data/FCL/${ContainerNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -55,7 +57,8 @@ export default function CWHDestuffingRead() {
   };
 
   const UpdateData = async (upperCaseFormValues) => {
-    const url = `https://ctas.live/backend/api/de_stuffing_data/update`;
+    // const url = `https://ctas.live/backend/api/de_stuffing_data/update`;
+    const url = `${ApiBaseUrl}/de_stuffing_data/update`;
     try {
       const response = await axios.post(url, upperCaseFormValues, {
         headers: { "Content-Type": "application/json" },

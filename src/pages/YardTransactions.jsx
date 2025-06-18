@@ -5,6 +5,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import DownloadExcel from "./main/DownloadExcel";
 import Header from "./main/header";
+import { ApiBaseUrl } from "../Config";
 
 export default function YardTransactions() {
   const NewUser = localStorage.getItem("user");
@@ -98,7 +99,8 @@ export default function YardTransactions() {
   };
 
   const UpdateData = async (upperCaseFormValues) => {
-    const url = `https://ctas.live/backend/api/yard/container/transaction/post`;
+    // const url = `https://ctas.live/backend/api/yard/container/transaction/post`;
+    const url = `${ApiBaseUrl}/yard/container/transaction/post`;
     try {
       const response = await axios.post(url, upperCaseFormValues, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -146,7 +148,8 @@ export default function YardTransactions() {
   };
 
   const getData = async (formValues) => {
-    const url = `https://ctas.live/backend/api/yard/container/transaction/data?created_by=${user.id}&start=${formValues.start}&end=${formValues.end}`;
+    // const url = `https://ctas.live/backend/api/yard/container/transaction/data?created_by=${user.id}&start=${formValues.start}&end=${formValues.end}`;
+    const url = `${ApiBaseUrl}/yard/container/transaction/data?created_by=${user.id}&start=${formValues.start}&end=${formValues.end}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -210,7 +213,8 @@ export default function YardTransactions() {
 
   const getLastData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/yard/container/last/transaction/data?created_by=${user.id}`;
+    // const url = `https://ctas.live/backend/api/yard/container/last/transaction/data?created_by=${user.id}`;
+    const url = `${ApiBaseUrl}/yard/container/last/transaction/data?created_by=${user.id}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },

@@ -6,6 +6,7 @@ import Nav from "./main/nav";
 import Footer from "./main/footer";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { ApiBaseUrl } from "../Config";
 
 const containerStyle = {
     width: "96%",
@@ -36,7 +37,8 @@ const GoogleMapComponent = () => {
     const GetData = async () => {
         // setLoading(true);
         // const url = `http://192.168.1.4:8000/api/get/rst/application/jobs?equipment_id=${equipment_id}`;
-        const url = `https://ctas.live/backend/api/get/rst/application/jobs?equipment_id=${equipment_id}`;
+        // const url = `https://ctas.live/backend/api/get/rst/application/jobs?equipment_id=${equipment_id}`;
+        const url = `${ApiBaseUrl}/get/rst/application/jobs?equipment_id=${equipment_id}`;
         try {
           const response = await axios.get(url);
           if (response.data && response.data.status == "success") {

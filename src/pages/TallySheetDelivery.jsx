@@ -6,6 +6,7 @@ import {
   formatToDateTime,
   formatToDateTimeLocal,
 } from "./main/formatToDateTime";
+import { ApiBaseUrl } from "../Config";
 
 // const TallySheetDelivery = ({ Data }) => {
 const TallySheetDelivery = () => {
@@ -57,7 +58,8 @@ const TallySheetDelivery = () => {
   }, [GpmNo]);
 
   const GetData = async () => {
-    const url = `https://ctas.live/backend/api/get/delivery/${GpmNo}`;
+    // const url = `https://ctas.live/backend/api/get/delivery/${GpmNo}`;
+    const url = `${ApiBaseUrl}/get/delivery/${GpmNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -130,7 +132,8 @@ const TallySheetDelivery = () => {
 
   const UpdateData = async (upperCaseFormValues) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/delivery/update`;
+    // const url = `https://ctas.live/backend/api/delivery/update`;
+    const url = `${ApiBaseUrl}/delivery/update`;
     try {
       const response = await axios.post(url, upperCaseFormValues, {
         headers: { "Content-Type": "application/json" },

@@ -7,6 +7,7 @@ import "../Pages.css";
 import LinksButtons from "./main/LinksButtons";
 import Header from "./main/header";
 import { formatToDateTimeLocal } from "./main/formatToDateTime";
+import { ApiBaseUrl } from "../Config";
 
 export default function CWHStuffingRead() {
   const [Data, setData] = useState([]);
@@ -23,7 +24,8 @@ export default function CWHStuffingRead() {
   }, []);
 
   const GetData = async () => {
-    const url = `https://ctas.live/backend/api/get/stuffing_data/LCL/${ContainerNo}`;
+    // const url = `https://ctas.live/backend/api/get/stuffing_data/LCL/${ContainerNo}`;
+    const url = `${ApiBaseUrl}/get/stuffing_data/LCL/${ContainerNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -67,7 +69,8 @@ export default function CWHStuffingRead() {
   const UpdateData = async (upperCaseFormValues) => {
 
     // console.log(upperCaseFormValues.id);
-    const url = `https://ctas.live/backend/api/stuffing_data/update`;
+    // const url = `https://ctas.live/backend/api/stuffing_data/update`;
+    const url = `${ApiBaseUrl}/stuffing_data/update`;
     try {
       const response = await axios.post(url, upperCaseFormValues, {
         headers: { "Content-Type": "application/json" },

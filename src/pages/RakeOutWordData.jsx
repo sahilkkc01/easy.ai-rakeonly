@@ -6,6 +6,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Header from "./main/header";
+import { ApiBaseUrl } from "../Config";
 
 export default function RakeOutWordData() {
   const { type } = useParams();
@@ -41,7 +42,8 @@ export default function RakeOutWordData() {
 
   const GetDataNewPendency = async (NewPendencyPort, NewPendencyType) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/RakeOutWord?port_no=${NewPendencyPort}&type=${NewPendencyType}`;
+    // const url = `https://ctas.live/backend/api/get/RakeOutWord?port_no=${NewPendencyPort}&type=${NewPendencyType}`;
+    const url = `${ApiBaseUrl}/get/RakeOutWord?port_no=${NewPendencyPort}&type=${NewPendencyType}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -86,7 +88,8 @@ export default function RakeOutWordData() {
 
   const GetData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/RakeOutWord?port_no=${portNo}&type=${type}`;
+    // const url = `https://ctas.live/backend/api/get/RakeOutWord?port_no=${portNo}&type=${type}`;
+    const url = `${ApiBaseUrl}/get/RakeOutWord?port_no=${portNo}&type=${type}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -175,7 +178,8 @@ export default function RakeOutWordData() {
 
   const handleSubmitData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/rake/outword/post`;
+    // const url = `https://ctas.live/backend/api/rake/outword/post`;
+    const url = `${ApiBaseUrl}/rake/outword/post`;
     try {
       const response = await axios.post(
         url,

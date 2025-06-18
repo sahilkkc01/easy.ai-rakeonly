@@ -13,6 +13,7 @@ import Swal from "sweetalert2";
 import "../App.css";
 import axios from "axios";
 import { compressImage, formatToDateTime } from "./main/formatToDateTime";
+import { ApiBaseUrl, OcrImgBaseUrl } from "../Config";
 
 export default function GateIN() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -275,7 +276,8 @@ export default function GateIN() {
 
     console.log(formEntries);
     // damage_status
-    const url = `https://ctas.live/backend/api/gate/surveyData/post`;
+    // const url = `https://ctas.live/backend/api/gate/surveyData/post`;
+    const url = `${ApiBaseUrl}/gate/surveyData/post`;
 
     try {
       const response = await axios.post(url, formEntries, {
@@ -316,7 +318,8 @@ export default function GateIN() {
 
   const GetLIveData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/gate/new/vehicles?type=${type}&lane_no=${lane_no}&gate_name=EXIM`;
+    // const url = `https://ctas.live/backend/api/gate/new/vehicles?type=${type}&lane_no=${lane_no}&gate_name=EXIM`;
+    const url = `${ApiBaseUrl}/gate/new/vehicles?type=${type}&lane_no=${lane_no}&gate_name=EXIM`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -371,7 +374,8 @@ export default function GateIN() {
   const handlePermitNo = async () => {
     setLoading(true);
     if (scannedData && type) {
-      const url = `https://ctas.live/backend/api/get/permit_detail_v2/${scannedData}?gate_name=EXIM&type=${type}&gate_no=${gate_no}&lane_no=${lane_no}`;
+      // const url = `https://ctas.live/backend/api/get/permit_detail_v2/${scannedData}?gate_name=EXIM&type=${type}&gate_no=${gate_no}&lane_no=${lane_no}`;
+      const url = `${ApiBaseUrl}/get/permit_detail_v2/${scannedData}?gate_name=EXIM&type=${type}&gate_no=${gate_no}&lane_no=${lane_no}`;
 
       try {
         const response = await axios.get(url, {
@@ -416,7 +420,8 @@ export default function GateIN() {
         id: EditVehicleID,
         vehicle_no: EditVehicleNo,
       };
-      const url = `https://ctas.live/backend/api/gate/ocr/vehicle/update`;
+      // const url = `https://ctas.live/backend/api/gate/ocr/vehicle/update`;
+      const url = `${ApiBaseUrl}/gate/ocr/vehicle/update`;
 
       try {
         const response = await axios.post(url, payload, {
@@ -484,7 +489,8 @@ export default function GateIN() {
       }
     }
 
-    const url = `https://ctas.live/backend/api/text/extract/vision`;
+    // const url = `https://ctas.live/backend/api/text/extract/vision`;
+    const url = `${ApiBaseUrl}/text/extract/vision`;
 
     try {
       const response = await axios.post(url, formData, {
@@ -987,7 +993,7 @@ export default function GateIN() {
                                   <div className="card">
                                     <img
                                       src={
-                                        "https://ctas.live/ocr_backend/uploads/" +
+                                        `${OcrImgBaseUrl}/uploads/` +
                                         row.vehicle_no_img
                                       }
                                       className="card-img-top"
@@ -1480,7 +1486,7 @@ export default function GateIN() {
                                           <div className="col-md-4">
                                             <img
                                               src={
-                                                "https://ctas.live/ocr_backend/uploads/" +
+                                                `${OcrImgBaseUrl}/uploads/` +
                                                 PermitData?.container
                                                   ?.container_image
                                               }

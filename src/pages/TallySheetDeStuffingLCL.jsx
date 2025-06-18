@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { formatToDateTime, formatToDateTimeLocal } from "./main/formatToDateTime";
+import { ApiBaseUrl } from "../Config";
 
 // const TallySheetDeStuffingLCL = ({ Data }) => {
 const TallySheetDeStuffingLCL = () => {
@@ -24,7 +25,8 @@ const TallySheetDeStuffingLCL = () => {
 
   const GetData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/de_stuffing_data/LCL/${ContainerNo}`;
+    // const url = `https://ctas.live/backend/api/get/de_stuffing_data/LCL/${ContainerNo}`;
+    const url = `${ApiBaseUrl}/get/de_stuffing_data/LCL/${ContainerNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -97,7 +99,8 @@ const TallySheetDeStuffingLCL = () => {
 
   const UpdateData = async (upperCaseFormValues) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/de_stuffing_data/update`;
+    // const url = `https://ctas.live/backend/api/de_stuffing_data/update`;
+    const url = `${ApiBaseUrl}/de_stuffing_data/update`;
     try {
       const response = await axios.post(url, upperCaseFormValues, {
         headers: { "Content-Type": "multipart/form-data" },

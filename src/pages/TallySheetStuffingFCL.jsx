@@ -6,6 +6,7 @@ import {
   formatToDateTime,
   formatToDateTimeLocal,
 } from "./main/formatToDateTime";
+import { ApiBaseUrl } from "../Config";
 
 // const TallySheetStuffingFCL = ({ Data }) => {
 const TallySheetStuffingFCL = () => {
@@ -61,7 +62,8 @@ const TallySheetStuffingFCL = () => {
 
   const GetData = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/get/stuffing_data/FCL/${ContainerNo}`;
+    // const url = `https://ctas.live/backend/api/get/stuffing_data/FCL/${ContainerNo}`;
+    const url = `${ApiBaseUrl}/get/stuffing_data/FCL/${ContainerNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -134,7 +136,8 @@ const TallySheetStuffingFCL = () => {
 
   const UpdateData = async (upperCaseFormValues) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/stuffing_data/update`;
+    // const url = `https://ctas.live/backend/api/stuffing_data/update`;
+    const url = `${ApiBaseUrl}/stuffing_data/update`;
     try {
       const response = await axios.post(url, upperCaseFormValues, {
         headers: { "Content-Type": "application/json" },

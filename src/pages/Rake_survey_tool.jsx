@@ -5,6 +5,7 @@ import Footer from "./main/footer";
 import Nav from "./main/nav";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { ApiBaseUrl } from "../Config";
 
 export default function Rake_survey_tool() {
   const [type, setType] = useState("Survey");
@@ -39,7 +40,8 @@ export default function Rake_survey_tool() {
 
   const GetSurveyContainers = async () => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/rake/survey/containers`;
+    // const url = `https://ctas.live/backend/api/rake/survey/containers`;
+    const url = `${ApiBaseUrl}/rake/survey/containers`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -70,7 +72,8 @@ export default function Rake_survey_tool() {
   
   const DataFormSubmit = async (payload) => {
     setLoading(true);
-    const url = `https://ctas.live/backend/api/rake/container/survey/post`;
+    // const url = `https://ctas.live/backend/api/rake/container/survey/post`;
+    const url = `${ApiBaseUrl}/rake/container/survey/post`;
     try {
       const response = await axios.post(url, payload,{
         headers: { "Content-Type": "multipart/form-data" },

@@ -7,6 +7,7 @@ import "../Pages.css";
 import LinksButtons from "./main/LinksButtons";
 import Header from "./main/header";
 import { formatToDateTimeLocal } from "./main/formatToDateTime";
+import { ApiBaseUrl } from "../Config";
 
 export default function CWHCartingReadLCL() {
   const [Data, setData] = useState([]);
@@ -18,7 +19,8 @@ export default function CWHCartingReadLCL() {
   const [DisAbled, setDisAbled] = useState(false);
 
   const GetData = async () => {
-    const url = `https://ctas.live/backend/api/get/carting/data?order_number=${OrderNo}`;
+    // const url = `https://ctas.live/backend/api/get/carting/data?order_number=${OrderNo}`;
+    const url = `${ApiBaseUrl}/get/carting/data?order_number=${OrderNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -53,7 +55,8 @@ export default function CWHCartingReadLCL() {
   };
 
   const UpdateData = async (upperCaseFormValues) => {
-    const url = `https://ctas.live/backend/api/update/carting/data/${upperCaseFormValues.id}`;
+    // const url = `https://ctas.live/backend/api/update/carting/data/${upperCaseFormValues.id}`;
+    const url = `${ApiBaseUrl}/update/carting/data/${upperCaseFormValues.id}`;
     try {
       const response = await axios.post(url, upperCaseFormValues, {
         headers: { "Content-Type": "application/json" },

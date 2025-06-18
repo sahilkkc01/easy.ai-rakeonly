@@ -10,6 +10,7 @@ import "../Pages.css";
 import { compressImage } from "./main/formatToDateTime";
 import EIRMain from "./EIRMain";
 import { useReactToPrint } from "react-to-print";
+import { ApiBaseUrl } from "../Config";
 export default function YardRowData() {
 
   const [Data, setData] = useState([]);
@@ -25,7 +26,8 @@ const GetData = async (page=1) => {
   // alert('1');
     setLoading(true);
     let url;
-    url = `https://ctas.live/backend/api/yard/row/data?page=`+page;
+    // url = `https://ctas.live/backend/api/yard/row/data?page=`+page;
+    url = `${ApiBaseUrl}/yard/row/data?page=`+page;
 
     if(ContainerNo){
       url += '&container_no='+ContainerNo;
