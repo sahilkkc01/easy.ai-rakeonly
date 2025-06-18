@@ -9,7 +9,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 import Swal from "sweetalert2";
-import { ApiBaseUrl } from "../../../../src/Config";
+import { ApiBaseUrl } from "../../Config";
 
 export default function Profile() {
   const [oldPasswordShow, setOldPasswordShow] = useState(false);

@@ -12830,64 +12830,6 @@ export default function ImportMap({
                                                   >
                                                     <span
                                                       className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
-                                                      id="Z34C3"
-                                                      style={{
-                                                        zIndex: 1,
-                                                        backdropFilter:
-                                                          "blur(1px)",
-                                                        fontSize: "20px",
-                                                      }}
-                                                    >
-                                                      Z34C3
-                                                    </span>
-
-                                                    {/* Static content for each row */}
-                                                    {[...Array(4)].map(
-                                                      (_, rowIndex) => (
-                                                        <div
-                                                          className="d-flex"
-                                                          key={rowIndex}
-                                                        >
-                                                          {[...Array(5)].map(
-                                                            (_, colIndex) => {
-                                                              const boxNumber =
-                                                                rowIndex * 5 +
-                                                                colIndex +
-                                                                1; // Calculate box number
-                                                              return (
-                                                                <div
-                                                                  key={
-                                                                    boxNumber
-                                                                  }
-                                                                  id={`Z34C3_${boxNumber}`}
-                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
-                                                                  style={{
-                                                                    height:
-                                                                      "5vh",
-                                                                    width:
-                                                                      "30px",
-                                                                    fontSize:
-                                                                      "10px",
-                                                                  }}
-                                                                >
-                                                                  {boxNumber}
-                                                                </div>
-                                                              );
-                                                            }
-                                                          )}
-                                                        </div>
-                                                      )
-                                                    )}
-                                                  </div>
-                                                  <div
-                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
-                                                    style={{
-                                                      width: "150px",
-                                                      height: "100%",
-                                                    }}
-                                                  >
-                                                    <span
-                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
                                                       id="Z34C2"
                                                       style={{
                                                         zIndex: 1,
@@ -12918,6 +12860,64 @@ export default function ImportMap({
                                                                     boxNumber
                                                                   }
                                                                   id={`Z34C2_${boxNumber}`}
+                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
+                                                                  style={{
+                                                                    height:
+                                                                      "5vh",
+                                                                    width:
+                                                                      "30px",
+                                                                    fontSize:
+                                                                      "10px",
+                                                                  }}
+                                                                >
+                                                                  {boxNumber}
+                                                                </div>
+                                                              );
+                                                            }
+                                                          )}
+                                                        </div>
+                                                      )
+                                                    )}
+                                                  </div>
+                                                  <div
+                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
+                                                    style={{
+                                                      width: "150px",
+                                                      height: "100%",
+                                                    }}
+                                                  >
+                                                    <span
+                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
+                                                      id="Z34C3"
+                                                      style={{
+                                                        zIndex: 1,
+                                                        backdropFilter:
+                                                          "blur(1px)",
+                                                        fontSize: "20px",
+                                                      }}
+                                                    >
+                                                      Z34C3
+                                                    </span>
+
+                                                    {/* Static content for each row */}
+                                                    {[...Array(4)].map(
+                                                      (_, rowIndex) => (
+                                                        <div
+                                                          className="d-flex"
+                                                          key={rowIndex}
+                                                        >
+                                                          {[...Array(5)].map(
+                                                            (_, colIndex) => {
+                                                              const boxNumber =
+                                                                rowIndex * 5 +
+                                                                colIndex +
+                                                                1; // Calculate box number
+                                                              return (
+                                                                <div
+                                                                  key={
+                                                                    boxNumber
+                                                                  }
+                                                                  id={`Z34C3_${boxNumber}`}
                                                                   className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
                                                                   style={{
                                                                     height:
@@ -13013,64 +13013,6 @@ export default function ImportMap({
                                                   >
                                                     <span
                                                       className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
-                                                      id="Z35C3"
-                                                      style={{
-                                                        zIndex: 1,
-                                                        backdropFilter:
-                                                          "blur(1px)",
-                                                        fontSize: "20px",
-                                                      }}
-                                                    >
-                                                      Z35C3
-                                                    </span>
-
-                                                    {/* Static content for each row */}
-                                                    {[...Array(4)].map(
-                                                      (_, rowIndex) => (
-                                                        <div
-                                                          className="d-flex"
-                                                          key={rowIndex}
-                                                        >
-                                                          {[...Array(5)].map(
-                                                            (_, colIndex) => {
-                                                              const boxNumber =
-                                                                rowIndex * 5 +
-                                                                colIndex +
-                                                                1; // Calculate box number
-                                                              return (
-                                                                <div
-                                                                  key={
-                                                                    boxNumber
-                                                                  }
-                                                                  id={`Z35C3_${boxNumber}`}
-                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
-                                                                  style={{
-                                                                    height:
-                                                                      "5vh",
-                                                                    width:
-                                                                      "30px",
-                                                                    fontSize:
-                                                                      "10px",
-                                                                  }}
-                                                                >
-                                                                  {boxNumber}
-                                                                </div>
-                                                              );
-                                                            }
-                                                          )}
-                                                        </div>
-                                                      )
-                                                    )}
-                                                  </div>
-                                                  <div
-                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
-                                                    style={{
-                                                      width: "150px",
-                                                      height: "100%",
-                                                    }}
-                                                  >
-                                                    <span
-                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
                                                       id="Z35C2"
                                                       style={{
                                                         zIndex: 1,
@@ -13101,6 +13043,64 @@ export default function ImportMap({
                                                                     boxNumber
                                                                   }
                                                                   id={`Z35C2_${boxNumber}`}
+                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
+                                                                  style={{
+                                                                    height:
+                                                                      "5vh",
+                                                                    width:
+                                                                      "30px",
+                                                                    fontSize:
+                                                                      "10px",
+                                                                  }}
+                                                                >
+                                                                  {boxNumber}
+                                                                </div>
+                                                              );
+                                                            }
+                                                          )}
+                                                        </div>
+                                                      )
+                                                    )}
+                                                  </div>
+                                                  <div
+                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
+                                                    style={{
+                                                      width: "150px",
+                                                      height: "100%",
+                                                    }}
+                                                  >
+                                                    <span
+                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
+                                                      id="Z35C3"
+                                                      style={{
+                                                        zIndex: 1,
+                                                        backdropFilter:
+                                                          "blur(1px)",
+                                                        fontSize: "20px",
+                                                      }}
+                                                    >
+                                                      Z35C3
+                                                    </span>
+
+                                                    {/* Static content for each row */}
+                                                    {[...Array(4)].map(
+                                                      (_, rowIndex) => (
+                                                        <div
+                                                          className="d-flex"
+                                                          key={rowIndex}
+                                                        >
+                                                          {[...Array(5)].map(
+                                                            (_, colIndex) => {
+                                                              const boxNumber =
+                                                                rowIndex * 5 +
+                                                                colIndex +
+                                                                1; // Calculate box number
+                                                              return (
+                                                                <div
+                                                                  key={
+                                                                    boxNumber
+                                                                  }
+                                                                  id={`Z35C3_${boxNumber}`}
                                                                   className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
                                                                   style={{
                                                                     height:
@@ -13196,64 +13196,6 @@ export default function ImportMap({
                                                   >
                                                     <span
                                                       className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
-                                                      id="Z36C3"
-                                                      style={{
-                                                        zIndex: 1,
-                                                        backdropFilter:
-                                                          "blur(1px)",
-                                                        fontSize: "20px",
-                                                      }}
-                                                    >
-                                                      Z36C3
-                                                    </span>
-
-                                                    {/* Static content for each row */}
-                                                    {[...Array(4)].map(
-                                                      (_, rowIndex) => (
-                                                        <div
-                                                          className="d-flex"
-                                                          key={rowIndex}
-                                                        >
-                                                          {[...Array(5)].map(
-                                                            (_, colIndex) => {
-                                                              const boxNumber =
-                                                                rowIndex * 5 +
-                                                                colIndex +
-                                                                1; // Calculate box number
-                                                              return (
-                                                                <div
-                                                                  key={
-                                                                    boxNumber
-                                                                  }
-                                                                  id={`Z36C3_${boxNumber}`}
-                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
-                                                                  style={{
-                                                                    height:
-                                                                      "5vh",
-                                                                    width:
-                                                                      "30px",
-                                                                    fontSize:
-                                                                      "10px",
-                                                                  }}
-                                                                >
-                                                                  {boxNumber}
-                                                                </div>
-                                                              );
-                                                            }
-                                                          )}
-                                                        </div>
-                                                      )
-                                                    )}
-                                                  </div>
-                                                  <div
-                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
-                                                    style={{
-                                                      width: "150px",
-                                                      height: "100%",
-                                                    }}
-                                                  >
-                                                    <span
-                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
                                                       id="Z36C2"
                                                       style={{
                                                         zIndex: 1,
@@ -13284,6 +13226,64 @@ export default function ImportMap({
                                                                     boxNumber
                                                                   }
                                                                   id={`Z36C2_${boxNumber}`}
+                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
+                                                                  style={{
+                                                                    height:
+                                                                      "5vh",
+                                                                    width:
+                                                                      "30px",
+                                                                    fontSize:
+                                                                      "10px",
+                                                                  }}
+                                                                >
+                                                                  {boxNumber}
+                                                                </div>
+                                                              );
+                                                            }
+                                                          )}
+                                                        </div>
+                                                      )
+                                                    )}
+                                                  </div>
+                                                  <div
+                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
+                                                    style={{
+                                                      width: "150px",
+                                                      height: "100%",
+                                                    }}
+                                                  >
+                                                    <span
+                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
+                                                      id="Z36C3"
+                                                      style={{
+                                                        zIndex: 1,
+                                                        backdropFilter:
+                                                          "blur(1px)",
+                                                        fontSize: "20px",
+                                                      }}
+                                                    >
+                                                      Z36C3
+                                                    </span>
+
+                                                    {/* Static content for each row */}
+                                                    {[...Array(4)].map(
+                                                      (_, rowIndex) => (
+                                                        <div
+                                                          className="d-flex"
+                                                          key={rowIndex}
+                                                        >
+                                                          {[...Array(5)].map(
+                                                            (_, colIndex) => {
+                                                              const boxNumber =
+                                                                rowIndex * 5 +
+                                                                colIndex +
+                                                                1; // Calculate box number
+                                                              return (
+                                                                <div
+                                                                  key={
+                                                                    boxNumber
+                                                                  }
+                                                                  id={`Z36C3_${boxNumber}`}
                                                                   className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
                                                                   style={{
                                                                     height:
@@ -13379,7 +13379,7 @@ export default function ImportMap({
                                                   >
                                                     <span
                                                       className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
-                                                      id="Z37C3"
+                                                      id="Z37C2"
                                                       style={{
                                                         zIndex: 1,
                                                         backdropFilter:
@@ -13387,7 +13387,7 @@ export default function ImportMap({
                                                         fontSize: "20px",
                                                       }}
                                                     >
-                                                      Z37C3
+                                                      Z37C2
                                                     </span>
 
                                                     {/* Static content for each row */}
@@ -13408,7 +13408,7 @@ export default function ImportMap({
                                                                   key={
                                                                     boxNumber
                                                                   }
-                                                                  id={`Z37C3_${boxNumber}`}
+                                                                  id={`Z37C2_${boxNumber}`}
                                                                   className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
                                                                   style={{
                                                                     height:
@@ -13437,7 +13437,7 @@ export default function ImportMap({
                                                   >
                                                     <span
                                                       className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
-                                                      id="Z37C2"
+                                                      id="Z37C3"
                                                       style={{
                                                         zIndex: 1,
                                                         backdropFilter:
@@ -13445,7 +13445,7 @@ export default function ImportMap({
                                                         fontSize: "20px",
                                                       }}
                                                     >
-                                                      Z37C2
+                                                      Z37C3
                                                     </span>
 
                                                     {/* Static content for each row */}
@@ -13466,7 +13466,7 @@ export default function ImportMap({
                                                                   key={
                                                                     boxNumber
                                                                   }
-                                                                  id={`Z38C1_${boxNumber}`}
+                                                                  id={`Z37C3_${boxNumber}`}
                                                                   className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
                                                                   style={{
                                                                     height:
@@ -13562,64 +13562,6 @@ export default function ImportMap({
                                                   >
                                                     <span
                                                       className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
-                                                      id="Z38C3"
-                                                      style={{
-                                                        zIndex: 1,
-                                                        backdropFilter:
-                                                          "blur(1px)",
-                                                        fontSize: "20px",
-                                                      }}
-                                                    >
-                                                      Z38C3
-                                                    </span>
-
-                                                    {/* Static content for each row */}
-                                                    {[...Array(4)].map(
-                                                      (_, rowIndex) => (
-                                                        <div
-                                                          className="d-flex"
-                                                          key={rowIndex}
-                                                        >
-                                                          {[...Array(5)].map(
-                                                            (_, colIndex) => {
-                                                              const boxNumber =
-                                                                rowIndex * 5 +
-                                                                colIndex +
-                                                                1; // Calculate box number
-                                                              return (
-                                                                <div
-                                                                  key={
-                                                                    boxNumber
-                                                                  }
-                                                                  id={`Z38C3_${boxNumber}`}
-                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
-                                                                  style={{
-                                                                    height:
-                                                                      "5vh",
-                                                                    width:
-                                                                      "30px",
-                                                                    fontSize:
-                                                                      "10px",
-                                                                  }}
-                                                                >
-                                                                  {boxNumber}
-                                                                </div>
-                                                              );
-                                                            }
-                                                          )}
-                                                        </div>
-                                                      )
-                                                    )}
-                                                  </div>
-                                                  <div
-                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
-                                                    style={{
-                                                      width: "150px",
-                                                      height: "100%",
-                                                    }}
-                                                  >
-                                                    <span
-                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
                                                       id="Z38C2"
                                                       style={{
                                                         zIndex: 1,
@@ -13650,6 +13592,64 @@ export default function ImportMap({
                                                                     boxNumber
                                                                   }
                                                                   id={`Z38C2_${boxNumber}`}
+                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
+                                                                  style={{
+                                                                    height:
+                                                                      "5vh",
+                                                                    width:
+                                                                      "30px",
+                                                                    fontSize:
+                                                                      "10px",
+                                                                  }}
+                                                                >
+                                                                  {boxNumber}
+                                                                </div>
+                                                              );
+                                                            }
+                                                          )}
+                                                        </div>
+                                                      )
+                                                    )}
+                                                  </div>
+                                                  <div
+                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
+                                                    style={{
+                                                      width: "150px",
+                                                      height: "100%",
+                                                    }}
+                                                  >
+                                                    <span
+                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
+                                                      id="Z38C3"
+                                                      style={{
+                                                        zIndex: 1,
+                                                        backdropFilter:
+                                                          "blur(1px)",
+                                                        fontSize: "20px",
+                                                      }}
+                                                    >
+                                                      Z38C3
+                                                    </span>
+
+                                                    {/* Static content for each row */}
+                                                    {[...Array(4)].map(
+                                                      (_, rowIndex) => (
+                                                        <div
+                                                          className="d-flex"
+                                                          key={rowIndex}
+                                                        >
+                                                          {[...Array(5)].map(
+                                                            (_, colIndex) => {
+                                                              const boxNumber =
+                                                                rowIndex * 5 +
+                                                                colIndex +
+                                                                1; // Calculate box number
+                                                              return (
+                                                                <div
+                                                                  key={
+                                                                    boxNumber
+                                                                  }
+                                                                  id={`Z38C3_${boxNumber}`}
                                                                   className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
                                                                   style={{
                                                                     height:
@@ -13745,64 +13745,6 @@ export default function ImportMap({
                                                   >
                                                     <span
                                                       className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
-                                                      id="Z39C3"
-                                                      style={{
-                                                        zIndex: 1,
-                                                        backdropFilter:
-                                                          "blur(1px)",
-                                                        fontSize: "20px",
-                                                      }}
-                                                    >
-                                                      Z39C3
-                                                    </span>
-
-                                                    {/* Static content for each row */}
-                                                    {[...Array(4)].map(
-                                                      (_, rowIndex) => (
-                                                        <div
-                                                          className="d-flex"
-                                                          key={rowIndex}
-                                                        >
-                                                          {[...Array(5)].map(
-                                                            (_, colIndex) => {
-                                                              const boxNumber =
-                                                                rowIndex * 5 +
-                                                                colIndex +
-                                                                1; // Calculate box number
-                                                              return (
-                                                                <div
-                                                                  key={
-                                                                    boxNumber
-                                                                  }
-                                                                  id={`Z39C3_${boxNumber}`}
-                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
-                                                                  style={{
-                                                                    height:
-                                                                      "5vh",
-                                                                    width:
-                                                                      "30px",
-                                                                    fontSize:
-                                                                      "10px",
-                                                                  }}
-                                                                >
-                                                                  {boxNumber}
-                                                                </div>
-                                                              );
-                                                            }
-                                                          )}
-                                                        </div>
-                                                      )
-                                                    )}
-                                                  </div>
-                                                  <div
-                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
-                                                    style={{
-                                                      width: "150px",
-                                                      height: "100%",
-                                                    }}
-                                                  >
-                                                    <span
-                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
                                                       id="Z39C2"
                                                       style={{
                                                         zIndex: 1,
@@ -13833,6 +13775,64 @@ export default function ImportMap({
                                                                     boxNumber
                                                                   }
                                                                   id={`Z39C2_${boxNumber}`}
+                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
+                                                                  style={{
+                                                                    height:
+                                                                      "5vh",
+                                                                    width:
+                                                                      "30px",
+                                                                    fontSize:
+                                                                      "10px",
+                                                                  }}
+                                                                >
+                                                                  {boxNumber}
+                                                                </div>
+                                                              );
+                                                            }
+                                                          )}
+                                                        </div>
+                                                      )
+                                                    )}
+                                                  </div>
+                                                  <div
+                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
+                                                    style={{
+                                                      width: "150px",
+                                                      height: "100%",
+                                                    }}
+                                                  >
+                                                    <span
+                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
+                                                      id="Z39C3"
+                                                      style={{
+                                                        zIndex: 1,
+                                                        backdropFilter:
+                                                          "blur(1px)",
+                                                        fontSize: "20px",
+                                                      }}
+                                                    >
+                                                      Z39C3
+                                                    </span>
+
+                                                    {/* Static content for each row */}
+                                                    {[...Array(4)].map(
+                                                      (_, rowIndex) => (
+                                                        <div
+                                                          className="d-flex"
+                                                          key={rowIndex}
+                                                        >
+                                                          {[...Array(5)].map(
+                                                            (_, colIndex) => {
+                                                              const boxNumber =
+                                                                rowIndex * 5 +
+                                                                colIndex +
+                                                                1; // Calculate box number
+                                                              return (
+                                                                <div
+                                                                  key={
+                                                                    boxNumber
+                                                                  }
+                                                                  id={`Z39C3_${boxNumber}`}
                                                                   className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
                                                                   style={{
                                                                     height:
@@ -13928,64 +13928,6 @@ export default function ImportMap({
                                                   >
                                                     <span
                                                       className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
-                                                      id="Z40C3"
-                                                      style={{
-                                                        zIndex: 1,
-                                                        backdropFilter:
-                                                          "blur(1px)",
-                                                        fontSize: "20px",
-                                                      }}
-                                                    >
-                                                      Z40C3
-                                                    </span>
-
-                                                    {/* Static content for each row */}
-                                                    {[...Array(4)].map(
-                                                      (_, rowIndex) => (
-                                                        <div
-                                                          className="d-flex"
-                                                          key={rowIndex}
-                                                        >
-                                                          {[...Array(5)].map(
-                                                            (_, colIndex) => {
-                                                              const boxNumber =
-                                                                rowIndex * 5 +
-                                                                colIndex +
-                                                                1; // Calculate box number
-                                                              return (
-                                                                <div
-                                                                  key={
-                                                                    boxNumber
-                                                                  }
-                                                                  id={`Z40C3_${boxNumber}`}
-                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
-                                                                  style={{
-                                                                    height:
-                                                                      "5vh",
-                                                                    width:
-                                                                      "30px",
-                                                                    fontSize:
-                                                                      "10px",
-                                                                  }}
-                                                                >
-                                                                  {boxNumber}
-                                                                </div>
-                                                              );
-                                                            }
-                                                          )}
-                                                        </div>
-                                                      )
-                                                    )}
-                                                  </div>
-                                                  <div
-                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
-                                                    style={{
-                                                      width: "150px",
-                                                      height: "100%",
-                                                    }}
-                                                  >
-                                                    <span
-                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
                                                       id="Z40C2"
                                                       style={{
                                                         zIndex: 1,
@@ -14016,6 +13958,64 @@ export default function ImportMap({
                                                                     boxNumber
                                                                   }
                                                                   id={`Z40C2_${boxNumber}`}
+                                                                  className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
+                                                                  style={{
+                                                                    height:
+                                                                      "5vh",
+                                                                    width:
+                                                                      "30px",
+                                                                    fontSize:
+                                                                      "10px",
+                                                                  }}
+                                                                >
+                                                                  {boxNumber}
+                                                                </div>
+                                                              );
+                                                            }
+                                                          )}
+                                                        </div>
+                                                      )
+                                                    )}
+                                                  </div>
+                                                  <div
+                                                    className="main  py-1 px-1 bg-dark d-flex flex-column border-light border border-2 position-relative"
+                                                    style={{
+                                                      width: "150px",
+                                                      height: "100%",
+                                                    }}
+                                                  >
+                                                    <span
+                                                      className="position-absolute top-50 start-50 translate-middle text-center text-white bg-dark bg-opacity-75 px-3 py-1 rounded"
+                                                      id="Z40C3"
+                                                      style={{
+                                                        zIndex: 1,
+                                                        backdropFilter:
+                                                          "blur(1px)",
+                                                        fontSize: "20px",
+                                                      }}
+                                                    >
+                                                      Z40C3
+                                                    </span>
+
+                                                    {/* Static content for each row */}
+                                                    {[...Array(4)].map(
+                                                      (_, rowIndex) => (
+                                                        <div
+                                                          className="d-flex"
+                                                          key={rowIndex}
+                                                        >
+                                                          {[...Array(5)].map(
+                                                            (_, colIndex) => {
+                                                              const boxNumber =
+                                                                rowIndex * 5 +
+                                                                colIndex +
+                                                                1; // Calculate box number
+                                                              return (
+                                                                <div
+                                                                  key={
+                                                                    boxNumber
+                                                                  }
+                                                                  id={`Z40C3_${boxNumber}`}
                                                                   className="bg-secondary border border-light rounded text-white d-flex align-items-center justify-content-center"
                                                                   style={{
                                                                     height:
