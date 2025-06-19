@@ -25,7 +25,6 @@ export default function Profile() {
     const formValues = Object.fromEntries(formData.entries());
     if (formValues.id && formValues.user_name && formValues.new_password) {
       setLoading(true);
-      // let url = `https://ctas.live/backend/api/change/user/password`
       let url = `${ApiBaseUrl}/change/user/password`
 
       try {
