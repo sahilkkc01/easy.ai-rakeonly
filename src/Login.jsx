@@ -47,16 +47,16 @@ export default function Login() {
             response.data.data.permissions[0].application.url
           ) {
             const url = response.data.data.permissions[0].application.url;
-            // const shortUrl = url.replace("https://ctas.live/", "");
+            const shortUrl = url.replace("https://ctas.live/", "");
             Swal.fire({
               icon: "success",
               text: response.data.message,
               confirmButtonText: "OK",
               timer: 3000,
             }).then(() => {
-              window.location.href =
-                response.data.data.permissions[0].application.url;
-              // navigate(`/${shortUrl}`);
+              // window.location.href =
+              //   response.data.data.permissions[0].application.url;
+              navigate(`/${shortUrl}`);
             });
           } else {
             Swal.fire({
