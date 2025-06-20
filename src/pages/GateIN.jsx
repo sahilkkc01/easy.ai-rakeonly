@@ -204,7 +204,7 @@ export default function GateIN() {
       "driver_license",
       "e_bill",
       "custom_documents",
-      "special_permit",
+      // "special_permit",
       "seal_1_image",
       "seal_2_image",
       "empty_container_image_1",
