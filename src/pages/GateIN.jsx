@@ -928,7 +928,7 @@ export default function GateIN() {
                                   className="form-control"
                                   name="ocr_vehicle_number"
                                   onChange={(e) =>
-                                    setOcr_vehicle_number(e.target.value)
+                                    setOcr_vehicle_number(e.target.value?.toUpperCase())
                                   }
                                   placeholder="Vehicle No"
                                 />
