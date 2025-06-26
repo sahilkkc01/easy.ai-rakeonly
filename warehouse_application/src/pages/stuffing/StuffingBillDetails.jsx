@@ -536,13 +536,15 @@ export default function StuffingBillDetails() {
   
       return {
         ...details,
-        commodity_description: details.commodity_description ?? firstTruck.cargo_description ?? null,
-        package_code: details.package_code ?? firstTruck.pkg_code ?? null,
-        no_of_packages_declared: details.no_of_packages_declared ?? totalPackages ?? null,
-        package_weight: details.package_weight ?? totalWeight ?? null,
-      };
+        commodity_description: details?.commodity_description ?? firstTruck?.cargo_description ?? null,
+        package_code: details?.package_code ?? firstTruck?.pkg_code ?? null,
+        no_of_packages_declared:
+          (details?.no_of_packages_declared ?? 0) > 0 ? details.no_of_packages_declared : totalPackages ?? null,
+        package_weight:
+          (details?.package_weight ?? 0) > 0 ? details.package_weight : totalWeight ?? null,
+      };    
     });
-  
+
     setBills(updatedBills);
   }, [Data]);
   
