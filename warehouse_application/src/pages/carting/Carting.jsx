@@ -24,9 +24,7 @@ export default function Carting() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `${ApiBaseUrl}carting/live/data`
-      );
+      const response = await axios.get(`${ApiBaseUrl}carting/live/data`);
       if (response.data.data && Array.isArray(response.data.data)) {
         setData(response.data.data);
       }
@@ -135,6 +133,40 @@ export default function Carting() {
     fetchLocationsArea();
   }, [data]);
 
+  const handleRestData = async (id, crn_number) => {
+    setLoading(true);
+    const url = `${ApiBaseUrl}carting/reset/data?id=${id}&crn_number=${crn_number}`;
+    try {
+      const response = await axios.get(url, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (response?.data?.status == "success") {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: "Job Remove Successfully!",
+          timer: 2000,
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       {loading && (
@@ -237,6 +269,31 @@ export default function Carting() {
 
                                     <button
                                       type="button"
+                                      onClick={() => {
+                                        Swal.fire({
+                                          title: "Are you sure?",
+                                          text: "You want to be remove job!",
+                                          icon: "warning",
+                                          showCancelButton: true,
+                                          confirmButtonColor: "#d33",
+                                          cancelButtonColor: "#3085d6",
+                                          confirmButtonText: "Yes, Remove it!",
+                                        }).then((result) => {
+                                          if (result.isConfirmed) {
+                                            handleRestData(
+                                              item.id,
+                                              item.crn_number
+                                            );
+                                          }
+                                        });
+                                      }}
+                                      className="btn btn-label-danger btn-sm mx-1"
+                                    >
+                                      <i className="ri-delete-bin-line"></i>
+                                    </button>
+
+                                    <button
+                                      type="button"
                                       className="btn btn-label-info btn-sm mx-1"
                                       data-bs-toggle="modal"
                                       data-bs-target="#myModal"
@@ -293,13 +350,38 @@ export default function Carting() {
                                           </td>
 
                                           <td>
-
                                             <Link
                                               to={`/carting/bill-details?crn_number=${item.crn_number}`}
                                               className="btn btn-label-primary btn-sm mx-1"
                                             >
                                               Edit
                                             </Link>
+
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                Swal.fire({
+                                                  title: "Are you sure?",
+                                                  text: "You want to be remove job!",
+                                                  icon: "warning",
+                                                  showCancelButton: true,
+                                                  confirmButtonColor: "#d33",
+                                                  cancelButtonColor: "#3085d6",
+                                                  confirmButtonText:
+                                                    "Yes, Remove it!",
+                                                }).then((result) => {
+                                                  if (result.isConfirmed) {
+                                                    handleRestData(
+                                                      item.id,
+                                                      item.crn_number
+                                                    );
+                                                  }
+                                                });
+                                              }}
+                                              className="btn btn-label-danger btn-sm mx-1"
+                                            >
+                                              <i className="ri-delete-bin-line"></i>
+                                            </button>
 
                                             <button
                                               type="button"

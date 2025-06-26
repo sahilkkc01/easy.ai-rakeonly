@@ -21,13 +21,11 @@ export default function DeStuffing() {
   const [modalData, setModalData] = useState("");
   const [error, setError] = useState(null);
   const [LocationsArea, setLocationsArea] = useState(null);
-  
+
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `${ApiBaseUrl}de_stuffing/live/data`
-      );
+      const response = await axios.get(`${ApiBaseUrl}de_stuffing/live/data`);
       if (response.data && Array.isArray(response.data.data)) {
         setData(response.data.data); // Ensure we're setting an array
         setCompletedData(response.data.completed_data);
@@ -119,7 +117,6 @@ export default function DeStuffing() {
     );
   };
 
-
   const fetchLocationsArea = async () => {
     setLoading(true);
     let url = `${ApiBaseUrl}warehouse/location/ocr_area?warehouse_type=Import`;
@@ -146,9 +143,43 @@ export default function DeStuffing() {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchLocationsArea();
-  },[data])
+  }, [data]);
+
+  const handleRestData = async (type, container_no) => {
+    setLoading(true);
+    const url = `${ApiBaseUrl}de_stuffing/reset/data?type=${type}&container_no=${container_no}`;
+    try {
+      const response = await axios.get(url, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (response?.data?.status == "success") {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: "Job Remove Successfully!",
+          timer: 2000,
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -186,8 +217,11 @@ export default function DeStuffing() {
                     <Link to={`/`} className="btn btn-label-primary ms-2">
                       Go Back
                     </Link>
-                    <Link to={`/de_stuffing_completed_trans`} className="btn btn-label-info ms-2">
-                       Completed Transections
+                    <Link
+                      to={`/de_stuffing_completed_trans`}
+                      className="btn btn-label-info ms-2"
+                    >
+                      Completed Transactions
                     </Link>
                   </div>
                 </div>
@@ -247,6 +281,30 @@ export default function DeStuffing() {
                                     >
                                       Edit
                                     </Link>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        Swal.fire({
+                                          title: "Are you sure?",
+                                          text: "You want to be remove job!",
+                                          icon: "warning",
+                                          showCancelButton: true,
+                                          confirmButtonColor: "#d33",
+                                          cancelButtonColor: "#3085d6",
+                                          confirmButtonText: "Yes, Remove it!",
+                                        }).then((result) => {
+                                          if (result.isConfirmed) {
+                                            handleRestData(
+                                              item.type,
+                                              item.container_number
+                                            );
+                                          }
+                                        });
+                                      }}
+                                      className="btn btn-label-danger btn-sm mx-1"
+                                    >
+                                      <i className="ri-delete-bin-line"></i>
+                                    </button>
                                     <button
                                       type="button"
                                       className="btn btn-label-info btn-sm mx-1"
@@ -314,6 +372,31 @@ export default function DeStuffing() {
                                             >
                                               Edit
                                             </Link>
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                Swal.fire({
+                                                  title: "Are you sure?",
+                                                  text: "You want to be remove job!",
+                                                  icon: "warning",
+                                                  showCancelButton: true,
+                                                  confirmButtonColor: "#d33",
+                                                  cancelButtonColor: "#3085d6",
+                                                  confirmButtonText:
+                                                    "Yes, Remove it!",
+                                                }).then((result) => {
+                                                  if (result.isConfirmed) {
+                                                    handleRestData(
+                                                      item.type,
+                                                      item.container_number
+                                                    );
+                                                  }
+                                                });
+                                              }}
+                                              className="btn btn-label-danger btn-sm mx-1"
+                                            >
+                                              <i className="ri-delete-bin-line"></i>
+                                            </button>
                                             <button
                                               type="button"
                                               className="btn btn-label-info btn-sm mx-1"
@@ -385,13 +468,24 @@ export default function DeStuffing() {
                                                         if (
                                                           grid.grid_locations
                                                         ) {
-                                                          const matchedArea = LocationsArea?.length > 0
-                                                          ? LocationsArea.find(area => area.location_code == grid.grid_locations)
-                                                          : 0;
+                                                          const matchedArea =
+                                                            LocationsArea?.length >
+                                                            0
+                                                              ? LocationsArea.find(
+                                                                  (area) =>
+                                                                    area.location_code ==
+                                                                    grid.grid_locations
+                                                                )
+                                                              : 0;
                                                           return (
-                                                            <p className="mb-0">{
+                                                            <p className="mb-0">
+                                                              {
                                                                 grid.grid_locations
-                                                              } / {matchedArea?.ocr_occupied_area?? item.area ?? '0'}
+                                                              }{" "}
+                                                              /{" "}
+                                                              {matchedArea?.ocr_occupied_area ??
+                                                                item.area ??
+                                                                "0"}
                                                             </p>
                                                           );
                                                         }

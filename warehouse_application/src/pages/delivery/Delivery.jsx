@@ -110,6 +110,42 @@ export default function Delivery() {
     handleFinalSubmit(ID, GpmNo, start_time, end_time, handling_type);
   };
 
+
+  const handleRestData = async (id,gpm_number) => {
+    setLoading(true);
+    const url = `${ApiBaseUrl}delivery/reset/data?id=${id}&gpm_number=${gpm_number}`;
+    try {
+      const response = await axios.get(url, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (response?.data?.status == "success") {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: "Job Remove Successfully!",
+          timer: 2000,
+        }).then(() => {
+          window.location.reload();
+        });
+      } else {
+        Swal.fire({
+          icon: response?.data?.status,
+          text: response?.data?.message,
+          timer: 3000,
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        text: `Error Fetching Data: ${error.message}`,
+        timer: 3000,
+        showConfirmButton: false,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
     <>
       {loading && (
@@ -206,6 +242,31 @@ export default function Delivery() {
                                     >
                                       Edit
                                     </Link>
+                                    <button
+                                              type="button"
+                                              onClick={() => {
+                                                Swal.fire({
+                                                  title: "Are you sure?",
+                                                  text: "You want to be remove job!",
+                                                  icon: "warning",
+                                                  showCancelButton: true,
+                                                  confirmButtonColor: "#d33",
+                                                  cancelButtonColor: "#3085d6",
+                                                  confirmButtonText:
+                                                    "Yes, Remove it!",
+                                                }).then((result) => {
+                                                  if (result.isConfirmed) {
+                                                    handleRestData(
+                                                      item.id,
+                                                      item.gpm_number
+                                                    );
+                                                  }
+                                                });
+                                              }}
+                                              className="btn btn-label-danger btn-sm mx-1"
+                                            >
+                                              <i className="ri-delete-bin-line"></i>
+                                            </button>
 
                                     <button
                                       type="button"
@@ -272,6 +333,32 @@ export default function Delivery() {
                                             >
                                               Edit
                                             </Link>
+
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                Swal.fire({
+                                                  title: "Are you sure?",
+                                                  text: "You want to be remove job!",
+                                                  icon: "warning",
+                                                  showCancelButton: true,
+                                                  confirmButtonColor: "#d33",
+                                                  cancelButtonColor: "#3085d6",
+                                                  confirmButtonText:
+                                                    "Yes, Remove it!",
+                                                }).then((result) => {
+                                                  if (result.isConfirmed) {
+                                                    handleRestData(
+                                                      item.id,
+                                                      item.gpm_number
+                                                    );
+                                                  }
+                                                });
+                                              }}
+                                              className="btn btn-label-danger btn-sm mx-1"
+                                            >
+                                              <i className="ri-delete-bin-line"></i>
+                                            </button>
 
                                             <button
                                               type="button"
