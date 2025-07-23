@@ -350,6 +350,7 @@ export default function IndexROut() {
                                           <tr className="table-primary">
                                             <td>#</td>
                                             <td>Container Number</td>
+                                            <td>Container Size</td>
                                             <td>Seal 1</td>
                                             <td>Seal 2</td>
                                             <td>Action</td>
@@ -373,6 +374,9 @@ export default function IndexROut() {
                                                   <span>
                                                     W : {summery.wagon_no}
                                                   </span>
+                                                </td>
+                                                <td>
+                                                   {summery.ctrsize}
                                                 </td>
                                                 <td>
                                                   {summery.seal_1_no

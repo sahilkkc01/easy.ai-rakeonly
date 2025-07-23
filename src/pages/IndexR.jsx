@@ -340,6 +340,7 @@ export default function IndexR() {
                                         <tr className="table-primary">
                                           <td>#</td>
                                           <td>Container Number</td>
+                                          <td>Container Size</td>
                                           <td>Seal 1</td>
                                           <td>Seal 2</td>
                                           <td>Action</td>
@@ -365,6 +366,9 @@ export default function IndexR() {
                                                       <span>
                                                         W : {summery.wagon_no}
                                                       </span>
+                                                    </td>
+                                                    <td>
+                                                        {summery.container_size}
                                                     </td>
                                                     <td>
                                                       {summery.seal_1_no
