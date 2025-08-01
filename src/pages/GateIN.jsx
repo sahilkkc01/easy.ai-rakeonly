@@ -175,7 +175,7 @@ export default function GateIN() {
         text: `Media devices are not supported on this device.`,
         timer: 1500,
         customClass: {
-          popup: "custom-swal-popup", 
+          popup: "custom-swal-popup",
         },
       });
       console.error("Media devices are not supported on this device.");
@@ -928,7 +928,9 @@ export default function GateIN() {
                                   className="form-control"
                                   name="ocr_vehicle_number"
                                   onChange={(e) =>
-                                    setOcr_vehicle_number(e.target.value?.toUpperCase())
+                                    setOcr_vehicle_number(
+                                      e.target.value?.toUpperCase()
+                                    )
                                   }
                                   placeholder="Vehicle No"
                                 />
@@ -1263,9 +1265,12 @@ export default function GateIN() {
                                   className="form-check-input rounded-circle fs-6 me-2"
                                   type="checkbox"
                                   id="flexCheck"
-                                  onChange={() =>
-                                    setIsSpecialPermit(!isSpecialPermit)
-                                  }
+                                  onChange={() => {
+                                    if (!isSpecialPermit) {
+                                      setIsContainer(!isSpecialPermit);
+                                    }
+                                    setIsSpecialPermit(!isSpecialPermit);
+                                  }}
                                 />
                                 <label
                                   className="form-check-label fs-6"
@@ -1320,6 +1325,7 @@ export default function GateIN() {
                                   id="isContainer"
                                   name="is_container"
                                   value="Y"
+                                  checked={isContainer}
                                   onChange={() => setIsContainer(!isContainer)}
                                 />
                                 <label
