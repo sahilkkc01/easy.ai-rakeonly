@@ -1268,6 +1268,7 @@ export default function GateIN() {
                                   onChange={() => {
                                     if (!isSpecialPermit) {
                                       setIsContainer(!isSpecialPermit);
+                                      setContainer("1");
                                     }
                                     setIsSpecialPermit(!isSpecialPermit);
                                   }}
@@ -1326,7 +1327,11 @@ export default function GateIN() {
                                   name="is_container"
                                   value="Y"
                                   checked={isContainer}
-                                  onChange={() => setIsContainer(!isContainer)}
+                                  onChange={() => {
+                                    if (!isSpecialPermit) {
+                                      setIsContainer(!isContainer);
+                                    }
+                                  }}
                                 />
                                 <label
                                   className="form-check-label h5 mb-0"
