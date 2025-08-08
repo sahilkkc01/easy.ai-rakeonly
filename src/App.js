@@ -47,6 +47,7 @@ import Inventory from "./pages/Inventory.jsx";
 import YardRowData from "./pages/YardRowData.jsx";
 import GetOcrData from "./pages/GetOcrData.jsx";
 import Profile from "./Profile.jsx";
+import DtmsGate from "./pages/DtmsGate.jsx";
 
 export default function App() {
 
@@ -85,6 +86,7 @@ export default function App() {
           <Route path="/Profile" element={<Profile />} />
 
           {/* GATE */}
+          <Route path="/dtms/gate" element={<DtmsGate />} />
           <Route path="/Gate" element={<PrivateRoute ><GateIN /></PrivateRoute>} />
           <Route path="/CISF" element={<PrivateRoute ><Cisf /></PrivateRoute>} />
           <Route path="/CISFIn" element={<PrivateRoute ><CisfIn /></PrivateRoute>} />
