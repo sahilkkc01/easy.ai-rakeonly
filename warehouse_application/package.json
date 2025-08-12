@@ -30,7 +30,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "BUILD_PATH=/Users/apple/Desktop/Sunic/sunic_frontend/wh_application react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
