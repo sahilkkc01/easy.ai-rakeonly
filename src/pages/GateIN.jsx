@@ -1328,9 +1328,7 @@ export default function GateIN() {
                                   value="Y"
                                   checked={isContainer}
                                   onChange={() => {
-                                    if (!isSpecialPermit) {
-                                      setIsContainer(!isContainer);
-                                    }
+                                    setIsContainer(!isContainer);
                                   }}
                                 />
                                 <label
@@ -2267,6 +2265,15 @@ export default function GateIN() {
                                 </>
                               )}
                             </div>
+                            {isSpecialPermit && !isContainer && (
+                              <div className="col-md-12">
+                                <textarea
+                                  name="remark"
+                                  className="form-control"
+                                  placeholder="Note"
+                                ></textarea>
+                              </div>
+                            )}
                           </div>
                         </div>
                         <div className="row">
