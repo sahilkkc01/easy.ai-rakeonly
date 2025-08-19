@@ -48,6 +48,7 @@ import YardRowData from "./pages/YardRowData.jsx";
 import GetOcrData from "./pages/GetOcrData.jsx";
 import Profile from "./Profile.jsx";
 import DtmsGate from "./pages/DtmsGate.jsx";
+import { RakeAlert } from "./pages/RakeAlert.jsx";
 
 export default function App() {
 
@@ -87,6 +88,7 @@ export default function App() {
 
           {/* GATE */}
           <Route path="/dtms/gate" element={<DtmsGate />} />
+          <Route path="/alert" element={<RakeAlert/>} />
           <Route path="/Gate" element={<PrivateRoute ><GateIN /></PrivateRoute>} />
           <Route path="/CISF" element={<PrivateRoute ><Cisf /></PrivateRoute>} />
           <Route path="/CISFIn" element={<PrivateRoute ><CisfIn /></PrivateRoute>} />
