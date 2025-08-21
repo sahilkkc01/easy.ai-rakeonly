@@ -21,15 +21,15 @@ export default function DtmsGate() {
 
   const [showScreen, setShowScreen] = useState("Gate");
   const [type, setType] = useState("IN");
-  const [gate_no, setGateNo] = useState(null);
-  const [lane_no, setLineNo] = useState(null);
+  const [gate_no, setGateNo] = useState('1');
+  const [lane_no, setLineNo] = useState('1');
   const [DamageStatus, setDamageStatus] = useState(null);
 
   useEffect(() => {
     setShowScreen(searchParams.get("showScreen") ?? "Gate");
     setType(searchParams.get("type") ?? "IN");
-    setGateNo(searchParams.get("gate_no") ?? null);
-    setLineNo(searchParams.get("lane_no") ?? null);
+    setGateNo(searchParams.get("gate_no") ?? '1');
+    setLineNo(searchParams.get("lane_no") ?? '1');
   }, [searchParams]);
 
   useEffect(() => {
@@ -282,7 +282,7 @@ export default function DtmsGate() {
 
   const GetLIveData = async () => {
     setLoading(true);
-    const url = `${ApiBaseUrl}/dtms/gate/new/vehicles?type=${type}&lane_no=${lane_no}&gate_name=EXIM`;
+    const url = `${ApiBaseUrl}/dtms/gate/new/vehicles?type=${type}&lane_no=${lane_no}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -522,9 +522,9 @@ export default function DtmsGate() {
               <div className="container-xxl flex-grow-1 container-p-y ">
                 <div className="row align-items-center justify-content-center ">
                   <div className="col-lg-6 col-md-9 col-sm-12  ">
-                    {showScreen && showScreen == "Gate" ? (
+                    {showScreen && showScreen == "Gate" || showScreen == "Vehicles" ? (
                       <>
-                        <div className="ms-auto col-md-12 text-center mb-3">
+                      <div className="ms-auto col-md-12 text-center mb-3">
                           <button
                             className={
                               type == "IN"
@@ -546,348 +546,7 @@ export default function DtmsGate() {
                             Out Gate
                           </button>
                         </div>
-                        <div className="card bg-none">
-                          <div className="card-body border-bottom py-2 px-1">
-                            <h4 className="m-0 text-center">
-                              Select Gate Number
-                            </h4>
-                          </div>
-
-                          {type && type === "IN" ? (
-                            <div className="card-body border-bottom py-2 pe-0">
-                              <h6 className="my-2"> Lane 1 </h6>
-                              <div className="row">
-                                <div className="col-5">
-                                  <div
-                                    className={`form-check custom-option custom-option-label custom-option-basic ${
-                                      gate_no == "2" ? "checked" : ""
-                                    } `}
-                                  >
-                                    <label
-                                      className="form-check-label custom-option-content text-center p-3"
-                                      htmlFor="gate_no2"
-                                    >
-                                      <input
-                                        name="gate_no"
-                                        className="form-check-input"
-                                        type="radio"
-                                        id="gate_no2"
-                                        hidden
-                                        onChange={() => {
-                                          setGateNo("2");
-                                          setLineNo("1");
-                                        }}
-                                      />
-                                      <b
-                                        className={`fs-6  ${
-                                          gate_no == "2" ? "text-primary" : ""
-                                        } `}
-                                      >
-                                        Gate 2
-                                      </b>
-                                    </label>
-                                  </div>
-                                </div>
-                                <div className="col-5">
-                                  <div
-                                    className={`form-check custom-option custom-option-label custom-option-basic  ${
-                                      gate_no == "3" ? "checked" : ""
-                                    }  `}
-                                  >
-                                    <label
-                                      className="form-check-label custom-option-content text-center p-3"
-                                      htmlFor="gate_no3"
-                                    >
-                                      <input
-                                        name="gate_no"
-                                        className="form-check-input"
-                                        type="radio"
-                                        id="gate_no3"
-                                        hidden
-                                        onChange={() => {
-                                          setGateNo("3");
-                                          setLineNo("1");
-                                        }}
-                                      />
-                                      <b
-                                        className={`fs-6  ${
-                                          gate_no == "3" ? "text-primary" : ""
-                                        } `}
-                                      >
-                                        Gate 3
-                                      </b>
-                                    </label>
-                                  </div>
-                                </div>
-                                <div className="col-12">
-                                  <hr className="mb-1" />
-                                  <h6 className="mb-2"> Lane 2 </h6>
-                                </div>
-                                <div className="col-5">
-                                  <div
-                                    className={`form-check custom-option custom-option-label custom-option-basic ${
-                                      gate_no == "4" ? "checked" : ""
-                                    } `}
-                                  >
-                                    <label
-                                      className="form-check-label custom-option-content text-center p-3"
-                                      htmlFor="gate_no4"
-                                    >
-                                      <input
-                                        name="gate_no"
-                                        className="form-check-input"
-                                        type="radio"
-                                        id="gate_no4"
-                                        hidden
-                                        onChange={() => {
-                                          setGateNo("4");
-                                          setLineNo("2");
-                                        }}
-                                      />
-                                      <b
-                                        className={`fs-6 ${
-                                          gate_no == "4" ? "text-primary" : ""
-                                        } `}
-                                      >
-                                        Gate 4
-                                      </b>
-                                    </label>
-                                  </div>
-                                </div>
-                                <div className="col-5">
-                                  <div
-                                    className={`form-check custom-option custom-option-label custom-option-basic  ${
-                                      gate_no == "5" ? "checked" : ""
-                                    } `}
-                                  >
-                                    <label
-                                      className="form-check-label custom-option-content text-center p-3"
-                                      htmlFor="gate_no5"
-                                    >
-                                      <input
-                                        name="gate_no"
-                                        className="form-check-input"
-                                        type="radio"
-                                        id="gate_no5"
-                                        hidden
-                                        onChange={() => {
-                                          setGateNo("5");
-                                          setLineNo("2");
-                                        }}
-                                      />
-                                      <b
-                                        className={`fs-6 ${
-                                          gate_no == "5" ? "text-primary" : ""
-                                        } `}
-                                      >
-                                        Gate 5
-                                      </b>
-                                    </label>
-                                  </div>
-                                </div>
-                                <div className="col-12">
-                                  <hr />
-                                </div>
-                                <div className="col-5">
-                                  <div
-                                    className={`form-check custom-option custom-option-label custom-option-basic  ${
-                                      gate_no == "1" ? "checked" : ""
-                                    } `}
-                                  >
-                                    <label
-                                      className="form-check-label custom-option-content text-center p-3"
-                                      htmlFor="gate_no1"
-                                    >
-                                      <input
-                                        name="gate_no"
-                                        className="form-check-input"
-                                        type="radio"
-                                        id="gate_no1"
-                                        hidden
-                                        onChange={() => {
-                                          setGateNo("1");
-                                          setLineNo("");
-                                        }}
-                                      />
-                                      <b
-                                        className={`fs-6 ${
-                                          gate_no == "1" ? "text-primary" : ""
-                                        } `}
-                                      >
-                                        Gate 1
-                                      </b>
-                                    </label>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ) : (
-                            <>
-                              <div className="card-body border-bottom py-2 pe-0">
-                                <h6 className="my-2"> Lane 1 </h6>
-                                <div className="row">
-                                  <div className="col-5">
-                                    <div
-                                      className={`form-check custom-option custom-option-label custom-option-basic ${
-                                        gate_no == "1" ? "checked" : ""
-                                      } `}
-                                    >
-                                      <label
-                                        className="form-check-label custom-option-content text-center p-3"
-                                        htmlFor="gate_no1"
-                                      >
-                                        <input
-                                          name="gate_no"
-                                          className="form-check-input"
-                                          type="radio"
-                                          id="gate_no1"
-                                          hidden
-                                          onChange={() => {
-                                            setGateNo("1");
-                                            setLineNo("1");
-                                          }}
-                                        />
-                                        <b
-                                          className={`fs-6  ${
-                                            gate_no == "1" ? "text-primary" : ""
-                                          } `}
-                                        >
-                                          Gate 1
-                                        </b>
-                                      </label>
-                                    </div>
-                                  </div>
-                                  <div className="col-5">
-                                    <div
-                                      className={`form-check custom-option custom-option-label custom-option-basic  ${
-                                        gate_no == "2" ? "checked" : ""
-                                      }  `}
-                                    >
-                                      <label
-                                        className="form-check-label custom-option-content text-center p-3"
-                                        htmlFor="gate_no2"
-                                      >
-                                        <input
-                                          name="gate_no"
-                                          className="form-check-input"
-                                          type="radio"
-                                          id="gate_no2"
-                                          hidden
-                                          onChange={() => {
-                                            setGateNo("2");
-                                            setLineNo("1");
-                                          }}
-                                        />
-                                        <b
-                                          className={`fs-6  ${
-                                            gate_no == "2" ? "text-primary" : ""
-                                          } `}
-                                        >
-                                          Gate 2
-                                        </b>
-                                      </label>
-                                    </div>
-                                  </div>
-                                  <div className="col-12">
-                                    <hr className="mb-1" />
-                                    <h6 className="mb-2"> Lane 2 </h6>
-                                  </div>
-
-                                  <div className="col-5">
-                                    <div
-                                      className={`form-check custom-option custom-option-label custom-option-basic ${
-                                        gate_no == "3" ? "checked" : ""
-                                      } `}
-                                    >
-                                      <label
-                                        className="form-check-label custom-option-content text-center p-3"
-                                        htmlFor="gate_no3"
-                                      >
-                                        <input
-                                          name="gate_no"
-                                          className="form-check-input"
-                                          type="radio"
-                                          id="gate_no3"
-                                          hidden
-                                          onChange={() => {
-                                            setGateNo("3");
-                                            setLineNo("2");
-                                          }}
-                                        />
-                                        <b
-                                          className={`fs-6 ${
-                                            gate_no == "3" ? "text-primary" : ""
-                                          } `}
-                                        >
-                                          Gate 3
-                                        </b>
-                                      </label>
-                                    </div>
-                                  </div>
-
-                                  <div className="col-5">
-                                    <div
-                                      className={`form-check custom-option custom-option-label custom-option-basic ${
-                                        gate_no == "4" ? "checked" : ""
-                                      } `}
-                                    >
-                                      <label
-                                        className="form-check-label custom-option-content text-center p-3"
-                                        htmlFor="gate_no4"
-                                      >
-                                        <input
-                                          name="gate_no"
-                                          className="form-check-input"
-                                          type="radio"
-                                          id="gate_no4"
-                                          hidden
-                                          onChange={() => {
-                                            setGateNo("4");
-                                            setLineNo("2");
-                                          }}
-                                        />
-                                        <b
-                                          className={`fs-6 ${
-                                            gate_no == "4" ? "text-primary" : ""
-                                          } `}
-                                        >
-                                          Gate 4
-                                        </b>
-                                      </label>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </>
-                          )}
-                          <div className="row">
-                            <div className="col-12 ">
-                              <div className="card-body p-0 py-1 text-center pe-1 bg-label-secondary ">
-                                <button
-                                  type="button"
-                                  className="btn m-0  w-100 fw-bold fs-5"
-                                  disabled={!gate_no}
-                                  onClick={() => {
-                                    setShowScreen("Vehicles");
-
-                                    searchParams.set("type", type);
-                                    searchParams.set("gate_no", gate_no);
-                                    searchParams.set("lane_no", lane_no);
-                                    searchParams.set("showScreen", "Vehicles");
-
-                                    setSearchParams(searchParams);
-
-                                    GetLIveData();
-                                  }}
-                                >
-                                  Proceed
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    ) : showScreen == "Vehicles" ? (
+                      
                       <div className="card">
                         <div className="card-body border-bottom">
                           <div className="row">
@@ -1052,6 +711,7 @@ export default function DtmsGate() {
                           </div>
                         </div>
                       </div>
+                      </>
                     ) : (
                       <form
                         className="card"
