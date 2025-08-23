@@ -235,7 +235,7 @@ export default function DtmsGate() {
     formEntries.type = type;
     formEntries.gate_no = gate_no;
     formEntries.lane_no = lane_no;
-    formEntries.gate_name = "EXIM";
+    formEntries.gate_name = "DTMS";
     formEntries.created_by = user.id;
     formEntries.vehicle_no_id = SelectedData.id;
     formEntries.vehicle_no = SelectedData.vehicle_no;
@@ -337,7 +337,7 @@ export default function DtmsGate() {
   const handlePermitNo = async () => {
     setLoading(true);
     if (scannedData && type) {
-      const url = `${ApiBaseUrl}/dtms/get/permit_detail_v2/${scannedData}?gate_name=EXIM&type=${type}&gate_no=${gate_no}&lane_no=${lane_no}`;
+      const url = `${ApiBaseUrl}/dtms/get/permit_detail_v2/${scannedData}?gate_name=DTMS&type=${type}&gate_no=${gate_no}&lane_no=${lane_no}`;
 
       try {
         const response = await axios.get(url, {
