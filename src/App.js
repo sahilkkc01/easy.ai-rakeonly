@@ -49,6 +49,7 @@ import GetOcrData from "./pages/GetOcrData.jsx";
 import Profile from "./Profile.jsx";
 import DtmsGate from "./pages/DtmsGate.jsx";
 import { RakeAlert } from "./pages/RakeAlert.jsx";
+import RakeOcrData2 from "./pages/RakeOcrData2.jsx";
 
 export default function App() {
 
@@ -124,6 +125,7 @@ export default function App() {
 
           <Route path="/yard/row/data" element={<YardRowData />} />
           <Route path="/get/ocr/data" element={<GetOcrData/>}/>
+          <Route path="/get/ocr/rake/data" element={<RakeOcrData2/>}/>
 
           {/* 
           {/* <Route path="/EIRMain/:Permit" element={<EIRMain />} />
