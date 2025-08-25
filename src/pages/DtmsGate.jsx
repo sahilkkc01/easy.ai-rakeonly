@@ -261,11 +261,17 @@ export default function DtmsGate() {
           GetLIveData();
         });
       } else {
+        let errorMessage = "";
+        if (typeof response.data.message === "object") {
+          errorMessage = Object.entries(response.data.message)
+            .map(([field, errors]) => `${field}: ${errors.join(", ")}`)
+            .join("\n");
+        } else {
+          errorMessage = response.data.message;
+        }
         Swal.fire({
-          icon: "info",
-          text: `Please Check all Field .... ${response.data.message}`,
-          // timer: 3000,
-          // showConfirmButton: false,
+          icon: "error",
+          text: `Please check all fields:\n${errorMessage}`,
         });
       }
     } catch (error) {
