@@ -69,7 +69,7 @@ export default function CartingTallySheet() {
       });
     }
     setTotalPackages(totalPackages);
-    setTotalPackagesWeight(totalPackagesWeight.toFixed(2));
+    setTotalPackagesWeight(totalPackagesWeight);
     setTotalArea(totalArea);
   }, [Data]);
 
@@ -154,7 +154,7 @@ export default function CartingTallySheet() {
                   </td>
                   <td>Declared Gross Weight</td>
                   <td>
-                    <strong>: {Data.gross_weight}</strong>
+                    <strong>: {Data?.gross_weight}</strong>
                   </td>
                 </tr>
                 <tr>
@@ -257,7 +257,7 @@ export default function CartingTallySheet() {
                         <td>{Trucks.cargo_description}</td>
 
                         <td>{Trucks.no_of_pkgs}</td>
-                        <td>{Trucks.pkgs_weight}</td>
+                        <td>{Number(Trucks.pkgs_weight??0)?.toFixed(3)}</td>
                         <td>
                           {Trucks?.grid_area?.map((grid_area) => (
                             <span>{grid_area.grid_locations} ,</span>
@@ -311,7 +311,7 @@ export default function CartingTallySheet() {
                   <td></td>
                   <td></td>
                   <td>{totalPackages}</td>
-                  <td>{totalPackagesWeight && !isNaN(Number(totalPackagesWeight)) ? Number(totalPackagesWeight).toFixed(2) : 0}</td>
+                  <td>{totalPackagesWeight && !isNaN(Number(totalPackagesWeight)) ? Number(totalPackagesWeight)?.toFixed(3) : 0}</td>
                   <td></td>
                   <td>{totalArea}</td>
                 </tr>

@@ -99,7 +99,7 @@ export default function StuffingTallySheet() {
         </div>
       )}
       <div className="card tally_sheet shadow-none">
-      <div className="card-body">
+        <div className="card-body">
           <div className="row">
             <div className="col">
               <span> S.No:</span> <b> {Data.id}</b>
@@ -111,8 +111,7 @@ export default function StuffingTallySheet() {
               <br />
               <span>Container Stuffing Tally Sheet</span>
             </div>
-            <div className="col text-end">
-            </div>
+            <div className="col text-end"></div>
           </div>
           <hr />
           <div className="row px-0 top">
@@ -125,9 +124,9 @@ export default function StuffingTallySheet() {
                       :
                       {Data?.stuffing_shipping_bill_details?.map((bills, i) => (
                         <>
-                        <span key={i}>{bills.shipping_bill_number} ,</span>
-                        {(i + 1) % 3 === 0 && <br />}
-                      </>
+                          <span key={i}>{bills.shipping_bill_number} ,</span>
+                          {(i + 1) % 3 === 0 && <br />}
+                        </>
                       ))}
                     </strong>
                   </td>
@@ -173,7 +172,7 @@ export default function StuffingTallySheet() {
                   </td>
                   <td>Start Date & Time</td>
                   <td>
-                      <strong>: {formatToDateTime(Data.start_time)}</strong>
+                    <strong>: {formatToDateTime(Data.start_time)}</strong>
                   </td>
                 </tr>
                 <tr>
@@ -183,7 +182,7 @@ export default function StuffingTallySheet() {
                   </td>
                   <td>End Date & Time</td>
                   <td>
-                      <strong>: {formatToDateTime(Data.end_time)}</strong>
+                    <strong>: {formatToDateTime(Data.end_time)}</strong>
                   </td>
                 </tr>
                 <tr>
@@ -200,27 +199,32 @@ export default function StuffingTallySheet() {
                   <td>Total No. of Packages Declared</td>
                   <td>
                     {/* <strong>: {totalPackages}</strong> */}
-                    <strong> : 
+                    <strong>
+                      {" "}
+                      :
                       {(() => {
-                        const sum = Data?.stuffing_shipping_bill_details?.reduce(
-                          (total, details) =>
-                            total + Number(details.ccls_no_of_pkg_declared??0),
-                          0
-                        );
+                        const sum =
+                          Data?.stuffing_shipping_bill_details?.reduce(
+                            (total, details) =>
+                              total +
+                              Number(details.ccls_no_of_pkg_declared ?? 0),
+                            0
+                          );
                         return sum && sum != 0 ? sum : totalPackages;
                       })()}
                     </strong>
-
                   </td>
                   <td>Exporter Name</td>
                   <td>
-                    <strong>: {Data?.carting_container?.exporter_name??'--'}</strong>
+                    <strong>
+                      : {Data?.carting_container?.exporter_name ?? "--"}
+                    </strong>
                   </td>
                 </tr>
                 <tr>
                   <td>Handling Type</td>
                   <td>
-                      <strong>:   {Data.handling_type}</strong>
+                    <strong>: {Data.handling_type}</strong>
                   </td>
                 </tr>
               </tbody>
@@ -244,51 +248,51 @@ export default function StuffingTallySheet() {
                 {Data?.stuffing_shipping_bill_details?.map((Details, i) => (
                   <tr key={i}>
                     <td>{Data.container_number}</td>
-                    <td>
-                        {Details.shipping_bill_number}
-                    </td>
-                    <td>
-                     
-                        {Details.package_code}
-                    </td> 
+                    <td>{Details.shipping_bill_number}</td>
+                    <td>{Details.package_code}</td>
+
+                    <td>{Details.commodity_description}</td>
+                    <td>{Details.no_of_packages_declared}</td>
+                    <td>{Number(Details.package_weight ?? 0)?.toFixed(3)}</td>
 
                     <td>
-                     {Details.commodity_description} 
+                      {Details?.grid_area?.map((grid_area) => (
+                        <>
+                          <span>{grid_area.grid_locations} </span> <br />
+                        </>
+                      ))}
                     </td>
                     <td>
-                     { Details.no_of_packages_declared}
+                      {Details?.grid_area?.map((grid_area) => (
+                        <>
+                          <span>{grid_area.area} </span> <br />
+                        </>
+                      ))}
                     </td>
-                    <td>
-                    { Details.package_weight}
-                    </td>
-
-                    <td>
-                        { Details?.grid_area?.map((grid_area)=>(
-                           <>
-                            <span>{grid_area.grid_locations} </span> <br />
-                           </>
-                          ))}
-                      </td>
-                      <td>
-                        
-                         { Details?.grid_area?.map((grid_area)=>(
-                           <>
-                            <span>{grid_area.area} </span> <br />
-                           </>
-                          ))}
-                       
-                      </td>
                   </tr>
                 ))}
                 {Data?.stuffing_shipping_bill_details
                   ? Array.from(
-                    {
-                      length: Math.max(
-                        0,
-                        10 - Data.stuffing_shipping_bill_details.length
-                      ),
-                    },
-                    (_, i) => (
+                      {
+                        length: Math.max(
+                          0,
+                          10 - Data.stuffing_shipping_bill_details.length
+                        ),
+                      },
+                      (_, i) => (
+                        <tr key={i}>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                        </tr>
+                      )
+                    )
+                  : Array.from({ length: 10 }, (_, i) => (
                       <tr key={i}>
                         <td></td>
                         <td></td>
@@ -299,20 +303,7 @@ export default function StuffingTallySheet() {
                         <td></td>
                         <td></td>
                       </tr>
-                    )
-                  )
-                  : Array.from({ length: 10 }, (_, i) => (
-                    <tr key={i}>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                    </tr>
-                  ))}
+                    ))}
 
                 <tr>
                   <td>Total</td>
@@ -320,7 +311,11 @@ export default function StuffingTallySheet() {
                   <td></td>
                   <td></td>
                   <td>{totalPackages}</td>
-                  <td>{totalPackagesWeight && !isNaN(Number(totalPackagesWeight)) ? Number(totalPackagesWeight).toFixed(2) : 0}</td>
+                  <td>
+                    {totalPackagesWeight && !isNaN(Number(totalPackagesWeight))
+                      ? Number(totalPackagesWeight)?.toFixed(3)
+                      : 0}
+                  </td>
                   <td></td>
                   <td>{totalArea}</td>
                 </tr>

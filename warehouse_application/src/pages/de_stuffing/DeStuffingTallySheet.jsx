@@ -240,7 +240,7 @@ export default function DeStuffingTallySheet() {
                     <td>{Details.no_of_packages_declared}</td>
                     <td>
                       {Details.package_weight
-                        ? Number(Details.package_weight).toFixed(2)
+                        ? Number(Details.package_weight)?.toFixed(3)
                         : "0"}
                     </td>
                     <td>
@@ -280,7 +280,7 @@ export default function DeStuffingTallySheet() {
                   <td></td>
                   <td></td>
                   <td>{totalPackages}</td>
-                  <td>{totalPackagesWeight && !isNaN(Number(totalPackagesWeight)) ? Number(totalPackagesWeight).toFixed(2) : 0}</td>
+                  <td>{totalPackagesWeight && !isNaN(Number(totalPackagesWeight)) ? Number(totalPackagesWeight)?.toFixed(3) : 0}</td>
                   <td></td>
                   <td>{totalArea}</td>
                 </tr>
