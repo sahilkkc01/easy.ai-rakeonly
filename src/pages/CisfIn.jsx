@@ -16,19 +16,22 @@ export default function CisfIn() {
   const type = "IN";
 
   const [Data, setData] = useState([]);
-  const [loading, setLoading] = useState("false");
-  const [ImageView, setImageView] = useState("false");
-
+  const [loading, setLoading] = useState(false);
+  const [ImageView, setImageView] = useState(false);
   useEffect(() => {
     GetData();
-  }, [gate_name]);
+  }, []);
 
   useEffect(() => {
-    console.log(Data);
-  }, [Data]);
+    const id = setInterval(() => {
+      GetData();
+    }, 10000);
+    return () => clearInterval(id);
+  }, []);
+  
 
   const GetData = async () => {
-    setLoading(true);
+    // setLoading(true);
     // const url = `https://ctas.live/backend/api/gate/cisf/data?type=${type}&gate_name=${gate_name}`;
     const url = `${ApiBaseUrl}/gate/cisf/data?type=${type}&gate_name=${gate_name}`;
     try {

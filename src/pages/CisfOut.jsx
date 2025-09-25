@@ -22,8 +22,15 @@ export default function CisfOut() {
     GetData();
   }, []);
 
+  useEffect(() => {
+    const id = setInterval(() => {
+      GetData();
+    }, 10000);
+    return () => clearInterval(id);
+  }, []);
+
   const GetData = async () => {
-    setLoading(true);
+    // setLoading(true);
     // const url = `https://ctas.live/backend/api/gate/cisf/data?type=${type}&gate_name=${gate_name}`;
     const url = `${ApiBaseUrl}/gate/cisf/data?type=${type}&gate_name=${gate_name}`;
     try {
