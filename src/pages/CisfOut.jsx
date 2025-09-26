@@ -13,6 +13,7 @@ export default function CisfOut() {
   const NewUser = localStorage.getItem("user");
   const user = JSON.parse(NewUser);
   const [gate_name, setGateName] = useState("EXIM");
+  const [lane, setLane] = useState("1");
   const type = "OUT";
   const [ImageView, setImageView] = useState("");
   const [Data, setData] = useState([]);
@@ -20,19 +21,20 @@ export default function CisfOut() {
 
   useEffect(() => {
     GetData();
-  }, []);
+  }, [lane,gate_name]);
 
   useEffect(() => {
     const id = setInterval(() => {
       GetData();
     }, 10000);
     return () => clearInterval(id);
-  }, []);
+  }, [lane,gate_name]);
 
   const GetData = async () => {
     // setLoading(true);
     // const url = `https://ctas.live/backend/api/gate/cisf/data?type=${type}&gate_name=${gate_name}`;
-    const url = `${ApiBaseUrl}/gate/cisf/data?type=${type}&gate_name=${gate_name}`;
+    const url = `${ApiBaseUrl}/gate/cisf/data?type=${type}&gate_name=${gate_name}&lane_no=${lane}`;
+
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -127,7 +129,7 @@ export default function CisfOut() {
               <Nav />
               <div className="container-xxl flex-grow-1">
                 <div className="row mt-5">
-                  <div className="d-flex justify-content-between align-items-center mb-5">
+                  <div className="d-flex justify-content-between align-items-center">
                     <h3 className="text-primary text-center">CISF OUT</h3>
                     <div className="text-end">
                       <button
@@ -135,7 +137,7 @@ export default function CisfOut() {
                           gate_name === "EXIM"
                             ? "btn-label-primary"
                             : "btn-outline-primary"
-                        } m-1`}
+                        } mx-1`}
                         onClick={() => setGateName("EXIM")}
                       >
                         EXIM Gate
@@ -145,13 +147,33 @@ export default function CisfOut() {
                           gate_name === "DTMS"
                             ? "btn-label-primary"
                             : "btn-outline-primary"
-                        } m-1`}
+                        } mx-1`}
                         onClick={() => setGateName("DTMS")}
                       >
                         DTMS Gate
                       </button>
                     </div>
                   </div>
+
+                  <div className="d-flex align-items-center mb-5 gap-3">
+                    <button
+                      className={`btn ${
+                        lane == "1" ? "btn-primary" : "btn-outline-primary"
+                      }`}
+                      onClick={() => setLane("1")}
+                    >
+                      Lane 1
+                    </button>
+                    <button
+                      className={`btn ${
+                        lane == "2" ? "btn-primary" : "btn-outline-primary"
+                      }`}
+                      onClick={() => setLane("2")}
+                    >
+                      Lane 2
+                    </button>
+                  </div>
+
                   {Data &&
                     Data.map((row, i) => (
                       <div className="col-lg-6 " key={i}>
@@ -277,9 +299,7 @@ export default function CisfOut() {
                                   <p className="mb-0">Survey Time :</p>
                                   <p className="mb-0 fw-bold text-uppercase">
                                     {" "}
-                                    {formatToDateTime(
-                                      row.survey_start_time
-                                    )}
+                                    {formatToDateTime(row.survey_start_time)}
                                   </p>
                                 </div>
                                 <div className="mb-2">
@@ -328,7 +348,7 @@ export default function CisfOut() {
                                           data-bs-target="#exampleModal"
                                           onClick={() =>
                                             setImageView(
-                                             `${OcrImgBaseUrl}/uploads/` +
+                                              `${OcrImgBaseUrl}/uploads/` +
                                                 row.container_image
                                             )
                                           }

@@ -13,27 +13,29 @@ export default function CisfIn() {
   const NewUser = localStorage.getItem("user");
   const user = JSON.parse(NewUser);
   const [gate_name, setGateName] = useState("EXIM");
+  const [lane, setLane] = useState("1");
   const type = "IN";
 
   const [Data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [ImageView, setImageView] = useState(false);
+
   useEffect(() => {
     GetData();
-  }, []);
+  }, [lane,gate_name]);
 
   useEffect(() => {
     const id = setInterval(() => {
       GetData();
     }, 10000);
     return () => clearInterval(id);
-  }, []);
+  }, [lane,gate_name]);
   
 
   const GetData = async () => {
     // setLoading(true);
     // const url = `https://ctas.live/backend/api/gate/cisf/data?type=${type}&gate_name=${gate_name}`;
-    const url = `${ApiBaseUrl}/gate/cisf/data?type=${type}&gate_name=${gate_name}`;
+    const url = `${ApiBaseUrl}/gate/cisf/data?type=${type}&gate_name=${gate_name}&lane_no=${lane}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
@@ -154,6 +156,25 @@ export default function CisfIn() {
                       </button>
                     </div>
                   </div>
+                  <div className="d-flex align-items-center mb-5 gap-3">
+                    <button
+                      className={`btn ${
+                        lane == "1" ? "btn-primary" : "btn-outline-primary"
+                      }`}
+                      onClick={() => setLane("1")}
+                    >
+                      Lane 1
+                    </button>
+                    <button
+                      className={`btn ${
+                        lane == "2" ? "btn-primary" : "btn-outline-primary"
+                      }`}
+                      onClick={() => setLane("2")}
+                    >
+                      Lane 2
+                    </button>
+                  </div>
+                  
                   {Data &&
                     Data.map((row, i) => (
                       <div className="col-lg-6 " key={i}>
