@@ -22,15 +22,14 @@ export default function CisfIn() {
 
   useEffect(() => {
     GetData();
-  }, [lane,gate_name]);
+  }, [lane, gate_name]);
 
   useEffect(() => {
     const id = setInterval(() => {
       GetData();
     }, 10000);
     return () => clearInterval(id);
-  }, [lane,gate_name]);
-  
+  }, [lane, gate_name]);
 
   const GetData = async () => {
     // setLoading(true);
@@ -64,12 +63,24 @@ export default function CisfIn() {
 
   const handleApprove = async (id, type) => {
     setLoading(true);
-    // const url = `https://ctas.live/backend/api/gate/cisf/status/update`;
+    if (!user?.id) {
+      Swal.fire({
+        icon: "error",
+        text: "Please Login",
+        timer: 3000,
+        showConfirmButton: false,
+        willClose: () => {
+          navigate("/");
+        },
+      });
+      return null;
+    }
     const url = `${ApiBaseUrl}/gate/cisf/status/update`;
     let payload = {
       id: id,
       type: type,
       gate_name: "EXIM",
+      user_id: user.id,
     };
     try {
       const response = await axios.post(url, payload, {
@@ -174,7 +185,7 @@ export default function CisfIn() {
                       Lane 2
                     </button>
                   </div>
-                  
+
                   {Data &&
                     Data.map((row, i) => (
                       <div className="col-lg-6 " key={i}>
@@ -182,7 +193,7 @@ export default function CisfIn() {
                           <div className="card-body">
                             <div className="row align-item-center">
                               <div className="col">
-                              <div className="mb-2">
+                                <div className="mb-2">
                                   <p className="mb-0">Gate Number :</p>
                                   <p className="mb-0 fw-bold text-uppercase">
                                     {row.gate_no}
@@ -216,7 +227,8 @@ export default function CisfIn() {
                                     {row.permit_no}
                                   </p>
                                 </div>
-                                {row.is_container == "Y" && row.empty_container_image_1 == null ? (
+                                {row.is_container == "Y" &&
+                                row.empty_container_image_1 == null ? (
                                   <>
                                     <div className="mb-2">
                                       <p className="mb-0"> Liner Seal :</p>
@@ -382,7 +394,7 @@ export default function CisfIn() {
                                         data-bs-target="#exampleModal"
                                         onClick={() =>
                                           setImageView(
-                                            `${ImgBaseUrl}/uploads/`+
+                                            `${ImgBaseUrl}/uploads/` +
                                               row?.driver_photo
                                           )
                                         }
@@ -494,7 +506,6 @@ export default function CisfIn() {
                     </div>
                   </div>
                 </div>
-                
               </div>
               <Footer />
             </div>

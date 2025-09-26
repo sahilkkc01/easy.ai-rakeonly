@@ -62,12 +62,26 @@ export default function CisfOut() {
   };
 
   const handleApprove = async (id, type) => {
-    // const url = `https://ctas.live/backend/api/gate/cisf/status/update`;
+    setLoading(true);
+    if (!user?.id) {
+      Swal.fire({
+        icon: "error",
+        text: "Please Login",
+        timer: 3000,
+        showConfirmButton: false,
+        willClose: () => {
+          navigate("/");
+        },
+      });
+      return null;
+    }
+        
     const url = `${ApiBaseUrl}/gate/cisf/status/update`;
     let payload = {
       id: id,
       type: type,
       gate_name: "EXIM",
+      user_id: user.id,
     };
     try {
       const response = await axios.post(url, payload, {
