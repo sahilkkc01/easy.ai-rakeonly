@@ -50,6 +50,8 @@ import Profile from "./Profile.jsx";
 import DtmsGate from "./pages/DtmsGate.jsx";
 import { RakeAlert } from "./pages/RakeAlert.jsx";
 import RakeOcrData2 from "./pages/RakeOcrData2.jsx";
+import ContainerData from "./pages/ContainerData.jsx";
+import ContainerDataOut from "./pages/ContainerDataOut.jsx";
 
 export default function App() {
 
@@ -88,6 +90,8 @@ export default function App() {
           <Route path="/Profile" element={<Profile />} />
 
           {/* GATE */}
+          <Route path="/container/data" element={<ContainerData />} />
+          <Route path="/container/data/out" element={<ContainerDataOut />} />
           <Route path="/dtms/gate" element={<DtmsGate />} />
           <Route path="/alert" element={<RakeAlert/>} />
           <Route path="/Gate" element={<PrivateRoute ><GateIN /></PrivateRoute>} />
