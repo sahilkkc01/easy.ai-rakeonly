@@ -286,8 +286,8 @@ export default function CartingBillDetails() {
                     (area) => area.location_code === item.grid_locations
                   )
                 : null;
-                
 
+                
             return {
               id: i + 1,
               grid_location: item.grid_locations || "",
@@ -560,7 +560,7 @@ export default function CartingBillDetails() {
               } else if (pkgValue == 0) {
                 weightInput.value = 0;
               }
-            } 
+            }
           }
         } else {
           let weightInput = document.getElementById(`pkgs_weight_${i}`);
@@ -573,7 +573,7 @@ export default function CartingBillDetails() {
             } else if (pkgValue == 0) {
               weightInput.value = 0;
             }
-          } 
+          }
         }
       }
     }
@@ -587,7 +587,7 @@ export default function CartingBillDetails() {
       if (weightInput) {
         Wh += Number(weightInput.value);
         setWeight(Wh);
-      } 
+      }
     }
   };
 
@@ -1084,11 +1084,67 @@ export default function CartingBillDetails() {
                             </div>
                           ))}
 
-                          {/* <div className="col-12 text-center">
-                            <button type="button" onClick={culWeight}>weights</button>
-                                  <h1>weight:{Weight}</h1>
-                                
-                          </div> */}
+
+                          <div className="row">
+                            <div className="col-lg-8 col-md-10 m-auto">
+                              <div className="card card-body my-3">
+                                <div className="row fs-5">
+                                  <div className="col-6">
+                                    <p className="m-0">
+                                      Total No of Pkgs :{" "}
+                                      {Data?.carting_trucks?.reduce(
+                                        (sum, t) =>
+                                          sum + (Number(t?.no_of_pkgs) || 0),
+                                        0
+                                      )}
+                                    </p>
+                                    <p className="m-0">
+                                      Total Pkg Weight :{" "}
+                                      {Number(
+                                        Data?.carting_trucks
+                                          ?.reduce(
+                                            (sum, t) =>
+                                              sum +
+                                              (Number(t?.pkgs_weight) || 0),
+                                            0
+                                          )
+                                          .toFixed(3)
+                                      )}
+                                    </p>
+                                  </div>
+
+                                  <div className="col-6 d-flex gap-2">
+                                    <span>Grid Locations : </span>
+                                    <span>
+                                      {(() => {
+                                        const grouped = {};
+
+                                        Object.values(
+                                          allGridInputs || {}
+                                        ).forEach((arr) => {
+                                          arr.forEach((item) => {
+                                            const loc = item.grid_location;
+                                            const area = Number(item.area) || 0;
+                                            grouped[loc] =
+                                              (grouped[loc] || 0) + area;
+                                          });
+                                        });
+
+                                        return Object.entries(grouped).map(
+                                          ([location, totalArea], index) => (
+                                            <p className="m-0">
+                                              {location} {totalArea} sqm
+                                            </p>
+                                          )
+                                        );
+                                      })()}
+                                    </span>
+                                  </div>
+                                  <div className="col-3"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
 
                           <div className="col-12 my-2 text-end">
                             <button
