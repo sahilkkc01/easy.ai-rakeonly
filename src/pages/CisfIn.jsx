@@ -227,85 +227,92 @@ export default function CisfIn() {
                                     {row.permit_no}
                                   </p>
                                 </div>
-                                {row.is_container == "Y" &&
+                                {/* {row.is_container == "Y" &&
                                 row.empty_container_image_1 == null ? (
-                                  <>
-                                    <div className="mb-2">
-                                      <p className="mb-0"> Liner Seal :</p>
-                                      <p className="mb-0 fw-bold text-uppercase">
-                                        {row.seal_1_no}
-                                        <img
-                                          src={
+                                  <> */}
+                                {row.seal_1_image && (
+                                  <div className="mb-2">
+                                    <p className="mb-0"> Liner Seal :</p>
+                                    <p className="mb-0 fw-bold text-uppercase">
+                                      {row.seal_1_no}
+                                      <img
+                                        src={
+                                          `${ImgBaseUrl}uploads/` +
+                                          row.seal_1_image
+                                        }
+                                        style={{ width: "50px" }}
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal"
+                                        onClick={() =>
+                                          setImageView(
                                             `${ImgBaseUrl}uploads/` +
-                                            row.seal_1_image
-                                          }
-                                          style={{ width: "50px" }}
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#exampleModal"
-                                          onClick={() =>
-                                            setImageView(
-                                              `${ImgBaseUrl}uploads/` +
-                                                row.seal_1_image
-                                            )
-                                          }
-                                        />
-                                      </p>
-                                    </div>
-                                    <div className="mb-2">
-                                      <p className="mb-0">Custom Seal :</p>
-                                      <p className="mb-0 fw-bold text-uppercase">
-                                        {row.seal_2_no}
-                                        <img
-                                          src={
+                                              row.seal_1_image
+                                          )
+                                        }
+                                      />
+                                    </p>
+                                  </div>
+                                )}
+                                {row.seal_2_image && (
+                                  <div className="mb-2">
+                                    <p className="mb-0">Custom Seal :</p>
+                                    <p className="mb-0 fw-bold text-uppercase">
+                                      {row.seal_2_no}
+                                      <img
+                                        src={
+                                          `${ImgBaseUrl}uploads/` +
+                                          row.seal_2_image
+                                        }
+                                        alt=""
+                                        style={{ width: "50px" }}
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal"
+                                        onClick={() =>
+                                          setImageView(
                                             `${ImgBaseUrl}uploads/` +
-                                            row.seal_2_image
-                                          }
-                                          alt=""
-                                          style={{ width: "50px" }}
-                                          data-bs-toggle="modal"
-                                          data-bs-target="#exampleModal"
-                                          onClick={() =>
-                                            setImageView(
-                                              `${ImgBaseUrl}uploads/` +
-                                                row.seal_2_image
-                                            )
-                                          }
-                                        />
-                                      </p>
-                                    </div>
-                                  </>
+                                              row.seal_2_image
+                                          )
+                                        }
+                                      />
+                                    </p>
+                                  </div>
+                                )}
+                                {/* </>
                                 ) : (
                                   <>
-                                    {row.empty_container_image_1 != null ? (
-                                      <div className="mb-2">
-                                        <p className="mb-0">
-                                          Empty Container Image :
-                                        </p>
-                                        <p className="mb-0 fw-bold text-uppercase">
-                                          {row.seal_2_no}
-                                          <img
-                                            src={
-                                              `${ImgBaseUrl}uploads/` +
+                                    {row.empty_container_image_1 != null ? ( */}
+                                {row.empty_container_image_1 && (
+                                  <div className="mb-2">
+                                    <p className="mb-0">
+                                      Empty Container Image :
+                                    </p>
+                                    <p className="mb-0 fw-bold text-uppercase">
+                                      {row.seal_2_no}
+                                      <img
+                                        src={
+                                          `${ImgBaseUrl}uploads/` +
+                                          row.empty_container_image_1
+                                        }
+                                        alt=""
+                                        style={{ width: "50px" }}
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal"
+                                        onClick={() =>
+                                          setImageView(
+                                            `${ImgBaseUrl}uploads/` +
                                               row.empty_container_image_1
-                                            }
-                                            alt=""
-                                            style={{ width: "50px" }}
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal"
-                                            onClick={() =>
-                                              setImageView(
-                                                `${ImgBaseUrl}uploads/` +
-                                                  row.empty_container_image_1
-                                              )
-                                            }
-                                          />
-                                        </p>
-                                      </div>
-                                    ) : (
+                                          )
+                                        }
+                                      />
+                                    </p>
+                                  </div>
+                                )}
+
+                                {/* ) : (
                                       <></>
                                     )}
                                   </>
-                                )}
+                                )} */}
 
                                 <div className="mb-2">
                                   <p className="mb-0">Survey Time :</p>
