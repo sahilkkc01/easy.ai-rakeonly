@@ -144,7 +144,7 @@ export default function IndexROut() {
     e.preventDefault();
     const formData = new FormData(e.target);
     let formValues = Object.fromEntries(formData.entries());
-
+    formValues.user_id = user?.id??null;
     const FIles = [
       "container_image",
       "seal_1_image",
