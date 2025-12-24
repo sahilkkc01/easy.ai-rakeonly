@@ -24,6 +24,7 @@ export default function CartingBillDetails() {
   const [is_part_cargo, setIs_part_cargo] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState(null);
   const [ID, setID] = useState(false);
+  const [Type, setType] = useState(null);
   const [MapName, setMapName] = useState(null);
   const [LocationNames, setLocationNames] = useState([]);
   const [LocationsArea, setLocationsArea] = useState(null);
@@ -37,11 +38,11 @@ export default function CartingBillDetails() {
   const [ModalIds, setModalIds] = useState(0);
   const [SelectedGrids, setSelectedGrids] = useState({});
 
-  const fetchData = async (crn_number) => {
+  const fetchData = async (type,crn_number) => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${ApiBaseUrl}get/carting?crn_number=${crn_number}`
+        `${ApiBaseUrl}get/carting?type=${type}&crn_number=${crn_number}`
       );
 
       if (response.data?.status === "success") {
@@ -126,18 +127,22 @@ export default function CartingBillDetails() {
   const GetFormData = async (e) => {
     e.preventDefault();
     const crn_number = e.target.crn_number.value.toUpperCase();
+    const type = e.target.type.value.toUpperCase();
     setCrnNo(crn_number);
-    setSearchParams({ crn_number });
+    setType(type);
+    setSearchParams({ type,crn_number });
   };
 
   useEffect(() => {
     const crn_number = searchParams.get("crn_number");
+    const type = searchParams.get("type");
     const tallySheet = searchParams.get("tally_sheet");
     const finalSubmit = searchParams.get("isFinalSubmit");
     const is_part_c = searchParams.get("is_part_cargo");
     const id = searchParams.get("id");
 
     if (crn_number) setCrnNo(crn_number);
+    if (type) setType(type);
     if (tallySheet) setTallySheet(tallySheet);
     if (is_part_c) {
       setIs_part_cargo(is_part_c);
@@ -145,8 +150,8 @@ export default function CartingBillDetails() {
     if (finalSubmit) setIsFinalSubmit(finalSubmit === "1");
     if (id) setID(id);
 
-    if (crn_number && !tallySheet) {
-      fetchData(crn_number);
+    if (crn_number && type && !tallySheet) {
+      fetchData(type,crn_number);
     }
   }, [searchParams]);
 
@@ -159,7 +164,7 @@ export default function CartingBillDetails() {
         if (is_part_cargo && is_part_cargo == "1") {
         } else {
           navigate(
-            `?isFinalSubmit=1&id=${Data.id}&tally_sheet=1&crn_number=${CrnNo}`
+            `?isFinalSubmit=1&id=${Data.id}&type=${Type}&tally_sheet=1&crn_number=${CrnNo}`
           );
         }
       }
@@ -184,7 +189,7 @@ export default function CartingBillDetails() {
   const handleFinalSubmit = async () => {
     setLoading(true);
     try {
-      const url = `${ApiBaseUrl}carting/final/submit?id=${ID}&crn_number=${CrnNo}`;
+      const url = `${ApiBaseUrl}carting/final/submit?id=${ID}&type=${Type}&crn_number=${CrnNo}`;
       const response = await axios.get(
         url,
         {
@@ -206,7 +211,7 @@ export default function CartingBillDetails() {
           timer: 2000,
         });
 
-        navigate(`?isFinalSubmit=1&id=${ID}&tally_sheet=1&crn_number=${CrnNo}`);
+        navigate(`?isFinalSubmit=1&id=${ID}&type=${Type}&tally_sheet=1&crn_number=${CrnNo}`);
       } else {
         Swal.fire({
           icon: "error",
@@ -287,7 +292,6 @@ export default function CartingBillDetails() {
                   )
                 : null;
 
-                
             return {
               id: i + 1,
               grid_location: item.grid_locations || "",
@@ -625,7 +629,7 @@ export default function CartingBillDetails() {
 
   const handleRestData = async () => {
     setLoading(true);
-    const url = `${ApiBaseUrl}carting/reset/data?id=${ID}&crn_number=${CrnNo}`;
+    const url = `${ApiBaseUrl}carting/reset/data?id=${ID}&type=${Type}&crn_number=${CrnNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -721,7 +725,7 @@ export default function CartingBillDetails() {
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
                 <div className="container">
-                  {CrnNo && TallySheet ? (
+                  {CrnNo && Type && TallySheet ? (
                     <div className="row justify-content-center">
                       <div className="col-lg-10 col-md-11">
                         <div className="text-end">
@@ -738,7 +742,7 @@ export default function CartingBillDetails() {
                                 Print
                               </button>
                               <a
-                                href={`?id=${ID}&crn_number=${CrnNo}&is_part_cargo=1`}
+                                href={`?id=${ID}&type=${Type}&crn_number=${CrnNo}&is_part_cargo=1`}
                                 className="btn btn-primary mx-2"
                               >
                                 Add Part Cargo
@@ -754,7 +758,7 @@ export default function CartingBillDetails() {
                                 Final Submit
                               </button>
                               <a
-                                href={`?isFinalSubmit=0&id=${ID}&crn_number=${CrnNo}`}
+                                href={`?isFinalSubmit=0&id=${ID}&type=${Type}&crn_number=${CrnNo}`}
                                 className="btn btn-primary mx-2"
                               >
                                 Edit
@@ -789,7 +793,7 @@ export default function CartingBillDetails() {
                         <div className="" style={{ width: 789, height: 1099 }}>
                           <iframe
                             ref={iframeRef}
-                            src={`/carting/tally_sheet?crn_number=${CrnNo}`}
+                            src={`/carting/tally_sheet?type=${Type}&crn_number=${CrnNo}`}
                             style={{
                               width: "100%",
                               height: "100%",
@@ -800,7 +804,7 @@ export default function CartingBillDetails() {
                         </div>
                       </div>
                     </div>
-                  ) : Data && CrnNo ? (
+                  ) : Data && Type && CrnNo ? (
                     <>
                       <form action="" onSubmit={handleSubmitForm}>
                         <div className="text-end">
@@ -846,6 +850,11 @@ export default function CartingBillDetails() {
                                   type="hidden"
                                   name="id"
                                   defaultValue={Data?.id}
+                                />
+                                <input
+                                  type="hidden"
+                                  name="type"
+                                  defaultValue={Data?.type}
                                 />
                                 <div className="col-4">
                                   <label className="form-label">Crn No</label>
@@ -1084,7 +1093,6 @@ export default function CartingBillDetails() {
                             </div>
                           ))}
 
-
                           <div className="row">
                             <div className="col-lg-8 col-md-10 m-auto">
                               <div className="card card-body my-3">
@@ -1185,7 +1193,23 @@ export default function CartingBillDetails() {
                             </div>
 
                             <form action="" onSubmit={GetFormData}>
-                              <p>Please Enter CRN Number to Fetch Data</p>
+                                <p>Please Enter CRN Number to Fetch Data</p>
+                              <div className="form-floating form-floating-outline mb-6">
+                                <select
+                                  name="type"
+                                  id="type"
+                                  className="form-select"
+                                  required
+                                >
+                                  <option value="" selected disabled>
+                                    Select Type
+                                  </option>
+                                  <option value="LCL">LCL</option>
+                                  <option value="FCL">FCL</option>
+                                </select>
+                                <label htmlFor="type">Type</label>
+                              </div>
+
                               <div className="form-floating form-floating-outline mb-6">
                                 <input
                                   type="text"

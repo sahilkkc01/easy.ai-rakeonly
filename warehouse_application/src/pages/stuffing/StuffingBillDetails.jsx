@@ -21,13 +21,14 @@ export default function StuffingBillDetails() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFinalSubmit, setIsFinalSubmit] = useState(false);
   const [ID, setID] = useState(null);
+  const [Type, setType] = useState(null);
   const [gridData, setGridData] = useState({});
   const [gridData2, setGridData2] = useState({});
   const today = new Date();
 
-  const fetchData = async (container_number) => {
+  const fetchData = async (type, container_number) => {
     setLoading(true);
-    const url = `${ApiBaseUrl}get/stuffing?type=FCL&container_number=${container_number}`;
+    const url = `${ApiBaseUrl}get/stuffing?type=${type}&container_number=${container_number}`;
     try {
       const response = await axios.get(url);
       if (response?.data?.status == "success") {
@@ -54,26 +55,31 @@ export default function StuffingBillDetails() {
   const GetFormData = async (e) => {
     e.preventDefault();
     const container_number = e.target.container_number.value.toUpperCase();
+    const type = e.target.type.value.toUpperCase();
+    setType(type);
     setContainerNo(container_number);
     setSearchParams({ container_number });
-    fetchData(container_number);
+    fetchData(type, container_number);
   };
 
   useEffect(() => {
     const container_number = searchParams.get("container_number");
     const id = searchParams.get("id");
+    const type = searchParams.get("type");
     const tallySheet = searchParams.get("tally_sheet");
     const finalSubmit = searchParams.get("isFinalSubmit");
     if (finalSubmit) setIsFinalSubmit(finalSubmit == "1");
-    if (id) {
+    if (id && type) {
       setID(id);
+      setType(type);
     }
-    if (container_number) {
+    if (type && container_number) {
       setContainerNo(container_number);
+      setType(type);
       if (tallySheet) {
         setTallySheet(tallySheet);
       } else {
-        fetchData(container_number);
+        fetchData(type,container_number);
       }
     }
   }, [searchParams]);
@@ -82,6 +88,7 @@ export default function StuffingBillDetails() {
     if (!Data) return;
 
     setID(Data?.id);
+    setType(Data?.type);
 
     let defaultGridData = {};
 
@@ -184,7 +191,7 @@ export default function StuffingBillDetails() {
   const handleFinalSubmit = async () => {
     setLoading(true);
     try {
-      const url = `${ApiBaseUrl}stuffing/final/submit?id=${ID}&container_number=${ContainerNo}`;
+      const url = `${ApiBaseUrl}stuffing/final/submit?id=${ID}&type=${Type}&container_number=${ContainerNo}`;
       const response = await axios.get(
         url,
         {
@@ -206,7 +213,7 @@ export default function StuffingBillDetails() {
           timer: 2000,
         });
         navigate(
-          `?isFinalSubmit=1&id=${ID}&tally_sheet=1&container_number=${ContainerNo}`
+          `?isFinalSubmit=1&id=${ID}&type=${Type}&tally_sheet=1&container_number=${ContainerNo}`
         );
       } else {
         Swal.fire({
@@ -244,7 +251,7 @@ export default function StuffingBillDetails() {
           text: response?.data?.message,
           timer: 3000,
         }).then(() => {
-          navigate(`?id=${ID}&tally_sheet=1&container_number=${ContainerNo}`);
+          navigate(`?id=${ID}&type=${Type}&tally_sheet=1&container_number=${ContainerNo}`);
         });
       } else {
         Swal.fire({
@@ -309,50 +316,6 @@ export default function StuffingBillDetails() {
         )}
       </div>
     );
-  };
-
-  const AreaHandle = (id, key) => {
-    let areaInput = document.getElementById(`area_${id}_${key}`);
-    let errorMsg = document.getElementById(`error_area_${id}_${key}`);
-
-    if (areaInput) {
-      let myValue = parseFloat(areaInput.value) || 0;
-      let maxAttr = parseFloat(areaInput.getAttribute("max"));
-      let myMaxValue = maxAttr || maxAttr == 0 ? maxAttr : 20;
-
-      if (myValue > myMaxValue) {
-        areaInput.classList.add("border", "border-danger");
-        if (errorMsg) {
-          errorMsg.className = "text-danger d-block mt-1";
-          errorMsg.innerText = `Grid Maximum Area Available ${myMaxValue}`;
-        }
-      } else {
-        areaInput.classList.remove("border", "border-danger");
-        if (errorMsg) {
-          errorMsg.className = "";
-          errorMsg.innerText = "";
-        }
-      }
-    }
-  };
-
-  const handleBillDetails = (key, sBillNo) => {
-    Data?.delivery_bill_details?.map((details, a) => {
-      if (details.boe_number == sBillNo) {
-        document.getElementById(
-          `cargo_description_${key}`
-        ).value = `${details.commodity_description}`;
-        document.getElementById(
-          `no_of_pkgs_${key}`
-        ).value = `${details.no_of_packages_declared}`;
-        document.getElementById(
-          `pkgs_weight_${key}`
-        ).value = `${details.package_weight}`;
-        document.getElementById(
-          `pkg_code_${key}`
-        ).value = `${details.package_code}`;
-      }
-    });
   };
 
   const handleBillPkgW = (key, pkg) => {
@@ -441,7 +404,7 @@ export default function StuffingBillDetails() {
 
       if (Data.status == "1" || Data.status == "2") {
         navigate(
-          `?isFinalSubmit=1&id=${ID}&tally_sheet=1&container_number=${Data.container_number}`
+          `?isFinalSubmit=1&id=${ID}&type=${Type}&tally_sheet=1&container_number=${Data.container_number}`
         );
       }
     }
@@ -449,7 +412,7 @@ export default function StuffingBillDetails() {
 
   const handleRestData = async () => {
     setLoading(true);
-    const url = `${ApiBaseUrl}stuffing/reset/data?id=${ID}&type=FCL&container_number=${ContainerNo}`;
+    const url = `${ApiBaseUrl}stuffing/reset/data?id=${ID}&type=${Type}&container_number=${ContainerNo}`;
     try {
       const response = await axios.get(url, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -518,36 +481,44 @@ export default function StuffingBillDetails() {
   useEffect(() => {
     if (!Data || !Bills) return;
     const updatedBills = Bills.map((details, i) => {
-      const relatedTrucks = Data?.carting_container?.carting_trucks?.filter(
-        (b) => b.sbill === details.shipping_bill_number
-      ) || [];
-  
+      const relatedTrucks =
+        Data?.carting_container?.carting_trucks?.filter(
+          (b) => b.sbill === details.shipping_bill_number
+        ) || [];
+
       const firstTruck = relatedTrucks[0] || {};
-  
+
       const totalPackages = relatedTrucks.reduce(
         (sum, truck) => sum + (Number(truck.no_of_pkgs) || 0),
         0
       );
-  
+
       const totalWeight = relatedTrucks.reduce(
         (sum, truck) => sum + (Number(truck.pkgs_weight) || 0),
         0
       );
-  
+
       return {
         ...details,
-        commodity_description: details?.commodity_description ?? firstTruck?.cargo_description ?? null,
+        commodity_description:
+          details?.commodity_description ??
+          firstTruck?.cargo_description ??
+          null,
         package_code: details?.package_code ?? firstTruck?.pkg_code ?? null,
         no_of_packages_declared:
-          (details?.no_of_packages_declared ?? 0) > 0 ? details.no_of_packages_declared : totalPackages ?? null,
+          (details?.no_of_packages_declared ?? 0) > 0
+            ? details.no_of_packages_declared
+            : totalPackages ?? null,
         package_weight:
-          (details?.package_weight ?? 0) > 0 ? details.package_weight : totalWeight ?? null,
-      };    
+          (details?.package_weight ?? 0) > 0
+            ? details.package_weight
+            : totalWeight ?? null,
+      };
     });
 
     setBills(updatedBills);
   }, [Data]);
-  
+
   return (
     <>
       {loading && (
@@ -570,7 +541,7 @@ export default function StuffingBillDetails() {
           <div className="layout-page">
             <div className="content-wrapper">
               <div className="container-xxl flex-grow-1 container-p-y">
-                {ContainerNo && TallySheet ? (
+                {ContainerNo && Type && TallySheet ? (
                   <div className="row justify-content-center">
                     <div className="col-lg-10 col-md-11">
                       {/* <div className="text-end">
@@ -653,7 +624,7 @@ export default function StuffingBillDetails() {
                       <div className="" style={{ width: 789, height: 1099 }}>
                         <iframe
                           ref={iframeRef}
-                          src={`/stuffing/tally_sheet?container_number=${ContainerNo}`}
+                          src={`/stuffing/tally_sheet?type=${Type}&container_number=${ContainerNo}`}
                           style={{
                             width: "100%",
                             height: "100%",
@@ -664,7 +635,7 @@ export default function StuffingBillDetails() {
                       </div>
                     </div>
                   </div>
-                ) : Data && ContainerNo ? (
+                ) : Data && Type && ContainerNo ? (
                   <>
                     <form action="" onSubmit={handleSubmitForm}>
                       <div className="text-end">
@@ -701,6 +672,11 @@ export default function StuffingBillDetails() {
                         <div className="card">
                           <div className="card-body">
                             <div className="row">
+                              <input
+                                type="hidden"
+                                name="type"
+                                defaultValue={Data?.type}
+                              />
                               <input
                                 type="hidden"
                                 name="id"
@@ -803,7 +779,7 @@ export default function StuffingBillDetails() {
                         </div>
 
                         <h4 className="text-primary mb-3">Bill Details</h4>
-                     
+
                         {TotalBills &&
                           TotalBills > 0 &&
                           Array.from({ length: TotalBills }, (_, i) => (
@@ -876,7 +852,8 @@ export default function StuffingBillDetails() {
                                     id={`no_of_packages_declared_${i}`}
                                     name={`no_of_packages_declared[${i}]`}
                                     defaultValue={
-                                      Bills?.[i]?.no_of_packages_declared ??null
+                                      Bills?.[i]?.no_of_packages_declared ??
+                                      null
                                     }
                                     onChange={(e) =>
                                       handleBillPkgW(i, e.target.value)
@@ -893,7 +870,7 @@ export default function StuffingBillDetails() {
                                     id={`package_weight_${i}`}
                                     name={`package_weight[${i}]`}
                                     defaultValue={
-                                      Bills?.[i]?.package_weight ??null
+                                      Bills?.[i]?.package_weight ?? null
                                     }
                                   />
                                 </div>
@@ -974,6 +951,22 @@ export default function StuffingBillDetails() {
                           </div>
                           <form action="" onSubmit={GetFormData}>
                             <p>Please Enter Container Number to Fetch Data</p>
+                            <div className="form-floating form-floating-outline mb-6">
+                              <select
+                                name="type"
+                                id="type"
+                                className="form-select"
+                                required
+                              >
+                                <option value="" selected disabled>
+                                  Select Type
+                                </option>
+                                <option value="LCL">LCL</option>
+                                <option value="FCL">FCL</option>
+                              </select>
+                              <label htmlFor="type">Type</label>
+                            </div>
+
                             <div className="form-floating form-floating-outline mb-6">
                               <input
                                 type="text"
