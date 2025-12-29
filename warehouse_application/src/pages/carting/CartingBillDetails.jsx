@@ -905,7 +905,7 @@ export default function CartingBillDetails() {
                                   <input
                                     type="text"
                                     className="form-control p-2"
-                                    readOnly
+                                    readOnly={Type==="FCL"}
                                     value={Data.gross_weight}
                                   />
                                 </div>
