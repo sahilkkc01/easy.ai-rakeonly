@@ -13,7 +13,7 @@ import { useReactToPrint } from "react-to-print";
 import { ApiBaseUrl } from "../Config";
 
 export default function IndexROut() {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -142,9 +142,10 @@ export default function IndexROut() {
     }
   };
 
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!user?.id) {
       Swal.fire({
         icon: "warning",
@@ -152,40 +153,79 @@ export default function IndexROut() {
         text: "Please login or select a valid user before submitting the form.",
         confirmButtonText: "OK",
       }).then(() => {
-        window.location.reload(true);
+        window.location.replace(window.location.href);
       });
       return;
     }
-
+  
     const formData = new FormData(e.target);
-    let formValues = Object.fromEntries(formData.entries());
-    formValues.user_id = user?.id ?? null;
-    const FIles = ["container_image", "seal_1_image", "seal_2_image"];
-
-    const targetSize = 20 * 1024; // 50KB
-
-    for (let index = 0; index < FIles.length; index++) {
-      const element = FIles[index];
-      if (element) {
-        const file = formData.get(element);
-        if (file && file.name) {
-          const compressedFile = await compressImage(file, targetSize);
-          if (compressedFile) {
-            formData.set(element, compressedFile);
-            formValues = Object.fromEntries(formData.entries());
-            // alert('success');
-          } else {
-            alert("Could not compress this file.");
-            return;
-          }
+    formData.append("user_id", user.id);
+  
+    const FILES = ["container_image", "seal_1_image", "seal_2_image"];
+    const targetSize = 20 * 1024; // 20KB
+  
+    for (const key of FILES) {
+      const file = formData.get(key);
+      if (file && file instanceof File && file.name) {
+        const compressedFile = await compressImage(file, targetSize);
+        if (!compressedFile) {
+          Swal.fire("Error", "Could not compress image.", "error");
+          return;
         }
+        formData.set(key, compressedFile);
       }
     }
-
+  
+    const formValues = Object.fromEntries(formData.entries());
+  
     console.log(formValues);
-
     submitData(formValues);
   };
+
+  // const handleFormSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!user?.id) {
+  //     Swal.fire({
+  //       icon: "warning",
+  //       title: "User not found",
+  //       text: "Please login or select a valid user before submitting the form.",
+  //       confirmButtonText: "OK",
+  //     }).then(() => {
+  //       window.location.reload(true);
+  //     });
+  //     return;
+  //   }
+
+  //   const formData = new FormData(e.target);
+  //   let formValues = Object.fromEntries(formData.entries());
+  //   formValues.user_id = user?.id ?? null;
+  //   const FIles = ["container_image", "seal_1_image", "seal_2_image"];
+
+  //   const targetSize = 20 * 1024; // 50KB
+
+  //   for (let index = 0; index < FIles.length; index++) {
+  //     const element = FIles[index];
+  //     if (element) {
+  //       const file = formData.get(element);
+  //       if (file && file.name) {
+  //         const compressedFile = await compressImage(file, targetSize);
+  //         if (compressedFile) {
+  //           formData.set(element, compressedFile);
+  //           formValues = Object.fromEntries(formData.entries());
+  //           // alert('success');
+  //         } else {
+  //           alert("Could not compress this file.");
+  //           return;
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   console.log(formValues);
+
+  //   submitData(formValues);
+  // };
 
   const [Photos, setPhotos] = useState({
     seal1: null,
