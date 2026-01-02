@@ -281,7 +281,7 @@ export default function Stuffing() {
                                   {/* <td>{item.end_time}</td> */}
                                   <td>
                                     <Link
-                                      to={`/stuffing/bill-details?container_number=${item.container_number}`}
+                                      to={`/stuffing/bill-details?container_number=${item.container_number}&type=${item.type}`}
                                       className="btn btn-label-primary btn-sm mx-1"
                                     >
                                       Edit

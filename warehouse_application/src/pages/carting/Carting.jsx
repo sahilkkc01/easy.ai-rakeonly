@@ -261,7 +261,7 @@ export default function Carting() {
                                   {/* <td>{item.end_time}</td> */}
                                   <td>
                                     <Link
-                                      to={`/carting/bill-details?crn_number=${item.crn_number}`}
+                                      to={`/carting/bill-details?crn_number=${item.crn_number}&type=${item.type}`}
                                       className="btn btn-label-primary btn-sm mx-1"
                                     >
                                       Edit
