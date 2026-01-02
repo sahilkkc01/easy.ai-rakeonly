@@ -78,6 +78,15 @@ export default function Nav() {
     }
   }, [toggleSide]);
 
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  },[]);
+
   return (
     <>
       <nav
@@ -109,6 +118,15 @@ export default function Nav() {
               </div>
             </div>
           </div> */}
+          <div className="navbar-nav align-items-center gap-2">
+            <div className="nav-item navbar-search-wrapper mb-0 text-dark fw-bold">
+              {user?.user_name ? (
+                <>UserName: {user?.user_name?.toUpperCase()}</>
+              ) : (
+                <>Undefine User </>
+              )}
+            </div>
+          </div>
           {localStorage.getItem("equipment_id") && (
             <div className="navbar-nav align-items-center gap-2 ms-5">
               <div className="nav-item navbar-search-wrapper mb-0">
@@ -135,10 +153,10 @@ export default function Nav() {
             </li>
 
             <li className="nav-item me-3">
-              <Link to={'/Profile'} className="nav-link">
-               <button className="btn btn-sm btn-outline-danger text-nowrap mx-2">
-               Reset Password
-               </button>
+              <Link to={"/Profile"} className="nav-link">
+                <button className="btn btn-sm btn-outline-danger text-nowrap mx-2">
+                  Reset Password
+                </button>
               </Link>
             </li>
 

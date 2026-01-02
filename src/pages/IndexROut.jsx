@@ -13,8 +13,14 @@ import { useReactToPrint } from "react-to-print";
 import { ApiBaseUrl } from "../Config";
 
 export default function IndexROut() {
-  const NewUser = localStorage.getItem("user");
-  const user = JSON.parse(NewUser);
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  },[]);
 
   const [loading, setLoading] = useState(false);
   const [advanceSummeryTrain, setAdvanceSummeryTrain] = useState([]);
