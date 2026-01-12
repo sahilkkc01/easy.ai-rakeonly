@@ -38,7 +38,7 @@ export default function CartingBillDetails() {
   const [ModalIds, setModalIds] = useState(0);
   const [SelectedGrids, setSelectedGrids] = useState({});
 
-  const fetchData = async (type,crn_number) => {
+  const fetchData = async (type, crn_number) => {
     setLoading(true);
     try {
       const response = await axios.get(
@@ -130,7 +130,7 @@ export default function CartingBillDetails() {
     const type = e.target.type.value.toUpperCase();
     setCrnNo(crn_number);
     setType(type);
-    setSearchParams({ type,crn_number });
+    setSearchParams({ type, crn_number });
   };
 
   useEffect(() => {
@@ -151,7 +151,7 @@ export default function CartingBillDetails() {
     if (id) setID(id);
 
     if (crn_number && type && !tallySheet) {
-      fetchData(type,crn_number);
+      fetchData(type, crn_number);
     }
   }, [searchParams]);
 
@@ -211,7 +211,9 @@ export default function CartingBillDetails() {
           timer: 2000,
         });
 
-        navigate(`?isFinalSubmit=1&id=${ID}&type=${Type}&tally_sheet=1&crn_number=${CrnNo}`);
+        navigate(
+          `?isFinalSubmit=1&id=${ID}&type=${Type}&tally_sheet=1&crn_number=${CrnNo}`
+        );
       } else {
         Swal.fire({
           icon: "error",
@@ -232,13 +234,30 @@ export default function CartingBillDetails() {
       setLoading(false);
     }
   };
-
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")) ?? "{}");
+  }, []);
   const handleSubmitForm = async (e) => {
     e.preventDefault();
+    if (!user?.id) {
+      Swal.fire({
+        icon: "warning",
+        title: "User not found",
+        text: "Please login or select a valid user before submitting the form.",
+        confirmButtonText: "OK",
+      }).then(() => {
+        window.location.replace(window.location.href);
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
       const formData = new FormData(e.target);
+      formData.append("created_by", user?.id);
+
       const response = await axios.post(
         `${ApiBaseUrl}carting/update`,
         formData,
@@ -905,7 +924,7 @@ export default function CartingBillDetails() {
                                   <input
                                     type="text"
                                     className="form-control p-2"
-                                    readOnly={Type==="FCL"}
+                                    readOnly={Type === "FCL"}
                                     value={Data.gross_weight}
                                   />
                                 </div>
@@ -1193,7 +1212,7 @@ export default function CartingBillDetails() {
                             </div>
 
                             <form action="" onSubmit={GetFormData}>
-                                <p>Please Enter CRN Number to Fetch Data</p>
+                              <p>Please Enter CRN Number to Fetch Data</p>
                               <div className="form-floating form-floating-outline mb-6">
                                 <select
                                   name="type"

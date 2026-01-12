@@ -69,35 +69,6 @@ export default function StuffingCompleted() {
     fetchData();
   }, []);
 
-  const GetFormData = async (e) => {
-    e.preventDefault();
-
-    const url = `${ApiBaseUrl}get/de_stuffing_data/LCL/${e.target.container_no.value}`;
-    try {
-      const response = await axios.post(url);
-      if (response?.data?.status == "success") {
-        navigate(
-          `/de-stuffing/bill-details?container_no=${e.target.container_no.value}`
-        );
-      } else {
-        Swal.fire({
-          icon: response?.data?.status,
-          text: response?.data?.message,
-          timer: 3000,
-        });
-      }
-    } catch (error) {
-      Swal.fire({
-        icon: "error",
-        text: `Error Fetch Data: ${error.message}`,
-        timer: 3000,
-        showConfirmButton: false,
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleFinalSubmit = async (
     ID,
     container_number,

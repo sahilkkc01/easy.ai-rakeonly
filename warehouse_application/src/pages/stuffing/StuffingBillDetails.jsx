@@ -236,10 +236,30 @@ export default function StuffingBillDetails() {
     }
   };
 
+
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")) ?? "{}");
+  }, []);
+
   const handleSubmitForm = async (e) => {
     e.preventDefault();
+    if (!user?.id) {
+      Swal.fire({
+        icon: "warning",
+        title: "User not found",
+        text: "Please login or select a valid user before submitting the form.",
+        confirmButtonText: "OK",
+      }).then(() => {
+        window.location.replace(window.location.href);
+      });
+      return;
+    }
+    
     setLoading(true);
     const formData = new FormData(e.target);
+    formData.append("created_by", user?.id);
+
     const url = `${ApiBaseUrl}stuffing/update`;
     try {
       const response = await axios.post(url, formData, {

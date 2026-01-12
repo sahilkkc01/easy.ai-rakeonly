@@ -197,9 +197,9 @@ export default function MezzanineMap({
         }
       }
 
-      if (ocr_occupied > 0) {
+      if (ocr_occupied > 0 && ocr_grid_wise_occupied?.data) {
         {
-          Object.entries(ocr_grid_wise_occupied?.data).forEach(
+          Object.entries(ocr_grid_wise_occupied?.data||{}).forEach(
             ([key, value]) => {
               if (!value) return;
               key = Number(key);
@@ -213,9 +213,9 @@ export default function MezzanineMap({
         }
       }
 
-      if (ocr_occupied > 0 && occupied > 0 && carting_data?.length > 0) {
+      if (ocr_occupied > 0 && occupied > 0 && carting_data?.length > 0 && grid_allocation) {
         {
-          Object.entries(grid_allocation).forEach(([key, value]) => {
+          Object.entries(grid_allocation||{}).forEach(([key, value]) => {
             if (!value) return;
             let parsedValues = [];
             if (Array.isArray(value)) {

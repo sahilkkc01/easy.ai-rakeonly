@@ -13,7 +13,6 @@ import { ApiBaseUrl } from "./Config";
 
 export default function Login() {
   const [passwordShow, setPasswordShow] = useState(false);
-  const [user_permissions, setuser_permissions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();

@@ -22,6 +22,8 @@ export default function Profile() {
   const formHandel = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
+    formData.append("created_by", userData?.id);
+    
     const formValues = Object.fromEntries(formData.entries());
     if (formValues.id && formValues.user_name && formValues.new_password) {
       setLoading(true);
