@@ -14,12 +14,13 @@ export default function CisfIn() {
   const user = JSON.parse(NewUser);
   const [gate_name, setGateName] = useState("EXIM");
   const [lane, setLane] = useState("1");
-  const [ApprovedData, setApprovedData] = useState([]);
   const type = "IN";
 
   const [Data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [ImageView, setImageView] = useState(false);
+  const [ApprovedData, setApprovedData] = useState([]);
+const [showApproved, setShowApproved] = useState(false);
 
   useEffect(() => {
     GetData();
@@ -171,86 +172,35 @@ export default function CisfIn() {
                       </button>
                     </div>
                   </div>
-               <div className="row">
-  <div className="col-lg-9">
-    <div className="d-flex align-items-center mb-5 gap-3">
-      <button
-        className={`btn ${
-          lane == "1" ? "btn-primary" : "btn-outline-primary"
-        }`}
-        onClick={() => setLane("1")}
-      >
-        Lane 1
-      </button>
+              <div className="d-flex align-items-center mb-5 gap-3">
+  <button
+    className={`btn ${
+      lane == "1" ? "btn-primary" : "btn-outline-primary"
+    }`}
+    onClick={() => setLane("1")}
+  >
+    Lane 1
+  </button>
 
-      <button
-        className={`btn ${
-          lane == "2" ? "btn-primary" : "btn-outline-primary"
-        }`}
-        onClick={() => setLane("2")}
-      >
-        Lane 2
-      </button>
-    </div>
-  </div>
+  <button
+    className={`btn ${
+      lane == "2" ? "btn-primary" : "btn-outline-primary"
+    }`}
+    onClick={() => setLane("2")}
+  >
+    Lane 2
+  </button>
 
-  <div className="col-lg-3">
-    <div
-      className="card shadow-sm"
-      style={{
-        maxHeight: "80vh",
-        overflowY: "auto",
-        position: "sticky",
-        top: "10px",
-      }}
-    >
-      <div className="card-header bg-success text-white">
-        <h5 className="mb-0">Approved Records</h5>
-      </div>
-
-      <div className="card-body p-2">
-        {ApprovedData.length > 0 ? (
-          ApprovedData.map((row, index) => (
-            <div
-              key={index}
-              className="border rounded p-2 mb-2 bg-light"
-            >
-              <div>
-                <strong>Vehicle:</strong> {row.vehicle_no}
-              </div>
-
-              <div>
-                <strong>Container:</strong> {row.container_no}
-              </div>
-
-              <div>
-                <strong>Permit:</strong> {row.permit_no}
-              </div>
-
-              <div>
-                <strong>Gate:</strong> {row.gate_no}
-              </div>
-
-              <div>
-                <strong>Time:</strong>{" "}
-                {formatToDateTime(row.created_at)}
-              </div>
-            </div>
-          ))
-        ) : (
-          <div className="text-center text-muted">
-            No Approved Records
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
+  <button
+    className="btn btn-success"
+    onClick={() => setShowApproved(true)}
+  >
+    Approved Records ({ApprovedData.length})
+  </button>
 </div>
-<div className="row">
-  <div className="col-lg-9">
-    <div className="row">
-      {Data &&
-        Data.map((row, i) => (
+
+                  {Data &&
+                    Data.map((row, i) => (
                       <div className="col-lg-6 " key={i}>
                         <div className="card shadow-lg rounded mb-4">
                           <div className="card-body">
@@ -530,16 +480,88 @@ export default function CisfIn() {
                         </div>
                       </div>
                     ))}
-                        </div>
-  </div>
-</div>
                 </div>
 
                 {/* <!-- Button trigger modal --> */}
                 {/* <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                   Launch demo modal
                 </button> */}
+<div
+  className={`modal fade ${showApproved ? "show d-block" : ""}`}
+  tabIndex="-1"
+  style={{
+    backgroundColor: "rgba(0,0,0,0.5)",
+  }}
+>
+  <div className="modal-dialog modal-xl modal-dialog-scrollable">
+    <div className="modal-content">
 
+      <div className="modal-header bg-success text-white">
+        <h5 className="modal-title">
+          Approved Records
+        </h5>
+
+        <button
+          type="button"
+          className="btn-close btn-close-white"
+          onClick={() => setShowApproved(false)}
+        ></button>
+      </div>
+
+      <div className="modal-body">
+
+        {ApprovedData.length > 0 ? (
+          <div className="row">
+
+            {ApprovedData.map((row, index) => (
+              <div className="col-lg-4" key={index}>
+
+                <div className="card shadow-sm mb-3">
+                  <div className="card-body">
+
+                    <p className="mb-1">
+                      <strong>Vehicle:</strong> {row.vehicle_no}
+                    </p>
+
+                    <p className="mb-1">
+                      <strong>Container:</strong> {row.container_no}
+                    </p>
+
+                    <p className="mb-1">
+                      <strong>Permit:</strong> {row.permit_no}
+                    </p>
+
+                    <p className="mb-1">
+                      <strong>Gate:</strong> {row.gate_no}
+                    </p>
+
+                    <p className="mb-1">
+                      <strong>Lane:</strong> {row.lane_no}
+                    </p>
+
+                    <p className="mb-0">
+                      <strong>Approved At:</strong>{" "}
+                      {formatToDateTime(row.created_at)}
+                    </p>
+
+                  </div>
+                </div>
+
+              </div>
+            ))}
+
+          </div>
+        ) : (
+          <div className="text-center text-muted">
+            No Approved Records Found
+          </div>
+        )}
+
+      </div>
+
+    </div>
+  </div>
+</div>
                 {/* <!-- Modal --> */}
                 <div
                   class="modal fade"
