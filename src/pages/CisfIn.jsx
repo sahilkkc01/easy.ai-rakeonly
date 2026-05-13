@@ -498,7 +498,7 @@ const [showApproved, setShowApproved] = useState(false);
 
       <div className="modal-header bg-success text-white">
         <h5 className="modal-title">
-          Approved Records
+          Approved Records 
         </h5>
 
         <button
