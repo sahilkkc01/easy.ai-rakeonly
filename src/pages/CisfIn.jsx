@@ -14,6 +14,7 @@ export default function CisfIn() {
   const user = JSON.parse(NewUser);
   const [gate_name, setGateName] = useState("EXIM");
   const [lane, setLane] = useState("1");
+  const [ApprovedData, setApprovedData] = useState([]);
   const type = "IN";
 
   const [Data, setData] = useState([]);
@@ -39,6 +40,9 @@ export default function CisfIn() {
       const response = await axios.get(url, {
         headers: { "Content-Type": "application/json" },
       });
+      if (response.data.approved) {
+  setApprovedData(response.data.approved);
+}
       if (response.data && response.data.data && response.data.data.data) {
         setData(response.data.data.data);
       } else {
@@ -167,27 +171,86 @@ export default function CisfIn() {
                       </button>
                     </div>
                   </div>
-                  <div className="d-flex align-items-center mb-5 gap-3">
-                    <button
-                      className={`btn ${
-                        lane == "1" ? "btn-primary" : "btn-outline-primary"
-                      }`}
-                      onClick={() => setLane("1")}
-                    >
-                      Lane 1
-                    </button>
-                    <button
-                      className={`btn ${
-                        lane == "2" ? "btn-primary" : "btn-outline-primary"
-                      }`}
-                      onClick={() => setLane("2")}
-                    >
-                      Lane 2
-                    </button>
-                  </div>
+               <div className="row">
+  <div className="col-lg-9">
+    <div className="d-flex align-items-center mb-5 gap-3">
+      <button
+        className={`btn ${
+          lane == "1" ? "btn-primary" : "btn-outline-primary"
+        }`}
+        onClick={() => setLane("1")}
+      >
+        Lane 1
+      </button>
 
-                  {Data &&
-                    Data.map((row, i) => (
+      <button
+        className={`btn ${
+          lane == "2" ? "btn-primary" : "btn-outline-primary"
+        }`}
+        onClick={() => setLane("2")}
+      >
+        Lane 2
+      </button>
+    </div>
+  </div>
+
+  <div className="col-lg-3">
+    <div
+      className="card shadow-sm"
+      style={{
+        maxHeight: "80vh",
+        overflowY: "auto",
+        position: "sticky",
+        top: "10px",
+      }}
+    >
+      <div className="card-header bg-success text-white">
+        <h5 className="mb-0">Approved Records</h5>
+      </div>
+
+      <div className="card-body p-2">
+        {ApprovedData.length > 0 ? (
+          ApprovedData.map((row, index) => (
+            <div
+              key={index}
+              className="border rounded p-2 mb-2 bg-light"
+            >
+              <div>
+                <strong>Vehicle:</strong> {row.vehicle_no}
+              </div>
+
+              <div>
+                <strong>Container:</strong> {row.container_no}
+              </div>
+
+              <div>
+                <strong>Permit:</strong> {row.permit_no}
+              </div>
+
+              <div>
+                <strong>Gate:</strong> {row.gate_no}
+              </div>
+
+              <div>
+                <strong>Time:</strong>{" "}
+                {formatToDateTime(row.created_at)}
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-muted">
+            No Approved Records
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
+<div className="row">
+  <div className="col-lg-9">
+    <div className="row">
+      {Data &&
+        Data.map((row, i) => (
                       <div className="col-lg-6 " key={i}>
                         <div className="card shadow-lg rounded mb-4">
                           <div className="card-body">
@@ -467,6 +530,9 @@ export default function CisfIn() {
                         </div>
                       </div>
                     ))}
+                        </div>
+  </div>
+</div>
                 </div>
 
                 {/* <!-- Button trigger modal --> */}

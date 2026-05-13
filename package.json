@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "BUILD_PATH=/Applications/XAMPP/xamppfiles/htdocs/Sunic/sunic_frontend/application react-scripts build",
+    "build": "BUILD_PATH=/Users/apple/Downloads/Sunic/sunic_frontend/application react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
