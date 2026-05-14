@@ -44,7 +44,8 @@ export default function GateIN() {
   const [PermitData, setPermitData] = useState(null);
   const [scannedData, setScannedData] = useState(null);
   const [isScanning, setIsScanning] = useState(false);
-
+  const [permitNumber, setPermitNumber] = useState("");
+  const [permitType, setPermitType] = useState("");
   const [isSpecialPermit, setIsSpecialPermit] = useState(false);
   const [specialPermit, setSpecialPermit] = useState(null);
   const [isContainer, setIsContainer] = useState(false);
@@ -184,15 +185,25 @@ export default function GateIN() {
     }
   };
 
+
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
+    if (isSpecialPermit) {
+      if (!permitNumber || !permitType) {
+        alert("Permit Number and Type are required");
+        return;
+      }
+    }
     setLoading(true);
 
     const user = JSON.parse(localStorage.getItem("user"));
 
     const formData = new FormData(e.target);
 
+    if (isSpecialPermit) {
+      formData.append("special_permit_number", permitNumber);
+      formData.append("special_permit_type", permitType);
+    }
     formData.append("ocr_vehicle_number", ocr_vehicle_number); // Append the vehicle number
     formData.append("vehicle_no_image", vehicle_no_image);
 
@@ -281,6 +292,7 @@ export default function GateIN() {
       setLoading(false);
     }
   };
+
 
   const GetLIveData = async () => {
     setLoading(true);
@@ -565,9 +577,8 @@ export default function GateIN() {
                               <div className="row">
                                 <div className="col-5">
                                   <div
-                                    className={`form-check custom-option custom-option-label custom-option-basic ${
-                                      gate_no == "2" ? "checked" : ""
-                                    } `}
+                                    className={`form-check custom-option custom-option-label custom-option-basic ${gate_no == "2" ? "checked" : ""
+                                      } `}
                                   >
                                     <label
                                       className="form-check-label custom-option-content text-center p-3"
@@ -585,9 +596,8 @@ export default function GateIN() {
                                         }}
                                       />
                                       <b
-                                        className={`fs-6  ${
-                                          gate_no == "2" ? "text-primary" : ""
-                                        } `}
+                                        className={`fs-6  ${gate_no == "2" ? "text-primary" : ""
+                                          } `}
                                       >
                                         Gate 2
                                       </b>
@@ -596,9 +606,8 @@ export default function GateIN() {
                                 </div>
                                 <div className="col-5">
                                   <div
-                                    className={`form-check custom-option custom-option-label custom-option-basic  ${
-                                      gate_no == "3" ? "checked" : ""
-                                    }  `}
+                                    className={`form-check custom-option custom-option-label custom-option-basic  ${gate_no == "3" ? "checked" : ""
+                                      }  `}
                                   >
                                     <label
                                       className="form-check-label custom-option-content text-center p-3"
@@ -616,9 +625,8 @@ export default function GateIN() {
                                         }}
                                       />
                                       <b
-                                        className={`fs-6  ${
-                                          gate_no == "3" ? "text-primary" : ""
-                                        } `}
+                                        className={`fs-6  ${gate_no == "3" ? "text-primary" : ""
+                                          } `}
                                       >
                                         Gate 3
                                       </b>
@@ -631,9 +639,8 @@ export default function GateIN() {
                                 </div>
                                 <div className="col-5">
                                   <div
-                                    className={`form-check custom-option custom-option-label custom-option-basic ${
-                                      gate_no == "4" ? "checked" : ""
-                                    } `}
+                                    className={`form-check custom-option custom-option-label custom-option-basic ${gate_no == "4" ? "checked" : ""
+                                      } `}
                                   >
                                     <label
                                       className="form-check-label custom-option-content text-center p-3"
@@ -651,9 +658,8 @@ export default function GateIN() {
                                         }}
                                       />
                                       <b
-                                        className={`fs-6 ${
-                                          gate_no == "4" ? "text-primary" : ""
-                                        } `}
+                                        className={`fs-6 ${gate_no == "4" ? "text-primary" : ""
+                                          } `}
                                       >
                                         Gate 4
                                       </b>
@@ -662,9 +668,8 @@ export default function GateIN() {
                                 </div>
                                 <div className="col-5">
                                   <div
-                                    className={`form-check custom-option custom-option-label custom-option-basic  ${
-                                      gate_no == "5" ? "checked" : ""
-                                    } `}
+                                    className={`form-check custom-option custom-option-label custom-option-basic  ${gate_no == "5" ? "checked" : ""
+                                      } `}
                                   >
                                     <label
                                       className="form-check-label custom-option-content text-center p-3"
@@ -682,9 +687,8 @@ export default function GateIN() {
                                         }}
                                       />
                                       <b
-                                        className={`fs-6 ${
-                                          gate_no == "5" ? "text-primary" : ""
-                                        } `}
+                                        className={`fs-6 ${gate_no == "5" ? "text-primary" : ""
+                                          } `}
                                       >
                                         Gate 5
                                       </b>
@@ -696,9 +700,8 @@ export default function GateIN() {
                                 </div>
                                 <div className="col-5">
                                   <div
-                                    className={`form-check custom-option custom-option-label custom-option-basic  ${
-                                      gate_no == "1" ? "checked" : ""
-                                    } `}
+                                    className={`form-check custom-option custom-option-label custom-option-basic  ${gate_no == "1" ? "checked" : ""
+                                      } `}
                                   >
                                     <label
                                       className="form-check-label custom-option-content text-center p-3"
@@ -716,9 +719,8 @@ export default function GateIN() {
                                         }}
                                       />
                                       <b
-                                        className={`fs-6 ${
-                                          gate_no == "1" ? "text-primary" : ""
-                                        } `}
+                                        className={`fs-6 ${gate_no == "1" ? "text-primary" : ""
+                                          } `}
                                       >
                                         Gate 1
                                       </b>
@@ -734,9 +736,8 @@ export default function GateIN() {
                                 <div className="row">
                                   <div className="col-5">
                                     <div
-                                      className={`form-check custom-option custom-option-label custom-option-basic ${
-                                        gate_no == "1" ? "checked" : ""
-                                      } `}
+                                      className={`form-check custom-option custom-option-label custom-option-basic ${gate_no == "1" ? "checked" : ""
+                                        } `}
                                     >
                                       <label
                                         className="form-check-label custom-option-content text-center p-3"
@@ -754,9 +755,8 @@ export default function GateIN() {
                                           }}
                                         />
                                         <b
-                                          className={`fs-6  ${
-                                            gate_no == "1" ? "text-primary" : ""
-                                          } `}
+                                          className={`fs-6  ${gate_no == "1" ? "text-primary" : ""
+                                            } `}
                                         >
                                           Gate 1
                                         </b>
@@ -765,9 +765,8 @@ export default function GateIN() {
                                   </div>
                                   <div className="col-5">
                                     <div
-                                      className={`form-check custom-option custom-option-label custom-option-basic  ${
-                                        gate_no == "2" ? "checked" : ""
-                                      }  `}
+                                      className={`form-check custom-option custom-option-label custom-option-basic  ${gate_no == "2" ? "checked" : ""
+                                        }  `}
                                     >
                                       <label
                                         className="form-check-label custom-option-content text-center p-3"
@@ -785,9 +784,8 @@ export default function GateIN() {
                                           }}
                                         />
                                         <b
-                                          className={`fs-6  ${
-                                            gate_no == "2" ? "text-primary" : ""
-                                          } `}
+                                          className={`fs-6  ${gate_no == "2" ? "text-primary" : ""
+                                            } `}
                                         >
                                           Gate 2
                                         </b>
@@ -801,9 +799,8 @@ export default function GateIN() {
 
                                   <div className="col-5">
                                     <div
-                                      className={`form-check custom-option custom-option-label custom-option-basic ${
-                                        gate_no == "3" ? "checked" : ""
-                                      } `}
+                                      className={`form-check custom-option custom-option-label custom-option-basic ${gate_no == "3" ? "checked" : ""
+                                        } `}
                                     >
                                       <label
                                         className="form-check-label custom-option-content text-center p-3"
@@ -821,9 +818,8 @@ export default function GateIN() {
                                           }}
                                         />
                                         <b
-                                          className={`fs-6 ${
-                                            gate_no == "3" ? "text-primary" : ""
-                                          } `}
+                                          className={`fs-6 ${gate_no == "3" ? "text-primary" : ""
+                                            } `}
                                         >
                                           Gate 3
                                         </b>
@@ -833,9 +829,8 @@ export default function GateIN() {
 
                                   <div className="col-5">
                                     <div
-                                      className={`form-check custom-option custom-option-label custom-option-basic ${
-                                        gate_no == "4" ? "checked" : ""
-                                      } `}
+                                      className={`form-check custom-option custom-option-label custom-option-basic ${gate_no == "4" ? "checked" : ""
+                                        } `}
                                     >
                                       <label
                                         className="form-check-label custom-option-content text-center p-3"
@@ -853,9 +848,8 @@ export default function GateIN() {
                                           }}
                                         />
                                         <b
-                                          className={`fs-6 ${
-                                            gate_no == "4" ? "text-primary" : ""
-                                          } `}
+                                          className={`fs-6 ${gate_no == "4" ? "text-primary" : ""
+                                            } `}
                                         >
                                           Gate 4
                                         </b>
@@ -984,13 +978,13 @@ export default function GateIN() {
                                       }
                                       className="card-img-top"
                                       alt="..."
-                                      // style={{ height: "200px" }}
+                                    // style={{ height: "200px" }}
                                     />
                                     <div className="card-body">
                                       <div className="d-flex justify-content-between align-items-center gap-1 mb-1">
                                         <h5 className="card-title">
                                           {EditAbleVehicleNo &&
-                                          row.id === EditVehicleID ? (
+                                            row.id === EditVehicleID ? (
                                             <input
                                               type="text"
                                               className="form-control p-1"
@@ -1007,7 +1001,7 @@ export default function GateIN() {
                                         </h5>
 
                                         {EditAbleVehicleNo &&
-                                        row.id === EditVehicleID ? (
+                                          row.id === EditVehicleID ? (
                                           <button
                                             type="button"
                                             className="btn btn-sm btn-label-primary"
@@ -1234,8 +1228,8 @@ export default function GateIN() {
                                   <span className="mt-2 text-primary fw-bold">
                                     {PermitData?.data["tns:IsPermitValid"]
                                       ? formatToDateTime(
-                                          PermitData?.data["tns:IsPermitValid"]
-                                        )
+                                        PermitData?.data["tns:IsPermitValid"]
+                                      )
                                       : ""}
                                   </span>
                                 </div>
@@ -1281,39 +1275,81 @@ export default function GateIN() {
                                 </label>
                               </div>
                               {isSpecialPermit && (
-                                <div className="d-flex align-items-center gap-5">
-                                  <label
-                                    htmlFor="special_permit"
-                                    className="btn btn-secondary"
-                                  >
-                                    <i className="ri-camera-line me-2"></i>{" "}
-                                    Special Permit
-                                    <input
-                                      type="file"
-                                      name="special_permit"
-                                      id="special_permit"
-                                      className="d-none "
-                                      accept="image/*"
-                                      capture="environment"
-                                      onChange={(e) =>
-                                        handleImageChange(e, "specialPermit")
-                                      }
-                                    />
-                                  </label>
-                                  {Photos?.specialPermit && (
-                                    <div className="mt-2">
-                                      <img
-                                        src={Photos.specialPermit}
-                                        alt="specialPermit"
-                                        className="img-thumbnail rounded-3"
-                                        style={{
-                                          width: "100px",
-                                          height: "100px",
-                                          objectFit: "cover",
-                                        }}
+                                <div className="d-flex flex-column gap-3">
+
+                                  {/* Upload Section */}
+                                  <div className="d-flex align-items-center gap-5">
+                                    <label
+                                      htmlFor="special_permit"
+                                      className="btn btn-secondary"
+                                    >
+                                      <i className="ri-camera-line me-2"></i>
+                                      Special Permit
+                                      <input
+                                        type="file"
+                                        name="special_permit"
+                                        id="special_permit"
+                                        className="d-none"
+                                        accept="image/*"
+                                        capture="environment"
+                                        onChange={(e) =>
+                                          handleImageChange(e, "specialPermit")
+                                        }
                                       />
-                                    </div>
-                                  )}
+                                    </label>
+
+                                    {Photos?.specialPermit && (
+                                      <div className="mt-2">
+                                        <img
+                                          src={Photos.specialPermit}
+                                          alt="specialPermit"
+                                          className="img-thumbnail rounded-3"
+                                          style={{
+                                            width: "100px",
+                                            height: "100px",
+                                            objectFit: "cover",
+                                          }}
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {/* Permit Number */}
+                                  <div>
+                                    <label className="form-label">
+                                      Permit Number <span className="text-danger">*</span>
+                                    </label>
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      value={permitNumber}
+                                      onChange={(e) => setPermitNumber(e.target.value)}
+                                      placeholder="Enter Permit Number"
+                                      required
+                                    />
+                                  </div>
+
+                                  {/* Permit Type */}
+                                  <div>
+                                    <label className="form-label">
+                                      Permit Type <span className="text-danger">*</span>
+                                    </label>
+                                    <select
+                                      className="form-select"
+                                      value={permitType}
+                                      onChange={(e) => setPermitType(e.target.value)}
+                                      required
+                                    >
+                                      <option value="">Select Type</option>
+                                      <option value="Khatuwas">Khatuwas</option>
+                                      <option value="LNG">LNG</option>
+                                      <option value="Manual">Manual</option>
+                                      <option value="CBT">CBT</option>
+                                      <option value="Auction">Auction</option>
+                                      <option value="Other">Other</option>
+                                    </select>
+                                  </div>
+
                                 </div>
                               )}
                             </div>
@@ -1343,9 +1379,8 @@ export default function GateIN() {
                                   <div className="row ps-5">
                                     <div className="col-2">
                                       <div
-                                        className={`form-check custom-option custom-option-label custom-option-basic ${
-                                          container == "1" ? "checked" : ""
-                                        } `}
+                                        className={`form-check custom-option custom-option-label custom-option-basic ${container == "1" ? "checked" : ""
+                                          } `}
                                       >
                                         <label
                                           className="form-check-label custom-option-content text-center p-2"
@@ -1363,11 +1398,10 @@ export default function GateIN() {
                                             }}
                                           />
                                           <b
-                                            className={`fs-6  ${
-                                              container == "1"
+                                            className={`fs-6  ${container == "1"
                                                 ? "text-primary"
                                                 : ""
-                                            } `}
+                                              } `}
                                           >
                                             1
                                           </b>
@@ -1376,9 +1410,8 @@ export default function GateIN() {
                                     </div>
                                     <div className="col-2">
                                       <div
-                                        className={`form-check custom-option custom-option-label custom-option-basic  ${
-                                          container == "2" ? "checked" : ""
-                                        }  `}
+                                        className={`form-check custom-option custom-option-label custom-option-basic  ${container == "2" ? "checked" : ""
+                                          }  `}
                                       >
                                         <label
                                           className="form-check-label custom-option-content text-center p-2"
@@ -1396,11 +1429,10 @@ export default function GateIN() {
                                             }}
                                           />
                                           <b
-                                            className={`fs-6  ${
-                                              container == "2"
+                                            className={`fs-6  ${container == "2"
                                                 ? "text-primary"
                                                 : ""
-                                            } `}
+                                              } `}
                                           >
                                             2
                                           </b>
@@ -1424,8 +1456,8 @@ export default function GateIN() {
                                               defaultValue={
                                                 index === 0
                                                   ? PermitData?.data[
-                                                      "tns:ContainerNumber"
-                                                    ]
+                                                  "tns:ContainerNumber"
+                                                  ]
                                                   : ""
                                               }
                                               placeholder="Container Number"
@@ -1503,11 +1535,10 @@ export default function GateIN() {
                                     </h5>
                                     <div className="col-4">
                                       <div
-                                        className={`form-check custom-option custom-option-label custom-option-basic ${
-                                          containerType == "Laden"
+                                        className={`form-check custom-option custom-option-label custom-option-basic ${containerType == "Laden"
                                             ? "checked"
                                             : ""
-                                        } `}
+                                          } `}
                                       >
                                         <label
                                           className="form-check-label custom-option-content text-center p-2"
@@ -1525,11 +1556,10 @@ export default function GateIN() {
                                             }}
                                           />
                                           <b
-                                            className={`fs-6  ${
-                                              containerType == "Laden"
+                                            className={`fs-6  ${containerType == "Laden"
                                                 ? "text-primary"
                                                 : ""
-                                            } `}
+                                              } `}
                                           >
                                             Laden
                                           </b>
@@ -1538,11 +1568,10 @@ export default function GateIN() {
                                     </div>
                                     <div className="col-4">
                                       <div
-                                        className={`form-check custom-option custom-option-label custom-option-basic  ${
-                                          containerType == "Empty"
+                                        className={`form-check custom-option custom-option-label custom-option-basic  ${containerType == "Empty"
                                             ? "checked"
                                             : ""
-                                        }  `}
+                                          }  `}
                                       >
                                         <label
                                           className="form-check-label custom-option-content text-center p-2"
@@ -1560,11 +1589,10 @@ export default function GateIN() {
                                             }}
                                           />
                                           <b
-                                            className={`fs-6  ${
-                                              containerType == "Empty"
+                                            className={`fs-6  ${containerType == "Empty"
                                                 ? "text-primary"
                                                 : ""
-                                            } `}
+                                              } `}
                                           >
                                             Empty
                                           </b>
