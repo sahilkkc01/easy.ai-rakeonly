@@ -171,11 +171,23 @@ export default function MezzanineMap({
       const total_area = Number(data?.total_area ?? 20);
       const occupied = Number(data?.occupied_area ?? 0);
       const ocr_occupied = Number(data?.ocr_occupied_area ?? 0);
-      const grid_allocation = JSON.parse(data?.grid_allocation) ?? {};
+       const grid_allocation = (() => {
+  try {
+    if (!data?.grid_allocation) return {};
+    if (typeof data.grid_allocation === 'object') return data.grid_allocation;
+    return JSON.parse(data.grid_allocation) ?? {};
+  } catch { return {}; }
+})();
+
       const carting_data = data?.carting_data ?? [];
 
-      const ocr_grid_wise_occupied =
-        JSON.parse(data?.ocr_grid_wise_occupied) ?? {};
+        const ocr_grid_wise_occupied = (() => {
+  try {
+    if (!data?.ocr_grid_wise_occupied) return {};
+    if (typeof data.ocr_grid_wise_occupied === 'object') return data.ocr_grid_wise_occupied;
+    return JSON.parse(data.ocr_grid_wise_occupied) ?? {};
+  } catch { return {}; }
+})();
 
         TotalAreaSum += Number(total_area);
 
