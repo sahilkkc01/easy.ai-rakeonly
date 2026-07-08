@@ -105,9 +105,7 @@ export default function IndexROut() {
     const url = `${ApiBaseUrl}/rake/survey/train/data/outword/post`;
 
     try {
-      const response = await axios.post(url, payload, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await axios.post(url, payload);
 
       console.log(response.data);
       if (response.data && response.data.status) {
@@ -160,8 +158,36 @@ export default function IndexROut() {
   
     const formData = new FormData(e.target);
     formData.append("user_id", user.id);
-  
-    const FILES = ["container_image", "seal_1_image", "seal_2_image"];
+
+    if (DamageStatus === "seal_damage") {
+      const damageSealImage = formData.get("damage_seal_image");
+      const replaceableSealImage = formData.get("replaceable_seal_image");
+      const damageSealNo = formData.get("damage_seal_no");
+      const replaceableSealNo = formData.get("replaceable_seal_no");
+
+      if (
+        !(damageSealImage instanceof File && damageSealImage.name) ||
+        !(replaceableSealImage instanceof File && replaceableSealImage.name) ||
+        !damageSealNo?.trim() ||
+        !replaceableSealNo?.trim()
+      ) {
+        Swal.fire({
+          icon: "warning",
+          title: "Missing Seal Damage Details",
+          text: "Please upload Damage Seal & Replaceable Seal images and enter both seal numbers.",
+          confirmButtonText: "OK",
+        });
+        return;
+      }
+    }
+
+    const FILES = [
+      "container_image",
+      "seal_1_image",
+      "seal_2_image",
+      "damage_seal_image",
+      "replaceable_seal_image",
+    ];
     const targetSize = 20 * 1024; // 20KB
   
     for (const key of FILES) {
@@ -176,10 +202,8 @@ export default function IndexROut() {
       }
     }
   
-    const formValues = Object.fromEntries(formData.entries());
-  
-    console.log(formValues);
-    submitData(formValues);
+    console.log(Object.fromEntries(formData.entries()));
+    submitData(formData);
   };
 
   // const handleFormSubmit = async (e) => {
@@ -231,6 +255,8 @@ export default function IndexROut() {
     seal1: null,
     seal2: null,
     container: null,
+    damageSeal: null,
+    replaceableSeal: null,
   });
 
   const handleImageChange = (event, name) => {
@@ -519,9 +545,17 @@ export default function IndexROut() {
                                 id="container_type"
                                 className="form-control"
                                 value={ContainerType}
-                                onChange={(e) =>
-                                  setContainerType(e.target.value)
-                                }
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  setContainerType(value);
+                                  if (
+                                    value === "Empty" &&
+                                    DamageStatus === "seal_damage"
+                                  ) {
+                                    setDamageStatus("N");
+                                    setEIRshow(false);
+                                  }
+                                }}
                               >
                                 <option value="Empty">Empty</option>
                                 <option value="Laden">Laden</option>
@@ -602,7 +636,11 @@ export default function IndexROut() {
                                 <option value="contianer_damage">
                                   Container Damage
                                 </option>
-                                <option value="seal_damage">Seal Damage</option>
+                                {ContainerType !== "Empty" && (
+                                  <option value="seal_damage">
+                                    Seal Damage
+                                  </option>
+                                )}
                                 <option value="seal_mismatch">
                                   Seal Mismatch
                                 </option>
@@ -628,6 +666,112 @@ export default function IndexROut() {
                                 <label htmlFor="damage_remark">
                                   Damage Remark
                                 </label>
+                              </div>
+                            </div>
+                          )}
+
+                          {DamageStatus === "seal_damage" &&
+                            ContainerType === "Laden" && (
+                            <div className="col-md-12 my-3">
+                              <div className="d-flex align-items-center gap-4 mb-3">
+                                <div>
+                                  <label
+                                    htmlFor="damage_seal_image"
+                                    className="btn btn-outline-info btn-sm me-2"
+                                  >
+                                    <i className="ri-camera-fill me-1"></i>
+                                    Damage Seal
+                                    <input
+                                      type="file"
+                                      id="damage_seal_image"
+                                      name="damage_seal_image"
+                                      className="d-none"
+                                      accept="image/*"
+                                      capture="environment"
+                                      onChange={(e) =>
+                                        handleImageChange(e, "damageSeal")
+                                      }
+                                    />
+                                  </label>
+                                  {Photos?.damageSeal && (
+                                    <div className="mt-2">
+                                      <img
+                                        src={Photos.damageSeal}
+                                        alt="Damage Seal"
+                                        className="img-thumbnail rounded-3"
+                                        style={{
+                                          width: "100px",
+                                          height: "100px",
+                                          objectFit: "cover",
+                                        }}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                                <div>
+                                  <label
+                                    htmlFor="replaceable_seal_image"
+                                    className="btn btn-outline-info btn-sm me-2"
+                                  >
+                                    <i className="ri-camera-fill me-1"></i>
+                                    Replaceable Seal
+                                    <input
+                                      type="file"
+                                      id="replaceable_seal_image"
+                                      name="replaceable_seal_image"
+                                      className="d-none"
+                                      accept="image/*"
+                                      capture="environment"
+                                      onChange={(e) =>
+                                        handleImageChange(e, "replaceableSeal")
+                                      }
+                                    />
+                                  </label>
+                                  {Photos?.replaceableSeal && (
+                                    <div className="mt-2">
+                                      <img
+                                        src={Photos.replaceableSeal}
+                                        alt="Replaceable Seal"
+                                        className="img-thumbnail rounded-3"
+                                        style={{
+                                          width: "100px",
+                                          height: "100px",
+                                          objectFit: "cover",
+                                        }}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="row">
+                                <div className="col-md-6">
+                                  <div className="form-floating form-floating-outline mb-3">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      name="damage_seal_no"
+                                      id="damage_seal_no"
+                                      placeholder="Damage Seal Number"
+                                    />
+                                    <label htmlFor="damage_seal_no">
+                                      Damage Seal Number
+                                    </label>
+                                  </div>
+                                </div>
+                                <div className="col-md-6">
+                                  <div className="form-floating form-floating-outline mb-3">
+                                    <input
+                                      type="text"
+                                      className="form-control"
+                                      name="replaceable_seal_no"
+                                      id="replaceable_seal_no"
+                                      placeholder="Replaceable Seal Number"
+                                    />
+                                    <label htmlFor="replaceable_seal_no">
+                                      Replaceable Seal Number
+                                    </label>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           )}

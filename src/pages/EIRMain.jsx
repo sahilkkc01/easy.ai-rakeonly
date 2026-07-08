@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,forwardRef} from "react";
 import "./EIR.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { formatToDate, formatToDateTime, formatToTime } from "./main/formatToDateTime";
 
-export default function EIRMain(data = [],ref) {
+const EIRMain = forwardRef(({ data }, ref) => {
   const { Permit } = useParams();
-  const [Data,setData] = useState(data.data);
+  const [Data, setData] = useState(data);
+
   return (
-    <>
-      <div ref={ref} className="A5 m-auto main-p p-2 px-5">
+    <div ref={ref} className="A5 m-auto main-p p-2 px-5">
         <div className="row justify-content-center align-items-center" >
           <div className="col-8 text-center  mb-5">
             <h1 className="m-0 h1">SUNIC TECHNOLOGIES PVT. LTD.</h1>
@@ -244,7 +244,8 @@ export default function EIRMain(data = [],ref) {
             </div>
           </div>
         </div>
-      </div>
-    </>
+    </div>
   );
-}
+});
+
+export default EIRMain;
