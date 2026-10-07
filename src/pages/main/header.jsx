@@ -179,27 +179,27 @@ export default function Header() {
             ]
               .filter((url) =>
                 [
-                  "https://ctas.live/Gate",
-                  "https://ctas.live/CISF",
+                  // "https://ctas.live/Gate",
+                  // "https://ctas.live/CISF",
 
                   "https://ctas.live/RakeInWord",
                   "https://ctas.live/RakeOutWord",
-                  "https://ctas.live/RakeOutWordWTR",
+                  // "https://ctas.live/RakeOutWordWTR",
 
-                  "https://ctas.live/YardTransactions",
+                  // "https://ctas.live/YardTransactions",
 
-                  "https://ctas.live/CartingReadFCL",
-                  "https://ctas.live/Delivery",
-                  "https://ctas.live/DeStuffingReadFCL",
-                  "https://ctas.live/DeStuffingReadLCL",
-                  "https://ctas.live/StuffingReadFCL",
+                  // "https://ctas.live/CartingReadFCL",
+                  // "https://ctas.live/Delivery",
+                  // "https://ctas.live/DeStuffingReadFCL",
+                  // "https://ctas.live/DeStuffingReadLCL",
+                  // "https://ctas.live/StuffingReadFCL",
 
                   // "https://ctas.live/DTMSGate",
                   // "https://ctas.live/DTMSYardTransactions",
                   // "https://ctas.live/CartingReadLCL",
                   // "https://ctas.live/StuffingReadLCL",
 
-                  "https://ctas.live/Rst",
+                  // "https://ctas.live/Rst",
                 ].includes(url)
               )
               .map((url, i) => {

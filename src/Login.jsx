@@ -46,7 +46,7 @@ export default function Login() {
             response.data.data.permissions &&
             response.data.data.permissions[0].application.url
           ) {
-            const url = response.data.data.permissions[0].application.url;
+            const url = 'RakeInWord';
             const shortUrl = url.replace("https://ctas.live/", "");
             Swal.fire({
               icon: "success",
